@@ -1,0 +1,58 @@
+Wikipedia interface assets
+
+The local interface retains archived Wikipedia Vector styles supplied in the
+earlier page archive. The classic logo assets are unmodified official files:
+https://en.wikipedia.org/static/images/icons/wikipedia.png
+https://en.wikipedia.org/static/images/mobile/copyright/wikipedia-wordmark-en.svg
+https://en.wikipedia.org/static/images/mobile/copyright/wikipedia-tagline-en.svg
+
+Wikipedia and its logos are trademarks of the Wikimedia Foundation. Asset
+provenance and notices are retained here rather than in the visible page footer.
+Source reference: https://commons.wikimedia.org/wiki/File:Wikipedia-logo-v2-en.svg
+https://creativecommons.org/licenses/by-sa/3.0/
+
+Archived interface source: Wikipedia contributors, Leonard Susskind page,
+https://en.wikipedia.org/wiki/Leonard_Susskind
+https://creativecommons.org/licenses/by-sa/4.0/
+Page content has been replaced and the interface adapted for this local site.
+
+Menu structure reference: archived English Wikipedia, 17 July 2023.
+https://web.archive.org/web/20230717091412/https://en.wikipedia.org/wiki/Leonard_susskind
+The archived menu appearance is retained; navigation entries now point to local portfolio content.
+Account entries have been replaced with Instagram and Twitter links. The remaining menus have been adapted to the local portfolio. Local article content is separate.
+
+Philosophy paper cover images
+
+Marguerite Gérard and Jean-Honoré Fragonard, The Reader. Fitzwilliam Museum, M.8. Public-domain reproduction via Wikimedia Commons.
+https://commons.wikimedia.org/wiki/File:Jean-Honor%C3%A9_Fragonard_(1732-1806)_-_The_Reader_-_M.8_-_Fitzwilliam_Museum.jpg
+https://data.fitzmuseum.cam.ac.uk/id/object/2679
+
+Caspar David Friedrich, The Monk by the Sea. Alte Nationalgalerie, Berlin. Public-domain reproduction via Wikimedia Commons.
+https://commons.wikimedia.org/wiki/File:Caspar_David_Friedrich_-_Monk_by_the_Sea.jpg
+
+Johannes Vermeer, Woman Holding a Balance. National Gallery of Art, Widener Collection. Public-domain reproduction via Wikimedia Commons.
+https://commons.wikimedia.org/wiki/File:Woman_Holding_a_Balance_(Vermeer).jpg
+https://www.nga.gov/artworks/1236-woman-holding-balance
+
+Hendrick Avercamp, Winter Landscape with Ice Skaters. Rijksmuseum, SK-A-1718. Public-domain reproduction via Wikimedia Commons.
+https://commons.wikimedia.org/wiki/File:Hendrick_Avercamp_-_Winter_Landscape_with_Skaters_-_WGA01077.jpg
+https://id.rijksmuseum.nl/200108163
+
+Joseph Wright of Derby, A Philosopher Lecturing on the Orrery. Derby Museum and Art Gallery. Public-domain reproduction via Wikimedia Commons.
+https://commons.wikimedia.org/wiki/File:Wright,_Joseph_-_A_Philosopher_Lecturing_with_a_Mechanical_Planetary_-_1766.jpg
+
+
+Additional manuscript and reading assets
+
+The book-shelf photograph and portrait were supplied by Sohel Georgiadis.
+The brief Osho quotation is credited to And the Grass Grows by Itself, talk 5:
+https://shop.osho.com/in/be-aware-of-religious-frauds
+
+The CT figures in The Preserved Pharaoh and the Forgotten King reproduce
+figures 2 and 3 of Saleem and Hawass (2021), under CC BY:
+https://doi.org/10.3389/fmed.2021.778498
+The other images in that manuscript were supplied in the original manuscript.
+Original source and licence details for those files were not supplied; the PDF
+records this provenance limitation. The process diagram carries the Twinkl
+name and the Akkadian Empire map carries the World History Encyclopedia name.
+These materials retain their respective rights.

@@ -1,0 +1,9 @@
+# Local build files
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.xdv
+__pycache__/
+.DS_Store

@@ -1,0 +1,2551 @@
+% BEGIN STANDALONE DEPENDENCIES
+\begin{filecontents*}{iopart.cls}
+%% 
+%% This is file `iopart.cls'
+%% 
+%% This file is distributed in the hope that it will be useful, 
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of 
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% 
+%% Licensed under the LPPL: http://www.latex-project.org/lppl.txt
+%% Current Maintainer: IOP Publishing Ltd
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{iopart}[1996/06/10 v0.0 IOP Journals LaTeX article class]
+\newcommand\@ptsize{0}
+\newif\if@restonecol
+\newif\if@titlepage
+\newif\ifiopams
+\@titlepagefalse
+\DeclareOption{a4paper}
+   {\setlength\paperheight {297mm}%
+    \setlength\paperwidth  {210mm}}
+\DeclareOption{letterpaper}
+   {\setlength\paperheight {11in}%
+    \setlength\paperwidth  {8.5in}}
+\DeclareOption{landscape}
+   {\setlength\@tempdima   {\paperheight}%
+    \setlength\paperheight {\paperwidth}%
+    \setlength\paperwidth  {\@tempdima}}
+\DeclareOption{10pt}{\renewcommand\@ptsize{0}}
+\DeclareOption{11pt}{\renewcommand\@ptsize{2}} % No 11pt version
+\DeclareOption{12pt}{\renewcommand\@ptsize{2}}
+\DeclareOption{draft}{\setlength\overfullrule{5pt}}
+\DeclareOption{final}{\setlength\overfullrule{0pt}}
+\DeclareOption{titlepage}{\@titlepagetrue}
+\DeclareOption{notitlepage}{\@titlepagefalse}
+\ExecuteOptions{letterpaper,final}
+\ProcessOptions
+\DeclareMathAlphabet{\bi}{OML}{cmm}{b}{it}
+\DeclareMathAlphabet{\bcal}{OMS}{cmsy}{b}{n}
+\input{iopart1\@ptsize.clo}
+\setlength\lineskip{1\p@}
+\setlength\normallineskip{1\p@}
+\renewcommand\baselinestretch{}
+\setlength\parskip{0\p@ \@plus \p@}
+\@lowpenalty   51
+\@medpenalty  151
+\@highpenalty 301
+\setlength\parindent{2em}
+\setcounter{topnumber}{8}
+\renewcommand\topfraction{1}
+\setcounter{bottomnumber}{3}
+\renewcommand\bottomfraction{.99}
+\setcounter{totalnumber}{8}
+\renewcommand\textfraction{0.01}
+\renewcommand\floatpagefraction{.8}
+\setcounter{dbltopnumber}{6}
+\renewcommand\dbltopfraction{1}
+\renewcommand\dblfloatpagefraction{.8}
+%
+\pretolerance=5000
+\tolerance=8000
+%
+% Headings for all pages apart from first
+%
+\def\ps@headings{\let\@oddfoot\@empty
+      \let\@evenfoot\@empty
+      \def\@evenhead{\thepage\hfil\itshape\rightmark}%
+      \def\@oddhead{{\itshape\leftmark}\hfil\thepage}%
+      \let\@mkboth\markboth
+      \let\sectionmark\@gobble
+      \let\subsectionmark\@gobble}
+%
+% Headings for first page
+%
+\def\ps@myheadings{\let\@oddfoot\@empty\let\@evenfoot\@empty
+    \let\@oddhead\@empty\let\@evenhead\@empty
+    \let\@mkboth\@gobbletwo
+    \let\sectionmark\@gobble
+    \let\subsectionmark\@gobble}
+%
+% \maketitle just ends page
+%
+\newcommand\maketitle{\newpage}
+%
+% Article titles
+%
+% Usage: \title[Short title]{Full title}
+% [Short title] is optional; use where title is too long
+% or contains footnotes, 50 characters maximum 
+%
+\renewcommand{\title}{\@ifnextchar[{\@stitle}{\@ftitle}}
+\def\@stitle[#1]#2{\markboth{#1}{#1}%
+    \thispagestyle{myheadings}%
+    \vspace*{3pc}{\exhyphenpenalty=10000\hyphenpenalty=10000 
+    \Large\raggedright\noindent
+    \bf#2\par}}
+\def\@ftitle#1{\markboth{#1}{#1}%
+    \thispagestyle{myheadings}%
+    \vspace*{3pc}{\exhyphenpenalty=10000\hyphenpenalty=10000 
+    \Large\raggedright\noindent
+    \bf#1\par}}
+%
+% Can use \paper instead of \title
+%
+\let\paper=\title
+%
+% Generic title command for articles other than papers
+%
+% Usage: \article[Short title]{Article Type}{Full title}
+% [Short title] is optional; use where title is too long
+% or contains footnotes, 50 characters maximum 
+%
+\newcommand{\article}{\@ifnextchar[{\@sarticle}{\@farticle}}
+\def\@sarticle[#1]#2#3{\markboth{#1}{#1}%
+    \thispagestyle{myheadings}%
+     \vspace*{.5pc}%
+    {\parindent=\mathindent \bf #2\par}%
+     \vspace*{1.5pc}%
+    {\exhyphenpenalty=10000\hyphenpenalty=10000
+     \Large\raggedright\noindent
+     \bf#3\par}}%
+\def\@farticle#1#2{\markboth{#2}{#2}%
+    \thispagestyle{myheadings}%
+     \vspace*{.5pc}%
+    {\parindent=\mathindent \bf #1\par}%
+     \vspace*{1.5pc}%
+    {\exhyphenpenalty=10000\hyphenpenalty=10000
+     \Large\raggedright\noindent
+     \bf#2\par}}%
+%
+% Letters to the Editor
+%
+% Usage \letter{Full title}
+% No short title is required for Letters
+%
+\def\letter#1{\article[Letter to the Editor]{Letter to the Editor}{#1}}
+%
+% Fast Track Communications (added by sxb 9 March 2011)
+%
+% Usage \ftc{Full title} - there's no short title
+\def\ftc#1{\article[Fast Track Communication]{Fast Track Communication}{#1}}
+%
+%
+% Review articles
+%
+% Usage: \review[Short title]{Full title}
+% [Short title] is optional; use where title is too long
+% or contains footnotes, 50 characters maximum 
+%
+\def\review{\@ifnextchar[{\@sreview}{\@freview}}
+\def\@sreview[#1]#2{\@sarticle[#1]{Review Article}{#2}}
+\def\@freview#1{\@farticle{Review Article}{#1}}
+%
+% Topical Review
+%
+% Usage: \topical[Short title]{Full title}
+% [Short title] is optional; use where title is too long
+% or contains footnotes, 50 characters maximum 
+%
+\def\topical{\@ifnextchar[{\@stopical}{\@ftopical}}
+\def\@stopical[#1]#2{\@sarticle[#1]{Topical Review}{#2}}
+\def\@ftopical#1{\@farticle{Topical Review}{#1}}
+%
+% Comments
+%
+% Usage: \comment[Short title]{Full title}
+% [Short title] is optional; use where title is too long
+% or contains footnotes, 50 characters maximum 
+%
+\def\comment{\@ifnextchar[{\@scomment}{\@fcomment}}
+\def\@scomment[#1]#2{\@sarticle[#1]{Comment}{#2}}
+\def\@fcomment#1{\@farticle{Comment}{#1}}
+%
+% Rapid Communications
+%
+% Usage: \rapid[Short title]{Full title}
+% [Short title] is optional; use where title is too long
+% or contains footnotes, 50 characters maximum 
+%
+\def\rapid{\@ifnextchar[{\@srapid}{\@frapid}}
+\def\@srapid[#1]#2{\@sarticle[#1]{Rapid Communication}{#2}}
+\def\@frapid#1{\@farticle{Rapid Communication}{#1}}
+%
+% Notes
+%
+% Usage: \note[Short title]{Full title}
+% [Short title] is optional; use where title is too long
+% or contains footnotes, 50 characters maximum 
+%
+\def\note{\@ifnextchar[{\@snote}{\@fnote}}
+\def\@snote[#1]#2{\@sarticle[#1]{Note}{#2}}
+\def\@fnote#1{\@farticle{Note}{#1}}
+%
+% Preliminary Communications
+%
+% Usage: \prelim[Short title]{Full title}
+% [Short title] is optional; use where title is too long
+% or contains footnotes, 50 characters maximum 
+%
+\def\prelim{\@ifnextchar[{\@sprelim}{\@fprelim}}
+\def\@sprelim[#1]#2{\@sarticle[#1]{Preliminary Communication}{#2}}
+\def\@fprelim#1{\@farticle{Preliminary Communication}{#1}}
+%
+% List of authors
+%
+% Usage \author[Short form]{List of all authors}
+% The short form excludes footnote symbols linking authors to addresses 
+% and is used for running heads in printed version (but not on preprints)
+%
+\renewcommand{\author}{\@ifnextchar[{\@sauthor}{\@fauthor}}
+\def\@sauthor[#1]#2{\markright{#1}    % for production only
+   \vspace*{1.5pc}%
+   \begin{indented}%
+   \item[]\normalsize\bf\raggedright#2
+   \end{indented}%
+   \smallskip}
+\def\@fauthor#1{%\markright{#1}         for production only
+   \vspace*{1.5pc}%
+   \begin{indented}%
+   \item[]\normalsize\bf\raggedright#1
+   \end{indented}%
+   \smallskip}
+%
+% Affiliation (authors address)
+%
+% Usage: \address{Address of first author}
+%        \address{Address of second author}
+% Use once for each address, use symbols \dag \ddag \S \P $\|$
+% to connect authors with addresses
+%
+\newcommand{\address}[1]{\begin{indented}
+   \item[]\rm\raggedright #1
+   \end{indented}}
+%
+% American Mathematical Society Classification Numbers
+% Usage: \ams{57.XX, 58.XX}
+%
+\def\ams#1{\vspace{10pt}
+     \begin{indented}
+     \item[]\rm AMS classification scheme numbers: #1\par
+     \end{indented}}
+%
+% A single Physics & Astronomy Classification Number
+% Usage \pacno{31.10}
+%
+\def\pacno#1{\vspace{10pt}
+     \begin{indented}
+     \item[]\rm PACS number: #1\par
+     \end{indented}}
+%
+% Physics & Astronomy Classification Numbers (more than one)
+% Usage \pacs{31.10, 31.20T}
+%
+\def\pacs#1{\vspace{10pt}
+     \begin{indented}
+     \item[]\rm PACS numbers: #1\par
+     \end{indented}}
+%
+% Submission details. If \jl command used journals name printed
+% otherwise Institute of Physics Publishing 
+%
+\def\submitted{\vspace{28pt plus 10pt minus 18pt}
+     \noindent{\small\rm Submitted to: {\it \journal}\par}}
+%
+\def\submitto#1{\vspace{28pt plus 10pt minus 18pt}
+     \noindent{\small\rm Submitted to: {\it #1}\par}}
+%
+% For articles (other than Letters) not divided into sections
+% Usage \nosections Start of text
+%
+\def\nosections{\vspace{30\p@ plus12\p@ minus12\p@}
+    \noindent\ignorespaces}
+%
+% Acknowledgments (no heading if letter)
+% Usage \ack for Acknowledgments, \ackn for Acknowledgement
+%
+\def\ack{\ifletter\bigskip\noindent\ignorespaces\else
+    \section*{Acknowledgments}\fi}
+\def\ackn{\ifletter\bigskip\noindent\ignorespaces\else
+    \section*{Acknowledgment}\fi}
+%
+% Footnotes: symbols selected in order \dag (1), \ddag (2), \S (3), 
+% $\|$ (4), $\P$ (5), $^+$ (6), $^*$ (7), \sharp (8), \dagger\dagger (9)
+% unless optional argument of [<num>] use to specify required symbol, 
+% 1=\dag, 2=\ddag, etc
+% Usage: \footnote{Text of footnote}
+%        \footnote[3]{Text of footnote}
+%
+\def\footnoterule{}%
+\setcounter{footnote}{1}
+\long\def\@makefntext#1{\parindent 1em\noindent 
+ \makebox[1em][l]{\footnotesize\rm$\m@th{\fnsymbol{footnote}}$}%
+ \footnotesize\rm #1}
+\def\@makefnmark{\hbox{${\fnsymbol{footnote}}\m@th$}}
+\def\@thefnmark{\fnsymbol{footnote}}
+\def\footnote{\@ifnextchar[{\@xfootnote}{\stepcounter{\@mpfn}%
+       \begingroup\let\protect\noexpand
+       \xdef\@thefnmark{\thempfn}\endgroup
+     \@footnotemark\@footnotetext}}
+\def\@xfootnote[#1]{\setcounter{footnote}{#1}%
+   \addtocounter{footnote}{-1}\footnote}
+\def\@fnsymbol#1{\ifcase#1\or \dagger\or \ddagger\or \S\or
+   \|\or \P\or ^{+}\or ^{\tsty *}\or \sharp
+   \or \dagger\dagger \else\@ctrerr\fi\relax}
+%
+% IOP Journals
+%
+\newcounter{jnl}
+\newcommand{\jl}[1]{\setcounter{jnl}{#1}}
+\def\journal{\ifnum\thejnl=0 Institute of Physics Publishing\fi
+        \ifnum\thejnl=1 J. Phys.\ A: Math.\ Gen.\ \fi
+        \ifnum\thejnl=2 J. Phys.\ B: At.\ Mol.\ Opt.\ Phys.\ \fi
+        \ifnum\thejnl=3 J. Phys.:\ Condens. Matter\ \fi
+        \ifnum\thejnl=4 J. Phys.\ G: Nucl.\ Part.\ Phys.\ \fi
+        \ifnum\thejnl=5 Inverse Problems\ \fi
+        \ifnum\thejnl=6 Class. Quantum Grav.\ \fi
+        \ifnum\thejnl=7 Network: Comput.\ Neural Syst.\ \fi
+        \ifnum\thejnl=8 Nonlinearity\ \fi
+        \ifnum\thejnl=9 J. Opt. B: Quantum Semiclass. Opt.\ \fi
+        \ifnum\thejnl=10 Waves Random Media\ \fi
+        \ifnum\thejnl=11 J. Opt. A: Pure Appl. Opt.\ \fi
+        \ifnum\thejnl=12 Phys. Med. Biol.\ \fi
+        \ifnum\thejnl=13 Modelling Simul.\ Mater.\ Sci.\ Eng.\ \fi
+        \ifnum\thejnl=14 Plasma Phys. Control. Fusion\ \fi
+        \ifnum\thejnl=15 Physiol. Meas.\ \fi
+        \ifnum\thejnl=16 Combust. Theory Modelling\ \fi
+        \ifnum\thejnl=17 High Perform.\ Polym.\ \fi
+        \ifnum\thejnl=18 Public Understand. Sci.\ \fi
+        \ifnum\thejnl=19 Rep.\ Prog.\ Phys.\ \fi
+        \ifnum\thejnl=20 J.\ Phys.\ D: Appl.\ Phys.\ \fi
+        \ifnum\thejnl=21 Supercond.\ Sci.\ Technol.\ \fi
+        \ifnum\thejnl=22 Semicond.\ Sci.\ Technol.\ \fi
+        \ifnum\thejnl=23 Nanotechnology\ \fi
+        \ifnum\thejnl=24 Measur.\ Sci.\ Technol.\ \fi
+        \ifnum\thejnl=25 Plasma.\ Sources\ Sci.\ Technol.\ \fi
+        \ifnum\thejnl=26 Smart\ Mater.\ Struct.\ \fi
+        \ifnum\thejnl=27 J.\ Micromech.\ Microeng.\ \fi
+        \ifnum\thejnl=28 Distrib.\ Syst.\ Engng\ \fi
+        \ifnum\thejnl=29 Bioimaging\ \fi
+        \ifnum\thejnl=30 J.\ Radiol. Prot.\ \fi
+        \ifnum\thejnl=31 Europ. J. Phys.\ \fi
+        \ifnum\thejnl=32 J. Opt. A: Pure Appl. Opt.\ \fi
+        \ifnum\thejnl=33 New. J. Phys.\ \fi}
+%
+% E-mail addresses (to provide links from headers)
+%
+\def\eads#1{\vspace*{5pt}\address{E-mail: #1}}
+\def\ead#1{\vspace*{5pt}\address{E-mail: \mailto{#1}}}
+\def\mailto#1{{\tt #1}}
+%
+% Switches
+%
+\newif\ifletter
+%
+\setcounter{secnumdepth}{3}
+\newcounter {section}
+\newcounter {subsection}[section]
+\newcounter {subsubsection}[subsection]
+\newcounter {paragraph}[subsubsection]
+\newcounter {subparagraph}[paragraph]
+\renewcommand\thesection       {\arabic{section}}
+\renewcommand\thesubsection    {\thesection.\arabic{subsection}}
+\renewcommand\thesubsubsection {\thesubsection.\arabic{subsubsection}}
+\renewcommand\theparagraph     {\thesubsubsection.\arabic{paragraph}}
+\renewcommand\thesubparagraph  {\theparagraph.\arabic{subparagraph}}
+\def\@chapapp{Section}
+
+\newcommand\section{\@startsection {section}{1}{\z@}%
+                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                   {2.3ex \@plus.2ex}%
+                   {\reset@font\normalsize\bfseries\raggedright}}
+\newcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                   {-3.25ex\@plus -1ex \@minus -.2ex}%
+                   {1.5ex \@plus .2ex}%
+                   {\reset@font\normalsize\itshape\raggedright}}
+\newcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {-1em \@plus .2em}%
+                                     {\reset@font\normalsize\itshape}}
+\newcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+                                    {3.25ex \@plus1ex \@minus.2ex}%
+                                    {-1em}%
+                                    {\reset@font\normalsize\itshape}}
+\newcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+                                       {3.25ex \@plus1ex \@minus .2ex}%
+                                       {-1em}%
+                                      {\reset@font\normalsize\itshape}}
+\def\@sect#1#2#3#4#5#6[#7]#8{\ifnum #2>\c@secnumdepth
+     \let\@svsec\@empty\else
+     \refstepcounter{#1}\edef\@svsec{\csname the#1\endcsname. }\fi
+     \@tempskipa #5\relax
+      \ifdim \@tempskipa>\z@
+        \begingroup #6\relax
+          \noindent{\hskip #3\relax\@svsec}{\interlinepenalty \@M #8\par}%
+        \endgroup
+       \csname #1mark\endcsname{#7}\addcontentsline
+         {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                      \protect\numberline{\csname the#1\endcsname}\fi
+                    #7}\else
+        \def\@svsechd{#6\hskip #3\relax  %% \relax added 2 May 90
+                   \@svsec #8\csname #1mark\endcsname
+                      {#7}\addcontentsline
+                           {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                             \protect\numberline{\csname the#1\endcsname}\fi
+                       #7}}\fi
+     \@xsect{#5}}
+%
+\def\@ssect#1#2#3#4#5{\@tempskipa #3\relax
+   \ifdim \@tempskipa>\z@
+     \begingroup #4\noindent{\hskip #1}{\interlinepenalty \@M #5\par}\endgroup
+   \else \def\@svsechd{#4\hskip #1\relax #5}\fi
+    \@xsect{#3}}
+
+\setlength\leftmargini{2em}
+\setlength\leftmarginii{2em}
+\setlength\leftmarginiii{1.8em}
+\setlength\leftmarginiv{1.6em}
+\setlength\leftmarginv{1em}
+\setlength\leftmarginvi{1em}
+\setlength\leftmargin{\leftmargini}
+\setlength\labelsep{0.5em}
+\setlength\labelwidth{\leftmargini}
+\addtolength\labelwidth{-\labelsep}
+\@beginparpenalty -\@lowpenalty
+\@endparpenalty   -\@lowpenalty
+\@itempenalty     -\@lowpenalty
+\renewcommand\theenumi{\roman{enumi}}
+\renewcommand\theenumii{\alph{enumii}}
+\renewcommand\theenumiii{\arabic{enumiii}}
+\renewcommand\theenumiv{\Alph{enumiv}}
+\newcommand\labelenumi{(\theenumi)}
+\newcommand\labelenumii{(\theenumii)}
+\newcommand\labelenumiii{\theenumiii.}
+\newcommand\labelenumiv{(\theenumiv)}
+\renewcommand\p@enumii{(\theenumi)}
+\renewcommand\p@enumiii{(\theenumi.\theenumii)}
+\renewcommand\p@enumiv{(\theenumi.\theenumii.\theenumiii)}
+\newcommand\labelitemi{$\m@th\bullet$}
+\newcommand\labelitemii{\normalfont\bfseries --}
+\newcommand\labelitemiii{$\m@th\ast$}
+\newcommand\labelitemiv{$\m@th\cdot$}
+\newenvironment{description}
+               {\list{}{\labelwidth\z@ \itemindent-\leftmargin
+                        \let\makelabel\descriptionlabel}}
+               {\endlist}
+\newcommand\descriptionlabel[1]{\hspace\labelsep
+                                \normalfont\bfseries #1}
+\newenvironment{abstract}{%
+      \vspace{16pt plus3pt minus3pt}
+      \begin{indented}
+      \item[]{\bfseries \abstractname.}\quad\rm\ignorespaces} 
+      {\end{indented}\if@titlepage\newpage\else\vspace{18\p@ plus18\p@}\fi}
+\newenvironment{verse}
+               {\let\\=\@centercr
+                \list{}{\itemsep      \z@
+                        \itemindent   -1.5em%
+                        \listparindent\itemindent
+                        \rightmargin  \leftmargin
+                        \advance\leftmargin 1.5em}%
+                \item[]}
+               {\endlist}
+\newenvironment{quotation}
+               {\list{}{\listparindent 1.5em%
+                        \itemindent    \listparindent
+                        \rightmargin   \leftmargin
+                        \parsep        \z@ \@plus\p@}%
+                \item[]}
+               {\endlist}
+\newenvironment{quote}
+               {\list{}{\rightmargin\leftmargin}%
+                \item[]}
+               {\endlist}
+\newenvironment{titlepage}
+    {%
+        \@restonecolfalse\newpage
+      \thispagestyle{empty}%
+      \if@compatibility
+        \setcounter{page}{0}
+      \else
+        \setcounter{page}{1}%
+      \fi}%
+    {\newpage\setcounter{page}{1}}
+\def\appendix{\@ifnextchar*{\@appendixstar}{\@appendix}}
+\def\@appendix{\eqnobysec\@appendixstar}
+\def\@appendixstar{\@@par
+ \ifnumbysec                         %  Added 30/4/94 to get Table A1,
+ \@addtoreset{table}{section}        %  Table B1 etc if numbering by
+ \@addtoreset{figure}{section}\fi    %  section
+ \setcounter{section}{0}
+ \setcounter{subsection}{0}
+ \setcounter{subsubsection}{0}
+ \setcounter{equation}{0}
+ \setcounter{figure}{0}
+ \setcounter{table}{0}
+ \def\thesection{Appendix \Alph{section}}   
+ \def\theequation{\ifnumbysec
+      \Alph{section}.\arabic{equation}\else
+      \Alph{section}\arabic{equation}\fi}  % Comment A\arabic{equation} maybe
+ \def\thetable{\ifnumbysec                 % better? 15/4/95
+      \Alph{section}\arabic{table}\else
+      A\arabic{table}\fi}
+ \def\thefigure{\ifnumbysec
+      \Alph{section}\arabic{figure}\else
+      A\arabic{figure}\fi}}
+\def\noappendix{\setcounter{figure}{0}
+     \setcounter{table}{0}
+     \def\thetable{\arabic{table}}
+     \def\thefigure{\arabic{figure}}}
+\setlength\arraycolsep{5\p@}
+\setlength\tabcolsep{6\p@}
+\setlength\arrayrulewidth{.4\p@}
+\setlength\doublerulesep{2\p@}
+\setlength\tabbingsep{\labelsep}
+\skip\@mpfootins = \skip\footins
+\setlength\fboxsep{3\p@}
+\setlength\fboxrule{.4\p@}
+\renewcommand\theequation{\arabic{equation}}
+\newcounter{figure}
+\renewcommand\thefigure{\@arabic\c@figure}
+\def\fps@figure{tbp}
+\def\ftype@figure{1}
+\def\ext@figure{lof}
+\def\fnum@figure{\figurename~\thefigure}
+\newenvironment{figure}{\footnotesize\rm\@float{figure}}%
+    {\end@float\normalsize\rm}
+\newenvironment{figure*}{\footnotesize\rm\@dblfloat{figure}}{\end@dblfloat}
+\newcounter{table}
+\renewcommand\thetable{\@arabic\c@table}
+\def\fps@table{tbp}
+\def\ftype@table{2}
+\def\ext@table{lot}
+\def\fnum@table{\tablename~\thetable}
+\newenvironment{table}{\footnotesize\rm\@float{table}}%
+   {\end@float\normalsize\rm}
+\newenvironment{table*}{\footnotesize\rm\@dblfloat{table}}%
+   {\end@dblfloat\normalsize\rm}
+\newlength\abovecaptionskip
+\newlength\belowcaptionskip
+\setlength\abovecaptionskip{10\p@}
+\setlength\belowcaptionskip{0\p@}
+%
+% Added redefinition of \@caption so captions are not written to 
+% aux file therefore less need to \protect fragile commands
+%
+\long\def\@caption#1[#2]#3{\par\begingroup
+    \@parboxrestore
+    \normalsize
+    \@makecaption{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
+  \endgroup}
+% 
+\long\def\@makecaption#1#2{\vskip \abovecaptionskip 
+ \begin{indented}
+ \item[]{\bf #1.} #2
+ \end{indented}\vskip\belowcaptionskip}
+\let\@portraitcaption=\@makecaption
+
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\ifiopams
+\renewcommand{\cal}{\protect\pcal}
+\else
+\newcommand{\cal}{\protect\pcal}
+\fi
+\newcommand{\pcal}{\@fontswitch{\relax}{\mathcal}}
+\ifiopams
+\renewcommand{\mit}{\protect\pmit}
+\else
+\newcommand{\mit}{\protect\pmit}
+\fi
+\newcommand{\pmit}{\@fontswitch{\relax}{\mathnormal}}
+\newcommand\@pnumwidth{1.55em}
+\newcommand\@tocrmarg {2.55em}
+\newcommand\@dotsep{4.5}
+\setcounter{tocdepth}{3}
+\newcommand\tableofcontents{%
+    \section*{\contentsname
+        \@mkboth{\uppercase{\contentsname}}{\uppercase{\contentsname}}}%
+    \@starttoc{toc}%
+    }
+\newcommand\l@part[2]{%
+  \ifnum \c@tocdepth >-2\relax
+    \addpenalty{\@secpenalty}%
+    \addvspace{2.25em \@plus\p@}%
+    \begingroup
+      \setlength\@tempdima{3em}%
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      {\leavevmode
+       \large \bfseries #1\hfil \hbox to\@pnumwidth{\hss #2}}\par
+       \nobreak
+       \if@compatibility
+         \global\@nobreaktrue
+         \everypar{\global\@nobreakfalse\everypar{}}
+      \fi
+    \endgroup
+  \fi}
+\newcommand\l@section[2]{%
+  \ifnum \c@tocdepth >\z@
+    \addpenalty{\@secpenalty}%
+    \addvspace{1.0em \@plus\p@}%
+    \setlength\@tempdima{1.5em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\hfil \nobreak\hbox to\@pnumwidth{\hss #2}\par
+    \endgroup
+  \fi}
+\newcommand\l@subsection   {\@dottedtocline{2}{1.5em}{2.3em}}
+\newcommand\l@subsubsection{\@dottedtocline{3}{3.8em}{3.2em}}
+\newcommand\l@paragraph    {\@dottedtocline{4}{7.0em}{4.1em}}
+\newcommand\l@subparagraph {\@dottedtocline{5}{10em}{5em}}
+\newcommand\listoffigures{%
+    \section*{\listfigurename
+      \@mkboth{\uppercase{\listfigurename}}%
+              {\uppercase{\listfigurename}}}%
+    \@starttoc{lof}%
+    }
+\newcommand\l@figure{\@dottedtocline{1}{1.5em}{2.3em}}
+\newcommand\listoftables{%
+    \section*{\listtablename
+      \@mkboth{\uppercase{\listtablename}}{\uppercase{\listtablename}}}%
+    \@starttoc{lot}%
+    }
+\let\l@table\l@figure
+\newenvironment{theindex}
+               {\if@twocolumn
+                  \@restonecolfalse
+                \else
+                  \@restonecoltrue
+                \fi
+                \columnseprule \z@
+                \columnsep 35\p@
+                \twocolumn[\section*{\indexname}]%
+                \@mkboth{\uppercase{\indexname}}%
+                        {\uppercase{\indexname}}%
+                \thispagestyle{plain}\parindent\z@
+                \parskip\z@ \@plus .3\p@\relax
+                \let\item\@idxitem}
+               {\if@restonecol\onecolumn\else\clearpage\fi}
+\newcommand\@idxitem  {\par\hangindent 40\p@}
+\newcommand\subitem   {\par\hangindent 40\p@ \hspace*{20\p@}}
+\newcommand\subsubitem{\par\hangindent 40\p@ \hspace*{30\p@}}
+\newcommand\indexspace{\par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax}
+\newcommand\contentsname{Contents}
+\newcommand\listfigurename{List of Figures}
+\newcommand\listtablename{List of Tables}
+\newcommand\refname{References}
+\newcommand\indexname{Index}
+\newcommand\figurename{Figure}
+\newcommand\tablename{Table}
+\newcommand\partname{Part}
+\newcommand\appendixname{Appendix}
+\newcommand\abstractname{Abstract}
+\newcommand\today{\number\day\space\ifcase\month\or
+  January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi
+  \space\number\year}
+\setlength\columnsep{10\p@}
+\setlength\columnseprule{0\p@}
+
+\newcommand{\Tables}{\clearpage\section*{Tables and table captions}
+    \def\fps@table{hp}\noappendix}
+\newcommand{\Figures}{\clearpage\section*{Figure captions}
+    \def\fps@figure{hp}\noappendix}
+%
+\newcommand{\Figure}[1]{\begin{figure}
+  \caption{#1}
+  \end{figure}}
+%
+\newcommand{\Table}[1]{\begin{table}
+  \caption{#1}
+  \begin{indented}
+  \lineup
+  \item[]\begin{tabular}{@{}l*{15}{l}}}
+
+\def\endTable{\end{tabular}\end{indented}\end{table}}
+\let\endtab=\endTable
+%
+\newcommand{\fulltable}[1]{\begin{table}
+  \caption{#1}
+  \footnotesize
+  \lineup
+  \begin{tabular*}{\textwidth}{@{}l*{15}{@{\extracolsep{0pt plus 12pt}}l}}}
+\def\endfulltable{\end{tabular*}\end{table}\normalsize}
+%
+%
+\newcommand{\Bibliography}[1]{\section*{References}\par\numrefs{#1}}
+\newcommand{\References}{\section*{References}\par\refs}
+
+\def\thebibliography#1{\list
+ {\hfil[\arabic{enumi}]}{\topsep=0\p@\parsep=0\p@
+ \partopsep=0\p@\itemsep=0\p@
+ \labelsep=5\p@\itemindent=-10\p@
+ \settowidth\labelwidth{\footnotesize[#1]}%
+ \leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \advance\leftmargin -\itemindent
+ \usecounter{enumi}}\footnotesize
+ \def\newblock{\ }
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+\def\numrefs#1{\begin{thebibliography}{#1}}
+\def\endnumrefs{\end{thebibliography}}
+\let\endbib=\endnumrefs
+%
+\def\thereferences{\list{}{\topsep=0\p@\parsep=0\p@
+ \partopsep=0\p@\itemsep=0\p@\labelsep=0\p@\itemindent=-18\p@
+\labelwidth=0\p@\leftmargin=18\p@
+}\footnotesize\rm
+\def\newblock{\ }
+\sloppy\clubpenalty4000\widowpenalty4000
+\sfcode`\.=1000\relax
+}
+%
+\let\endthereferences=\endlist
+\newlength{\indentedwidth}
+\newdimen\mathindent
+\indentedwidth=\mathindent
+%
+% Macro to used for references in the Harvard system
+%
+\newenvironment{harvard}{\list{}{\topsep=0\p@\parsep=0\p@
+\partopsep=0\p@\itemsep=0\p@\labelsep=0\p@\itemindent=-18\p@
+\labelwidth=0\p@\leftmargin=18\p@
+}\footnotesize\rm
+\def\newblock{\ }
+\sloppy\clubpenalty4000\widowpenalty4000
+\sfcode`\.=1000\relax}{\endlist}
+%
+\def\refs{\begin{harvard}}
+\def\endrefs{\end{harvard}}
+%
+\newenvironment{indented}{\begin{indented}}{\end{indented}}
+\newenvironment{varindent}[1]{\begin{varindent}{#1}}{\end{varindent}}
+%
+\def\indented{\list{}{\itemsep=0\p@\labelsep=0\p@\itemindent=0\p@
+   \labelwidth=0\p@\leftmargin=\mathindent\topsep=0\p@\partopsep=0\p@
+   \parsep=0\p@\listparindent=15\p@}\footnotesize\rm}
+
+\let\endindented=\endlist 
+
+\def\varindent#1{\setlength{\varind}{#1}%
+   \list{}{\itemsep=0\p@\labelsep=0\p@\itemindent=0\p@
+   \labelwidth=0\p@\leftmargin=\varind\topsep=0\p@\partopsep=0\p@
+   \parsep=0\p@\listparindent=15\p@}\footnotesize\rm}
+
+\let\endvarindent=\endlist 
+
+\def\[{\relax\ifmmode\@badmath\else
+ \begin{trivlist}
+ \@beginparpenalty\predisplaypenalty
+ \@endparpenalty\postdisplaypenalty
+ \item[]\leavevmode
+ \hbox to\linewidth\bgroup$ \displaystyle
+ \hskip\mathindent\bgroup\fi}
+\def\]{\relax\ifmmode \egroup $\hfil \egroup \end{trivlist}\else \@badmath \fi}
+\def\equation{\@beginparpenalty\predisplaypenalty
+ \@endparpenalty\postdisplaypenalty
+\refstepcounter{equation}\trivlist \item[]\leavevmode
+ \hbox to\linewidth\bgroup $ \displaystyle
+\hskip\mathindent}
+\def\endequation{$\hfil \displaywidth\linewidth\@eqnnum\egroup \endtrivlist}
+%
+\@namedef{equation*}{\[}
+\@namedef{endequation*}{\]}
+%
+\def\eqnarray{\stepcounter{equation}\let\@currentlabel=\theequation
+\global\@eqnswtrue
+\global\@eqcnt\z@\tabskip\mathindent\let\\=\@eqncr
+\abovedisplayskip\topsep\ifvmode\advance\abovedisplayskip\partopsep\fi
+\belowdisplayskip\abovedisplayskip
+\belowdisplayshortskip\abovedisplayskip
+\abovedisplayshortskip\abovedisplayskip
+$$\halign to
+\linewidth\bgroup\@eqnsel$\displaystyle\tabskip\z@
+ {##{}}$&\global\@eqcnt\@ne $\displaystyle{{}##{}}$\hfil
+ &\global\@eqcnt\tw@ $\displaystyle{{}##}$\hfil
+ \tabskip\@centering&\llap{##}\tabskip\z@\cr}
+\def\endeqnarray{\@@eqncr\egroup
+ \global\advance\c@equation\m@ne$$\global\@ignoretrue }
+\mathindent = 6pc
+%
+\def\eqalign#1{\null\vcenter{\def\\{\cr}\openup\jot\m@th
+  \ialign{\strut$\displaystyle{##}$\hfil&$\displaystyle{{}##}$\hfil
+      \crcr#1\crcr}}\,}
+%
+\def\eqalignno#1{\displ@y \tabskip\z@skip
+  \halign to\displaywidth{\hspace{5pc}$\@lign\displaystyle{##}$%
+    \tabskip\z@skip
+    &$\@lign\displaystyle{{}##}$\hfill\tabskip\@centering
+    &\llap{$\@lign\hbox{\rm##}$}\tabskip\z@skip\crcr
+    #1\crcr}}
+%
+\newif\ifnumbysec
+\def\theequation{\ifnumbysec
+      \arabic{section}.\arabic{equation}\else
+      \arabic{equation}\fi}
+\def\eqnobysec{\numbysectrue\@addtoreset{equation}{section}}
+
+\newcounter{eqnval}
+
+% 2012: if you have an eqn numbered by parts (eg eqn 6a, 6b) this allows
+% you to refer to it by just the number (eg eqn 6) if the label is between
+% the \multiparteqn and the \numparts
+\def\multiparteqn{\addtocounter{equation}{1}
+\eqnarray\nonumber
+\endeqnarray
+
+\vspace{-72pt}
+}
+
+\def\numparts{\addtocounter{equation}{1}%
+     \setcounter{eqnval}{\value{equation}}%
+     \setcounter{equation}{0}%
+     \def\theequation{\ifnumbysec
+     \arabic{section}.\arabic{eqnval}{\it\alph{equation}}%
+     \else\arabic{eqnval}{\it\alph{equation}}\fi}}
+
+\def\endnumparts{\def\theequation{\ifnumbysec
+     \arabic{section}.\arabic{equation}\else
+     \arabic{equation}\fi}%
+     \setcounter{equation}{\value{eqnval}}}
+%
+\def\cases#1{%
+     \left\{\,\vcenter{\def\\{\cr}\normalbaselines\openup1\jot\m@th%
+     \ialign{\strut$\displaystyle{##}\hfil$&\tqs
+     \rm##\hfil\crcr#1\crcr}}\right.}%
+%
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\rme}{\mathrm{e}}
+\newcommand{\rmi}{\mathrm{i}}
+\newcommand{\rmd}{\mathrm{d}}
+\renewcommand{\qquad}{\hspace*{25pt}}
+\newcommand{\tdot}[1]{\stackrel{\dots}{#1}}   % Added 1/9/94
+\newcommand{\tqs}{\hspace*{25pt}}
+\newcommand{\fl}{\hspace*{-\mathindent}}
+\newcommand{\Tr}{\mathop{\mathrm{Tr}}\nolimits}
+\newcommand{\tr}{\mathop{\mathrm{tr}}\nolimits}
+\newcommand{\Or}{\mathord{\mathrm{O}}} %changed from \mathop 20/1/95
+\newcommand{\lshad}{[\![}
+\newcommand{\rshad}{]\!]}
+\newcommand{\case}[2]{{\textstyle\frac{#1}{#2}}}
+\def\pt(#1){({\it #1\/})}
+\newcommand{\dsty}{\displaystyle}
+\newcommand{\tsty}{\textstyle}
+\newcommand{\ssty}{\scriptstyle}
+\newcommand{\sssty}{\scriptscriptstyle}
+\def\lo#1{\llap{${}#1{}$}}
+\def\eql{\llap{${}={}$}}
+\def\lsim{\llap{${}\sim{}$}}
+\def\lsimeq{\llap{${}\simeq{}$}}
+\def\lequiv{\llap{${}\equiv{}$}}
+%
+\newcommand{\eref}[1]{(\ref{#1})}
+\newcommand{\sref}[1]{section~\ref{#1}}
+\newcommand{\fref}[1]{figure~\ref{#1}}
+\newcommand{\tref}[1]{table~\ref{#1}}
+\newcommand{\Eref}[1]{Equation (\ref{#1})}
+\newcommand{\Sref}[1]{Section~\ref{#1}}
+\newcommand{\Fref}[1]{Figure~\ref{#1}}
+\newcommand{\Tref}[1]{Table~\ref{#1}}
+
+\newcommand{\opencircle}{\mbox{\Large$\circ\,$}}  % moved Large outside maths
+\newcommand{\opensquare}{\mbox{$\rlap{$\sqcap$}\sqcup$}}
+\newcommand{\opentriangle}{\mbox{$\triangle$}}
+\newcommand{\opentriangledown}{\mbox{$\bigtriangledown$}}
+\newcommand{\opendiamond}{\mbox{$\diamondsuit$}}
+\newcommand{\fullcircle}{\mbox{{\Large$\bullet\,$}}} % moved Large outside maths
+\newcommand{\fullsquare}{\,\vrule height5pt depth0pt width5pt}
+\newcommand{\dotted}{\protect\mbox{${\mathinner{\cdotp\cdotp\cdotp\cdotp\cdotp\cdotp}}$}}
+\newcommand{\dashed}{\protect\mbox{-\; -\; -\; -}}
+\newcommand{\broken}{\protect\mbox{-- -- --}}
+\newcommand{\longbroken}{\protect\mbox{--- --- ---}}
+\newcommand{\chain}{\protect\mbox{--- $\cdot$ ---}}
+\newcommand{\dashddot}{\protect\mbox{--- $\cdot$ $\cdot$ ---}}
+\newcommand{\full}{\protect\mbox{------}}
+
+\def\;{\protect\psemicolon}
+\def\psemicolon{\relax\ifmmode\mskip\thickmuskip\else\kern .3333em\fi}
+\def\lineup{\def\0{\hbox{\phantom{\footnotesize\rm 0}}}%
+    \def\m{\hbox{$\phantom{-}$}}%
+    \def\-{\llap{$-$}}}
+%
+%%%%%%%%%%%%%%%%%%%%%
+% Tables rules      %
+%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\boldarrayrulewidth}{1\p@} 
+% Width of bold rule in tabular environment.
+
+\def\bhline{\noalign{\ifnum0=`}\fi\hrule \@height  
+\boldarrayrulewidth \futurelet \@tempa\@xhline}
+
+\def\@xhline{\ifx\@tempa\hline\vskip \doublerulesep\fi
+      \ifnum0=`{\fi}}
+
+%
+% Rules for tables with extra space around
+%
+\newcommand{\br}{\ms\bhline\ms}
+\newcommand{\mr}{\ms\hline\ms}
+%
+\newcommand{\centre}[2]{\multispan{#1}{\hfill #2\hfill}}
+\newcommand{\crule}[1]{\multispan{#1}{\hspace*{\tabcolsep}\hrulefill
+  \hspace*{\tabcolsep}}}
+\newcommand{\fcrule}[1]{\ifnum\thetabtype=1\multispan{#1}{\hrulefill
+  \hspace*{\tabcolsep}}\else\multispan{#1}{\hrulefill}\fi}
+%
+% Extra spaces for tables and displayed equations
+%
+\newcommand{\ms}{\noalign{\vspace{3\p@ plus2\p@ minus1\p@}}}
+\newcommand{\bs}{\noalign{\vspace{6\p@ plus2\p@ minus2\p@}}}
+\newcommand{\ns}{\noalign{\vspace{-3\p@ plus-1\p@ minus-1\p@}}}
+\newcommand{\es}{\noalign{\vspace{6\p@ plus2\p@ minus2\p@}}\displaystyle}%
+%
+\newcommand{\etal}{{\it et al\/}\ }
+\newcommand{\dash}{------}
+\newcommand{\nonum}{\par\item[]}                %\par added 1/9/93
+\newcommand{\mat}[1]{\underline{\underline{#1}}}
+%
+% abbreviations for IOPP journals
+%
+\newcommand{\CQG}{{\it Class. Quantum Grav.} }
+\newcommand{\CTM}{{\it Combust. Theory Modelling\/} }
+\newcommand{\DSE}{{\it Distrib. Syst. Engng.\/} }
+\newcommand{\EJP}{{\it Eur. J. Phys.} } 
+\newcommand{\JNE}{{\it J. Neural Eng.} } %added 30/11/2004 GMD
+\newcommand{\PB}{{\it Phys. Biol.} } %added 30/11/2004 GMD
+\newcommand{\SMS}{{\it Smart Mater. Struct.} } %added 30/11/2004 GMD
+\newcommand{\HPP}{{\it High Perform. Polym.} }              % added 4/5/93
+\newcommand{\IP}{{\it Inverse Problems\/} }
+\newcommand{\JHM}{{\it J. Hard Mater.} }                    % added 4/5/93
+\newcommand{\JO}{{\it J. Opt.} }
+\newcommand{\JOA}{{\it J. Opt. A: Pure Appl. Opt.} }
+\newcommand{\JOB}{{\it J. Opt. B: Quantum Semiclass. Opt.} }
+\newcommand{\JPA}{{\it J. Phys. A: Math. Gen.} } % superseded by \jpa below
+\newcommand{\JPB}{{\it J. Phys. B: At. Mol. Phys.} }      %1968-87
+\newcommand{\jpb}{{\it J. Phys. B: At. Mol. Opt. Phys.} } %1988 and onwards
+\newcommand{\JPC}{{\it J. Phys. C: Solid State Phys.} }   %1968--1988
+\newcommand{\JPCM}{{\it J. Phys.: Condens. Matter\/} }    %1989 and onwards
+\newcommand{\JPD}{{\it J. Phys. D: Appl. Phys.} }
+\newcommand{\JPE}{{\it J. Phys. E: Sci. Instrum.} }
+\newcommand{\JPF}{{\it J. Phys. F: Met. Phys.} }
+\newcommand{\JPG}{{\it J. Phys. G: Nucl. Phys.} }         %1975--1988
+\newcommand{\jpg}{{\it J. Phys. G: Nucl. Part. Phys.} }   %1989 and onwards
+\newcommand{\JMM}{{\it J. Micromech. Microeng.\/} }
+\newcommand{\MSMSE}{{\it Modelling Simul. Mater. Sci. Eng.} } % sxb changed to 'Simul' 15 Mar 2011
+\newcommand{\MST}{{\it Meas. Sci. Technol.} }                 %1990 and onwards
+\newcommand{\NET}{{\it Network: Comput. Neural Syst.} }
+\newcommand{\NJP}{{\it New J. Phys.} }
+\newcommand{\NL}{{\it Nonlinearity\/} }
+\newcommand{\NT}{{\it Nanotechnology} }
+\newcommand{\PAO}{{\it Pure Appl. Optics\/} }
+\newcommand{\PM}{{\it Physiol. Meas.} }                        % added 4/5/93
+\newcommand{\PMB}{{\it Phys. Med. Biol.} }
+\newcommand{\PPCF}{{\it Plasma Phys. Control. Fusion\/} }      % added 4/5/93
+\newcommand{\PSST}{{\it Plasma Sources Sci. Technol.} }
+\newcommand{\PUS}{{\it Public Understand. Sci.} }
+\newcommand{\QO}{{\it Quantum Opt.} }
+\newcommand{\QSO}{{\em Quantum Semiclass. Opt.} }
+\newcommand{\RPP}{{\it Rep. Prog. Phys.} }
+\newcommand{\SLC}{{\it Sov. Lightwave Commun.} }               % added 4/5/93 
+\newcommand{\SST}{{\it Semicond. Sci. Technol.} }
+\newcommand{\SUST}{{\it Supercond. Sci. Technol.} }
+\newcommand{\WRM}{{\it Waves Random Media\/} }
+%
+% Other commonly quoted journals
+%
+\newcommand{\AC}{{\it Acta Crystallogr.} }
+\newcommand{\AM}{{\it Acta Metall.} }
+\newcommand{\AP}{{\it Ann. Phys., Lpz.} }
+\newcommand{\APNY}{{\it Ann. Phys., NY\/} }
+\newcommand{\APP}{{\it Ann. Phys., Paris\/} }
+\newcommand{\CJP}{{\it Can. J. Phys.} }
+\newcommand{\JAP}{{\it J. Appl. Phys.} }
+\newcommand{\JCP}{{\it J. Chem. Phys.} }
+\newcommand{\JJAP}{{\it Jpn. J. Appl. Phys.} }
+\newcommand{\JP}{{\it J. Physique\/} }
+\newcommand{\JPhCh}{{\it J. Phys. Chem.} }
+\newcommand{\JMMM}{{\it J. Magn. Magn. Mater.} }
+\newcommand{\JMP}{{\it J. Math. Phys.} }
+\newcommand{\JOSA}{{\it J. Opt. Soc. Am.} }
+\newcommand{\JPSJ}{{\it J. Phys. Soc. Jpn.\/} }
+\newcommand{\JQSRT}{{\it J. Quant. Spectrosc. Radiat. Transfer\/} }
+\newcommand{\NC}{{\it Nuovo Cimento\/} }
+\newcommand{\NIM}{{\it Nucl. Instrum. Methods\/} }
+\newcommand{\NP}{{\it Nucl. Phys.} }
+\newcommand{\PL}{{\it Phys. Lett.} }
+\newcommand{\PR}{{\it Phys. Rev.} }
+\newcommand{\PRL}{{\it Phys. Rev. Lett.} }
+\newcommand{\PRS}{{\it Proc. R. Soc.} }
+\newcommand{\PS}{{\it Phys. Scr.} }
+\newcommand{\PSS}{{\it Phys. Status Solidi\/} }
+\newcommand{\PTRS}{{\it Phil. Trans. R. Soc.} }
+\newcommand{\RMP}{{\it Rev. Mod. Phys.} }
+\newcommand{\RSI}{{\it Rev. Sci. Instrum.} }
+\newcommand{\SSC}{{\it Solid State Commun.} }
+\newcommand{\ZP}{{\it Z. Phys.} }
+\newcommand{\GRG}{{\it Gen. Rel. Grav.} }
+\newcommand{\PF}{{\it Phys. Fluids\/} }
+\newcommand{\SPJ}{{\it Sov. Phys.--JETP\/} }
+%
+% More journals added 8 Mar 2011, below (sxb)
+%
+\newcommand{\jpa}{{\it J. Phys. A: Math. Theor.} }
+\newcommand{\BF}{{\it Biofabrication\/} }
+\newcommand{\BB}{{\it Bioinspir. Biomim.} }
+\newcommand{\BMM}{{\it Biomed. Mater.} }
+\newcommand{\CSD}{{\it Comput. Sci. Disc.} }
+\newcommand{\ERL}{{\it Environ. Res. Lett.} }
+\newcommand{\JBR}{{\it J. Breath Res.} }
+\newcommand{\JGE}{{\it J. Geophys. Eng.} }
+\newcommand{\JOPT}{{\it J. Opt.} }
+\newcommand{\JRP}{{\it J. Radiol. Prot.} }
+\newcommand{\MET}{{\it Metrologia\/} }
+\newcommand{\NF}{{\it Nucl. Fusion\/} }
+\newcommand{\PED}{{\it Phys. Educ.} }
+%
+% More journals added 6 Feb 2014, below (sxb)
+%
+\newcommand{\TDM}{{\it 2D Mater.} }
+\newcommand{\MRE}{{\it Mater. Res. Express\/} }
+\newcommand{\MAF}{{\it Methods Appl. Fluoresc.} }
+\newcommand{\TMR}{{\it Transl. Mater. Res.} }
+\newcommand{\STMP}{{\it Surf. Topogr.: Metrol. Prop.} }
+%
+% The following journals are externally-edited and the usual IOP Publishing
+% submission guidelines do *not* apply if you're submitting to them.
+%
+\newcommand{\AJ}{{\it AJ\/} }
+\newcommand{\APJ}{{\it ApJ\/} }
+\newcommand{\APJL}{{\it ApJL\/} }
+\newcommand{\APJS}{{\it ApJS\/} }
+\newcommand{\ANSN}{{\it Adv. Nat. Sci: Nanosci. Nanotechnol.} }
+\newcommand{\CJCP}{{\it Chin. J. Chem. Phys.} }
+\newcommand{\CPB}{{\it Chinese Phys. B\/} }
+\newcommand{\CPC}{{\it Chinese Phys. C\/} }
+\newcommand{\CPL}{{\it Chinese Phys. Lett.} }
+\newcommand{\CTP}{{\it Commun. Theor. Phys.} }
+\newcommand{\EPL}{{\it EPL\/} }
+\newcommand{\FDR}{{\it Fluid Dyn. Res.} }
+\newcommand{\IZV}{{\it Izv. Math.} }
+\newcommand{\JOS}{{\it J. Semicond.} }
+\newcommand{\PHU}{{\it Phys.-Usp.} }
+\newcommand{\PST}{{\it Plasma Sci. Technol.} }
+\newcommand{\QEL}{{\it Quantum Electron.} }
+\newcommand{\RAA}{{\it Res. Astron. Astrophys.} }
+\newcommand{\RCR}{{\it Russ. Chem. Rev.} }
+\newcommand{\RMS}{{\it Russ. Math. Surv.} }
+\newcommand{\MSB}{{\it Sb. Math.} }
+\newcommand{\SFC}{{\it Science Foundation in China\/} }
+\newcommand{\STAM}{{\it Sci. Technol. Adv. Mater.} }
+\newcommand{\LP}{{\it Laser Phys.} }
+\newcommand{\LPL}{{\it Laser Phys. Lett.} }
+\newcommand{\APEX}{{\it Appl. Phys. Express\/} }
+%
+% SISSA journals
+%
+\newcommand{\JCAP}{{\it JCAP\/} }
+\newcommand{\JHEP}{{\it J. High Energy Phys.\/} }
+\newcommand{\JSTAT}{{\it J. Stat. Mech.} }
+\newcommand{\JINST}{{\it JINST\/} }
+%
+% These are the IOP Conference Series journals: again, if you're
+% submitting to one of these journals you shouldn't be using iopart.cls
+%
+\newcommand{\JPCS}{{\it J. Phys.: Conf. Ser.} }
+\newcommand{\EES}{{\it IOP Conf. Ser.: Earth Environ. Sci.} }
+\newcommand{\MSE}{{\it IOP Conf. Ser.: Mater. Sci. Eng.} }
+
+% 2012 new option for twocolumn output
+\def\ioptwocol{\setlength\hoffset{-0.5in}\setlength\voffset{-0.5in}\setlength\textwidth{6.75in}
+\setlength\columnsep{0.2in}\setlength\textheight{9.25in}\mathindent=0in\twocolumn}
+%
+%
+\pagestyle{headings}
+\pagenumbering{arabic}      % Arabic page numbers
+\raggedbottom
+\onecolumn
+\endinput
+%% 
+%% End of file `iopart.cls'.
+\end{filecontents*}
+\begin{filecontents*}{iopart10.clo}
+%% 
+%% This is file `iopart10.clo'
+%% 
+%% This file is distributed in the hope that it will be useful, 
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of 
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\ProvidesFile{iopart10.clo}[1997/01/13 v1.0 IOP Book file (size option)]
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize\@xpt\@xiipt
+   \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\normalsize
+\newcommand\small{%
+   \@setfontsize\small\@ixpt{11}%
+   \abovedisplayskip 8.5\p@ \@plus3\p@ \@minus4\p@
+   \abovedisplayshortskip \z@ \@plus2\p@
+   \belowdisplayshortskip 4\p@ \@plus2\p@ \@minus2\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 4\p@ \@plus2\p@ \@minus2\p@
+               \parsep 2\p@ \@plus\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\newcommand\footnotesize{%
+   \@setfontsize\footnotesize\@viiipt{9.5}%
+   \abovedisplayskip 6\p@ \@plus2\p@ \@minus4\p@
+   \abovedisplayshortskip \z@ \@plus\p@
+   \belowdisplayshortskip 3\p@ \@plus\p@ \@minus2\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 3\p@ \@plus\p@ \@minus\p@
+               \parsep 2\p@ \@plus\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\newcommand\scriptsize{\@setfontsize\scriptsize\@viipt\@viiipt}
+\newcommand\tiny{\@setfontsize\tiny\@vpt\@vipt}
+\newcommand\large{\@setfontsize\large\@xiipt{14}}
+\newcommand\Large{\@setfontsize\Large\@xivpt{18}}
+\newcommand\LARGE{\@setfontsize\LARGE\@xviipt{22}}
+\newcommand\huge{\@setfontsize\huge\@xxpt{25}}
+\newcommand\Huge{\@setfontsize\Huge\@xxvpt{30}}
+\if@twocolumn
+  \setlength\parindent{12\p@}
+\else
+  \setlength\parindent{15\p@}
+\fi
+\setlength\headheight{12\p@}
+\setlength\headsep   {12\p@}
+\setlength\topskip   {10\p@}
+\setlength\footskip{20\p@}
+\setlength\maxdepth{.5\topskip}
+\setlength\@maxdepth\maxdepth
+\setlength\textwidth{31pc}
+\setlength\textheight{49pc}
+\setlength\oddsidemargin  {24\p@}
+\setlength\evensidemargin {24\p@}
+\setlength\marginparwidth {72\p@}
+\setlength\marginparsep {10\p@}
+\setlength\marginparpush{5\p@}
+\setlength\topmargin{\z@}
+\setlength\footnotesep{6.65\p@}
+\setlength{\skip\footins}  {9\p@ \@plus 4\p@ \@minus 2\p@}
+\setlength\floatsep       {12\p@ \@plus 2\p@ \@minus 2\p@}
+\setlength\textfloatsep   {20\p@ \@plus 2\p@ \@minus 4\p@}
+\setlength\intextsep      {12\p@ \@plus 2\p@ \@minus 2\p@}
+\setlength\dblfloatsep    {12\p@ \@plus 2\p@ \@minus 2\p@}
+\setlength\dbltextfloatsep{20\p@ \@plus 2\p@ \@minus 4\p@}
+\setlength\@fptop{0\p@}
+\setlength\@fpsep{8\p@ \@plus 2fil}
+\setlength\@fpbot{0\p@}
+\setlength\@dblfptop{0\p@}
+\setlength\@dblfpsep{8\p@ \@plus 2fil}
+\setlength\@dblfpbot{0\p@}
+\setlength\partopsep{2\p@ \@plus 1\p@ \@minus 1\p@}
+\def\@listI{\leftmargin\leftmargini
+            \parsep=\z@ 
+            \topsep=5\p@ \@plus3\p@ \@minus3\p@
+            \itemsep=3\p@ \@plus2\p@ \@minus\p@}
+\let\@listi\@listI
+\@listi
+\def\@listii {\leftmargin\leftmarginii
+     \labelwidth\leftmarginii
+     \advance\labelwidth-\labelsep
+     \topsep=2\p@ \@plus2\p@ \@minus\p@
+     \parsep=\z@
+     \itemsep=\parsep}
+\def\@listiii{\leftmargin\leftmarginiii
+     \labelwidth\leftmarginiii
+     \advance\labelwidth-\labelsep
+     \topsep=\z@
+     \parsep=\z@
+     \partopsep=\z@
+     \itemsep=\z@}
+\def\@listiv {\leftmargin\leftmarginiv
+     \labelwidth\leftmarginiv
+     \advance\labelwidth-\labelsep}
+\def\@listv  {\leftmargin\leftmarginv
+     \labelwidth\leftmarginv
+     \advance\labelwidth-\labelsep}
+\def\@listvi {\leftmargin\leftmarginvi
+     \labelwidth\leftmarginvi
+     \advance\labelwidth-\labelsep}
+\endinput
+%% 
+%% End of file `iopart.clo'.
+\end{filecontents*}
+\begin{filecontents*}{iopart12.clo}
+%% 
+%% This is file `iopart12.clo'
+%% 
+%% This file is distributed in the hope that it will be useful, 
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of 
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\ProvidesFile{iopart12.clo}[1997/01/15 v1.0 LaTeX2e file (size option)]
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize\@xiipt{16}%
+   \abovedisplayskip 12\p@ \@plus3\p@ \@minus7\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\normalsize
+\newcommand\small{%
+   \@setfontsize\small\@xipt{14}%
+   \abovedisplayskip 11\p@ \@plus3\p@ \@minus6\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 9\p@ \@plus3\p@ \@minus5\p@
+               \parsep 4.5\p@ \@plus2\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\newcommand\footnotesize{%
+%   \@setfontsize\footnotesize\@xpt\@xiipt
+   \@setfontsize\footnotesize\@xpt{13}%
+   \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 6\p@ \@plus2\p@ \@minus2\p@
+               \parsep 3\p@ \@plus2\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\newcommand\scriptsize{\@setfontsize\scriptsize\@viiipt{9.5}}
+\newcommand\tiny{\@setfontsize\tiny\@vipt\@viipt}
+\newcommand\large{\@setfontsize\large\@xivpt{18}}
+\newcommand\Large{\@setfontsize\Large\@xviipt{22}}
+\newcommand\LARGE{\@setfontsize\LARGE\@xxpt{25}}
+\newcommand\huge{\@setfontsize\huge\@xxvpt{30}}
+\let\Huge=\huge
+\if@twocolumn
+  \setlength\parindent{14\p@}
+\else
+  \setlength\parindent{18\p@}
+\fi
+\setlength\headheight{14\p@}
+\setlength\headsep{14\p@}
+\setlength\topskip{12\p@}
+\setlength\footskip{24\p@}
+\setlength\maxdepth{.5\topskip}
+\setlength\@maxdepth\maxdepth
+\setlength\textwidth{37.2pc}
+\setlength\textheight{56pc}
+\setlength\oddsidemargin  {\z@}
+\setlength\evensidemargin {\z@}
+\setlength\marginparwidth {72\p@}
+\setlength\marginparsep{10\p@}
+\setlength\marginparpush{5\p@}
+\setlength\topmargin{-12pt}
+\setlength\footnotesep{8.4\p@}
+\setlength{\skip\footins} {10.8\p@ \@plus 4\p@ \@minus 2\p@}
+\setlength\floatsep       {14\p@ \@plus 2\p@ \@minus 4\p@}
+\setlength\textfloatsep   {24\p@ \@plus 2\p@ \@minus 4\p@}
+\setlength\intextsep      {16\p@ \@plus 4\p@ \@minus 4\p@}
+\setlength\dblfloatsep    {16\p@ \@plus 2\p@ \@minus 4\p@}
+\setlength\dbltextfloatsep{24\p@ \@plus 2\p@ \@minus 4\p@}
+\setlength\@fptop{0\p@}
+\setlength\@fpsep{10\p@ \@plus 1fil}
+\setlength\@fpbot{0\p@}
+\setlength\@dblfptop{0\p@}
+\setlength\@dblfpsep{10\p@ \@plus 1fil}
+\setlength\@dblfpbot{0\p@}
+\setlength\partopsep{3\p@ \@plus 2\p@ \@minus 2\p@}
+\def\@listI{\leftmargin\leftmargini
+     \parsep=\z@
+     \topsep=6\p@  \@plus3\p@ \@minus3\p@
+     \itemsep=3\p@ \@plus2\p@ \@minus1\p@}
+\let\@listi\@listI
+\@listi
+\def\@listii {\leftmargin\leftmarginii
+     \labelwidth\leftmarginii
+     \advance\labelwidth-\labelsep
+     \topsep=3\p@ \@plus2\p@ \@minus\p@
+     \parsep=\z@
+     \itemsep=\parsep}
+\def\@listiii{\leftmargin\leftmarginiii
+     \labelwidth\leftmarginiii
+     \advance\labelwidth-\labelsep
+     \topsep=\z@
+     \parsep=\z@
+     \partopsep=\z@
+     \itemsep=\z@}
+\def\@listiv {\leftmargin\leftmarginiv
+     \labelwidth\leftmarginiv
+     \advance\labelwidth-\labelsep}
+\def\@listv{\leftmargin\leftmarginv
+     \labelwidth\leftmarginv
+     \advance\labelwidth-\labelsep}
+\def\@listvi {\leftmargin\leftmarginvi
+     \labelwidth\leftmarginvi
+     \advance\labelwidth-\labelsep}
+\endinput
+%% 
+%% End of file `iopart12.clo'.
+\end{filecontents*}
+\begin{filecontents*}[overwrite]{Women_and_Freedom-cover.pdf}
+%PDF-1.5
+%ASCII encoded figure
+1 0 obj
+null
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+/XObject <<
+/Im0 5 0 R
+>>
+>>
+/MediaBox [ 0.0 0.0 561 685 ]
+/Contents 6 0 R
+/Parent 2 0 R
+>>
+endobj
+5 0 obj
+<<
+/Type /XObject
+/Subtype /Image
+/Width 561
+/Height 685
+/ColorSpace /DeviceRGB
+/BitsPerComponent 8
+/Filter [ /ASCII85Decode /DCTDecode ]
+/Length 75590
+>>
+stream
+s4IA0!"_al8O`[\!W`9l!([(is5>29BQS?83\N.(F"Um3Ddm91@rH3;G[YPE0eP.5!'EJjE+*6lA
+TT&(AS5^p4X]^1^F(.<A3D;A2,,c!E'n2MBh3PjAQ*nM<+C5i@l\'I5<]E:5@J)@@V%-9@;mf1Bl
+%m&EcW@7F(7?W6W,*m4pjDs3d>L\D.Rft+F%a>DK@j`+?_)\A8bpg3c9""D.Rft0..le3d>L\FDE
+!^-Wj)>+EVO?Chma,+>YW(/M]::+D,Y&D.Rp0EbcdP/iG(@$6VHOA7dl#6q/;DD/=*23c\bC+?_)
+cFEDI_0/%NnG:n(q/oPcC0/5II3A3'A0/>:7Eb&c6F*VYF@<aAAF!E%TG\q87F#n#;+?_)cFEDI_
+0/%3a/n&:/@V%0%Df%.A=>)B]0J=e;$6UHREb&cC6tLFLEbTK7Bl@l3Eb&cC@:F.tF<E^oF`hD/3
+at$%1,h1)2(`8p0f(C91HB&!@prh#/MU`p3FOgW2)Sf"1FF;iD/=*23cJVA+?_)cFEDI_0/%3a/n
+&:/@V%0%Df%.HA7dJL/i,..5!1K=A7dkjATM@%BlJ0.Df.`G+<WdeA7dkjATM@%BlJ0.Df-\<A7d
+l2@W-C2+?_)pF_PAI@Q,tr2`PD,/RgRl1G(=;3G'jQ@:CoB0k31'@5_[S2.8?u-QmYNCi4;TE+j0
+3Df]T1E$.:kBQS?83\N.(F"Um3Ddm91@rH3;E+j03Df]T1E%`pu0J=e;$6UH64E+tPFDl56Df@a)
+@;p=&Df/WsBlmp,5!1K;BQ&!2F(fK23^[=pFD5Z2=)r"sATBsA+<VdhE+j03Df]T1E&p?pFCf*'E
+d9i205tTCFDl56Df@a)@<?'nDfU+e$6UH64E+tPFDl56Df@a*@<?'JEb/[$ARmte05tTCFDl56Df
+@a*@<?'JEb/[$ARmt3+<VdhE+j03Df]T1E&p@#FEp&405tTCFDl56Df@a)BlnVa$6UH64E+tPFDl
+56Df@a9FCB9&5!1K;BQ&!2F(fK23`C-/FCdWC+<VdhE+j03Df]T1E&p@)F`);AGs4>DE+j03Df]T
+1E&p@)F`);AGs2QX+<WdcBQ&!2F(fK23^[q!A8--L:hXchD]hDfARoLs3ZqC8AKXHVFF&.FCi!fo
+D'2PqF(KK24>1YeDffo=BQ%iN6ZQaKBllNG+<VdhE+j03Df]T1E&pp9F`Lu'5!1K;BQ&!2F(fK23
+`Bs>EarZE$6UH64E+tPFDl56Df@a.ART+cBl7KG7WMpMDf0!(A1SiqARTI.88iBaEb-dE0fLmD/M
+T4=2LJ#+Eaa!!/0IYqEbBN+EbTW,/0HZ+2DHd<3&<KT+B3#c+AucZA7]dD05tTCFDl56Df@a.ART
++cBl7KG$6UH64E+tPFDl56Df@a/DKBo?F^oN-Df0V[<+oue+Dk\3@:Weg@3Bc&F!,%2@V'(\ARlo
+tDBO%7AKY](@:s-oDf-[P20<LS7V-%LF^]<9+>PW*2EWX3BQ&!2F(fK23_=41FE2M6FD5Z2F$9pR
++<WdcBQ&!2F(fK23`L-.DKBZ/F)u&6DGk%XATD@"@q@hd05tTCFDl56Df@a:Ea`j,D/"'4Bl@leA
+S,LoASu!h4piDT+?XUVDffo=BQ%iN<H;_`DI[rU4>1YeDffo=BQ%iN<H;_`DI[rU$6UH64E+tPFD
+l56Df@a9F`;;9ASl!rFCAuQ@<?'nDfTQ'F$9pR+<VdhEb&cC6=FLj$6UH6+?V;tA7dkh@:qb2+<V
+dh05tTCFDl56Df@a9F`;;9ASl!rFCAuQ@<?'nDfTQ'F$9pR+<WdcBQ&!2F(fK23^In1BQ%p4:iCD
+hFD5Z25!1K;BQ&!2F(fK23^In1BQ%p4:iCDhFD5Z24piDT4>1_cAi`=kF(96)E-,f4DE\CM+?X[T
+Ai`=kF(96)E-,f4DBNt1Aia@0Dfp.E4XYApBk0862_[!G3+b$"@Pokr/MT%AAh@M$@PBAg@lQJW2
+J"a'@5Thg+F%a>DK@j`@;m>P-YRUDE&oX*DK@F=A8bpg/n8g:06goE0/5(50./pj+<VdhG[YPP6Z
+QaHFCdjKFCdWk0JPI;0JY472,l=d3\iNQ1cR!>0KLmA4>1qfE&p@,ART[l6t(1K4piDT+?XmWE&p
+^3A8,Y$6t(1K4u+fH2D$U</MT+^1,:mG1cdHQ.kiY<0JGUBG[YPP9lFQVApHdQFCdWC+<VdhG[YP
+P9kAETA79Rg6t(1K4u+fH2D$U</MT+^1,:mG1cdHQ.kiY<0JGUBG[YPP9kAETA79Rg6t(1K4piDT
++?XmWE&p@,ART\!E`?sqCd(L'AT2a)Bl7^#DJ((`:fKe8=A;U7:i^JaATMp2E]c""@;n7pEb/[$D
+fSfqDeqTE+<Wd"Eb&cC6tLFLEbTK7Bl@lQ$6UHREb&cC6tLFLEbTK7Bl@l3@:F.tF<E^oF`hD/3a
+t$%1,h1)2(`8p0f(C91HB&!@prh#/MU`p3FOgW2)Sf"1FF;iD/=*23cfC8DdjhP-YRUDE&oX*DK@
+F=A8bpg/n8g:06goE0/5(506:*<E+L[pDdjq=+F%a>DK@j`@;nP*+?_)cFEDI_0/%3a/n&:/@V%0
+%Df%.P@;mkS/heqfC+gqu$6UH64Et:R6:s:2DdlUUAj-PE+<VdhEb&cC6=FLj$6UH6+<WdeA7dl=
+BcqG,Aiam>EcYekH#R=;4XX-=F)Q2A@q@#O$6UH6+<VdhF*(#m@QJC8D.Pmn06;5-DdkbF@;TR>$
+6UH6+<Wd"Eb&cCChZ'?+<VdL4>1_cAi`7eB0HYF+<Wd"G[YPX8ifR_@T$cL4piDT4>1_cAi`=kF(
+96)E-,f4DE\CM+?X[TAi`=kF(96)E-,f4DBNt1Aia@0Dfp.E4XYApBk0862_[!G3+b$"@Pokr/MT
+%AAh@M$@PBAg@lQJW2J"a'@5Thg+F%a>DK@j`@;o+YB4uC.+?_)cFEDI_0/%3a/n&:/@V%0%Df%.
+P@;mkS/her!BkM+$F"\n)$6UH64Et:R;JBcWFE9KEAR\S[@<?'tASuTRBQS?83\N.1GBYZJEccG>
+/oPcC4>1qfE)LC_BQS;V=(Pi>FCB9&D.RU,4piDT+?XmWE)LC_BQS;V<HDS]AQ35]D0%lJ+<VdL4
+E=tE3^IS(4piDT+<VdhEb&cCChY#:D/;7L@;]^#4XYJ+A7]@]F_l.I5!s7-H#dV3BQPA2DJ!g-D.
+.O#Df-\+DIal+Bk(^l@q?d)ATDX/+D,P4+EV:2F!,16@:s-o@ps6t@V$ZoDfor.+E)-?FD,5.6#q
+&i<D+HYAR]^pFCcS'F<G7=FDs8o06_Va/n&dBF_`UJEb@%6EccMDEbf_L2)mKS4>1_cAiaaB4piD
+T+<Wd"Eb&cC6#:X,$6UH64>1qfE)LC_BQS;V<HDS]AQ35]D0%lJ+<Wd"Eb&cC6tLFLEbTK7Bl@lQ
+$6UHREb&cC6tLFLEbTK7Bl@l3Eb&cC@:F.tF<E^oF`hD/3at$%1,h1)2(`8p0f(C91HB&!@prh#/
+MU`p3FOgW2)Sf"1FF;iD/=*23cJnXF!*UnBQS?83\N.(F"VTVAT2I.F"VBOB.n(3AhSCGE%`pu0J
+=e;$6UH64E,+ZF#lm0@:s.MF`;;9Bk;<K$6UH6+?X[TAi`k%EBX^P+<VdL4E=tE3c&LQEb&cCE+*
+d.AQ3qoAKX,`;IsofF`Lu'-U%k[+<VdL+?XUZF`TT8D..'g;g!%uCh[I$:18!N5'M3p/n&dBF_`U
+JEb@KfE,9Z<3_=0sB4Y"aE,]W-ATCOSD.Pm<+<VdL+?V;tA7dl=Bg)kH+<Vdh061T83`BU04piDT
++?V;rCise[8SqmKAQ*_jE,96"E]sgQ+<WdcCise[8SqmKAQ*_jE,96"E_1+VB4XY&5!qV1?UI1M?
+VOle4>1YiF`TT8D..'g;g!%uCh[I$8SqmKAP#9R$6UH64E,+ZF#l[,E-ZJ<B4uB_GA^u44piDT+<
+WdeA7dl$AT9m@+<VdL+?X[TAiaaB+ED")3cJMJF(J<rE+L.T-W4MsDfp)1ALBYK+<VdL+<WdcCis
+e[6Z6phEbT0"FAI*uATCOSD.Pn-BQ&!2+@C0\A8--H+B3#c+@^'eH?X(>Ch[<p+AI!"AT_iP05t`
+MF#l[,E-ZJ<B4uB_GA^u4:18!N4piDT+<Vdh061T83c&Lo$6UH6+?V;tA7dl$AT9m@+<Vdh05t`M
+F#l[,E-ZJ<B4uB_GA^u44piDT+?XUZF`TTEATDj+Df.`n/i#%54>1YiF`TTEATDj+Df.`G+<Wd"E
+b&cC6tLFLEbTK7Bl@lQ$6UHREb&cC6tLFLEbTK7Bl@l3Eb&cC@:F.tF<E^oF`hD/3at$%1,h1)2(
+`8p0f(C91HB&!@prh#/MU`p3FOgW2)Sf"1FF;iD/=*23_=:4@l/FIE(,"n+?_)cFEDI_0/%$YFCQ
+qAEb@%HFC[$rE-,SHG\qCgG]YSo0JGI<0JY483A2aD$6UH64@sL6@l/FIE(,"n3^Ie.GAhM;:NB6
+?C1Ums4piDT+<WdeA7dkh@:qb2+<VdL+?X[TAiaaB+ED")3cJMJF(J<rE+L.T-W4MsDfp)1ALBYK
++<VdL+<Wd<E-,SHG\qCgG]Yu4:K2%MCh5d;+<VdL+<VdhEb&cC6#:X,$6UH6+<VdL+?X[TAiaaB+
+F%a>3c&5BB-9>bGV*H;AmoguF=07OBOr;aART+\E]c!qA7dl=Bg)kH+<VdL+<Wd"Eb&cC6#:X,$6
+UH6+<Vdh01g,)@l/FIE(,"n3^HP@Bln0&4piDT+<VdL4@sL6@l/FIE(,"n3^HP0@<?'JEb/[$ARm
+te01g,)@l/FIE(,"n3^HP0@<?'JEb/[$ARmt3+<VdL+<Wd<E-,SHG\qCgG]Yu4:IB/6@<?F.4piD
+T+<VdL+?X[TAi`k%EBX^P+<VdL+<VdhEb&cCChZ(&Ea`U!DIIQr/0IPr@;[YfDf0K6ALnrY2`!3@
+0fUjFHq.ag@<,m0+AH9bB6@d+Blmo;+>Gf50eG+>1H.ELEb&cCChZ'?+<VdL+<Vdh061T83`BU04
+piDT+<VdL4>09FFCR.PD/_pgF?2]`6ZQaHFDl1`$6UH6+<Vdh8T8c]1jEkV7<io85u1EtF`Lu'5#
+c3,+@^'eH?X(>Ch[<p+AI!"AT_i44>09FFCR.PD/_pgF?2]`;f?f!@q@h2+<VdL+<Wd<E-,SHG\q
+CgG]Yu4:K)1SEarZPDK\cn5#!Xh4>09FFCR.PD/_pgF?2]`;f?f!@qA5LG"us>$6UH6+<Vdh8T8c
+]1jEkV7<io85u0jdE-ZJ<B4uB^Dff]'ANiq(Dffn?6ZQaKBllBY<+ohc7VQsjGA1l0Bjkj$9m(Mg
+F_s5o8T8c]1jEkV7<io85u0jdE-ZJ<B4uB^Dff]'ANgGD+<VdL+?W57FCR.PD/_pgF?2]`6ZQaHF
+Dl1k6p:r#+<VdL+<WdeA7dl$AT9m@+<VdL+<VdL4E=tE3c&Lo4>1_cAiaaB4piDT+<VdL+?V;tA7
+dl$AT9m@+<VdL+<Wd"8T8c]1jEkV7<io85u0jgART\!E_/Y_$6UH6+<Vdh8T8c]1jEkV7<io85u0
+j^EarNG@<?'JEb/[$ARmte01g,)@l/FIE(,"n3^HP/Bl[]l6t(1K6ZQaHFCeuH$6UH6+<Vdh8T8c
+]1jEkV7<io85u1<jH#m\0@;J>CF(96)E-,f4DE\CM+<VdL+<WdeA7dkgCihiJ+<VdL+<VdL4E=tE
+3c&LQG\q7XCgh3o+?_)s/S&F)@<HC.-U)H_C`mY6+CehtG%#GR+<WR!/iXtu+>kr-3$;^J+FG:S2
+Dd$G+F#"d1G1X0@r4=]Eb&cCChZ'?+<VdL+<Vdh061T83^IS(4piDT+<VdL4>09FFCR.PD/_pgF?
+2]`:hY,qBk(Rf6tLFLEbTK7Bl@lQ$6UH6+<Vdh8T8c]1jEkV7<io85u0jdDKKH-F@9\]@rc:&FD5
+Z24piDT+<VdL+?X[TAi`4oF?U$S+<VdL+<VdhEb&cCChY#:D/;7L@;]^#4XYJ+A7]@]F_l.I5!1K
+=A7dl=Bg)kH+<VdL+<Wd"Eb&cC6#:X,$6UH6+<Vdh01g,)@l/FIE(,"n3^HP/Df0Z.DKJ9XF(96)
+E-,f4DE\CM+<VdL+?W57FCR.PD/_pgF?2]`;f?f!@qA5LG#_F64piDT+<VdL+?X[TAi`k%EBX^P+
+<VdL+<VdhEb&cCChZ(HFEDI_0/%NnG:m<EFEM@ODfTJD@<-I6DfTW706Cl=/TPE2A7]d52)mKS4>
+1_cAiaaB4piDT+<VdL+?V;tA7dl$AT9m@+<VdL+<Wd"8T8c]1jEkV7<io85u1EtF`Lu'8T&]O;G9
+7]+<VdL+?V;tA7dl=Bg)kH+<Vdh061T83^R7f4piDT+?V;KE-,SHG\qCgG]Yu4EccMDEbeHk:L\'
+M@rsmA+<Wd"Eb&cC6tLFLEbTK7Bl@lQ$6UHREb&cC6tLFLEbTK7Bl@l3Eb&cC@:F.tF<E^oF`hD/
+3at$%1,h1)2(`8p0f(C91HB&!@prh#/MU`p3FOgW2)Sf"1FF;iD/=*23b2_C4XXobFDs8o05u&SC
+bBXHB.me*04es2D.RU,F"]7#0eXn<$6UH64Chq_AoD^,@<=\ID..'g05>H;B07hX@le4?Ec#6,4p
+iDT+?X1E3co(XCh5d;+<VdL4E=tE3^IS(4piDT+<VdhEb&cCChY#:D/;7L@;]^#4XYJ+A7]@]F_l
+.I5#c3,+AucZA7]dD061T83c&Lo$6UH6+?V;tA7dkgCihiJ+<Vdh04\QRFD5i5ANgGD+<WdW@le.
+3F(96)E-,f4DE\CM+<VdhEb&cC6#:X,$6UH6+<WdeA7dl=BcqY;CcZB@DJ((T-[74RAS,@nCih$g
+7WMpMDf0!(A1SiqARTI.88iBaEb0VgATD4"A1Sit@<-"'ATDL,ANM#6BOr;aART+\E]YCCBOr;UB
+lnZFBl%U"@;R,]F`V,:D*&kRFEDI_0/%NnG:m<EFEM@ODfTJD@<-I6DfTW706Cl=/TPE2A7]d52)
+mKS4>1_cAiaaB4piDT+<Wd"Eb&cC6#:X,$6UH64>15T3b2fC@rc:&FD5Z24piDT+?X1E3c\qIBQS
+;Z$6UH6+?X[TAi`4oF?U$S+<VdL4E=tE3c&LQG\q7XCgh3o+?_)s/S&F)@<HC.-U'n9E-ZJ<B4uB
+0Bl7O$Ec#6,Bl@l3@;]TuCh[BjDI[6#FCfK0F!,(5EZfI;BlbD2D..'g+Ceht+C\n)AoDg0A0>f.
++EV:.+@1$i+B;&WG@b6)Blmo/@<<W*FEDI_0/%NnG:m<EFEM@ODfTJD@<-I6DfTW70/Y^I3BSs8A
+7dl=Bg)kH+<Vdh061T83^IS(4piDT+?V;f@leXEB4uC.4piDT+?X1E3b*2A@<?F.4piDT+<WdeA7
+dl$AT9m@+<VdL+?X[TAiaaB5!1K=A7dl=Bg)kH+<Vdh061T83`BU04piDT+?V;f@le+?ART\!E]s
+gQ+<WdW@le[R@VTIaF?U$S+<VdhEb&cC6=FLj$6UH6+?V;tA7dkh@:qb2+<Vdh04\QRF*1r,ARfg
+G$6UHR061T83^dP#@rc:&FD5Z24piDp061T83`8@84pjD*GWL(dE,B0.@6P#@+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+
+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V
+dL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+
+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V
+"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+
+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<V
+dL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+
+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<V
+dL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+
+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<V
+dL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+
+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<V
+dL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+
+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<V
+dL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+
+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<V
+dL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+
+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V
+dL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL
++<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+
+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<
+VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V"6+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<V
+dL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<VdL+<Vd
+L+<VdL+<V"R5Bq-U@r#Xt+D#G$4XYG$5<f,,*,S876XNYf:I[oL70!>h!!"!E9PJB_!Y>>3D/OH9
+;Fa%r=BSfM#L3;N!!rW0!&4HR@:O@t9iFM\z8OYuhF&GLpzzz!!)`D!!*'"!!(J"85LEOzzzzzzz
+zzzz!!!!2@rQI1!!!$r!!!!TA7]gl!!!%P!!!"8GB@eG!!!&g!!!!5@V]q)!!!'&!!!!5E`cIJ!!
+!':!!!!5B38;?!!!'N!!!!5@TZc:!!!'b!!!!5A8Q3p!!!(!!!!"<A8Pjf!!!)<!!!"TG'.A,!!!
+*o!!!"RG%kN3!!!,K!!!!ECisT/!!!,o!!!!5D.R-s!!!-.!!!!EFCerq!!!-R!!!!-E`>q(!!!-
+^!!!95B2hbr!!!Er!!!95@T65m!!!^1!!!95FCf]=z6Z6phEbT0"F<DuA.3L?*3B/-PATqs%FEB*
+2@:O(]Eb$:[Df'H%DKu4mATM>]z!!!XQ;Fa%r8OZ!)0f_-M/M\q5zz!!!!3F&GLp+A#!h2DI3M2D
+$[:0`V1Rzzzzzzzzzzz!!!"$=]upJz!:s%f!<<*"!>`m]=]upJzzz!!!"$=]upJz!,nS3!''WO!!
+A<b=]upJz!+M>r!4RX^!#XEl=]upJz!$n3;!"X__!4L3aATM>]z!!!d+77/22FEDI_0/%NnG:mT@
+@kM8)zz!!!!78OYuhBQS?83\N.1GBYZRARd?&BE/#4zzzzzzzzzz!!!"0ATM>]z!!"WC77/1U0f_
+-M/M\q5+@KdQ@<HC.+At]r+Cf>+Dfp(CF)YPtAKWQIF&GLpzz!!!!O8OYuh2DI3M2D$[:0d&kqAm
+oguF<FIO66KcVCi=H:+EML1@q?c7+ELFN63$uczzzz!!!"0ATM>]z!!"QJAS,LoASu!h+BE2fGA1
+r-+@C'bA8-."Df-\3DBMM>6T-YZ2E!-B/hm>+zz!%_#ZAn?!oDI[6#<bZ,hBl7Q+6Z6jQBln'-DB
+NY2+A#!h2DI3M2D$[:0`V1Rzzzzz!-W'fG5qUC!!!\.rW!X>/cZI/'EA7&bQ%bZ$NL96ScA`j!E`
+K.+92BA!!#\!<WGqr!!$(BkA=d=ErZ1?z!<<*"!!!!#NrT.[!WW3#zz!-;je+92BA!(0X`+CfP7F
+oVLB!!!!%z"TSl0%fd:D)#t]X,60+l/H@O+2ZPo>5QF4Q8cVWe;ug&$?3"I8BE2lLEWC:`HiS]tL
+&d,3O8tOGRK/r[U]@@oXoPa-[fF&@_#VITb5flheH">(huMj=lN$DSp&Osj!<EE+%07+C)$(f[,l
+oLs1''?84on(Q9EA#l=TMn2B)ulNFTHjjK)pl2Oo_!PT`M+nYlVB9_#_XYd/ho$i;r0DncARg!s/
+l4'ET9V-3>h%3!)AI9*/&o>lnX?E<:FfKE@/8Qi`u`X9,g3_#hd]eH4Y1lN6_]!!<T2('>]^/H[s
+76N^*d=p&@=EW^amM?B.HU'%P#\c]tTdf\M1li[%d"p>SB+9X8!3s8(W<<Qe7E<L^nN!,RPW!'O3
+`!"Nli<8WQrWN`7*!Ihr3X&(Y=9W=@G6N^)Q3F,h[0=MQeHP%<p'(^*('Z,j2[2eW=U&UFHNoE5S
+Hc8%^]r0jis,/]#6u+O.gJ3B:Bt;5F9dO*R0Teu^B`0ljTkPd$O@g[1'g>T=pT!OJd@YJWX-<EdK
+o"Aq[!f?,mcU=:C1P<GmTN<U^=U=cO&\>q[*oB-ON!D<!m@IJI7bOXpW,Tg^<W\$O\-d3=A[lBa]
+G!Qj^,+a:$r7q$[lE.L\ZQ>RY``NXVfo^^Sm)o*l-<-4N3L=q,Q_NX_rs_[YH3p^RrI/e1G_A.F)
+!Rguk:dLP[U#nJ<m5n@94H4Q;PZOb@mljsI7-4iNU@1[l!Rh3+Af+@Te'+lr2:D%FUN"N'%aV!_L
+#8/?r71s,DKG($m_\1uC!tumm6PErCK+k$o`=q>I"r&F!8JGnRM\N9-c4oa_&f!5<<Y]ioRh`UOi
+"cD1-5K/gC_i'IZ52",qA1.g5o4)KM&3<2dMMWp)]1gWAJg:AY8Ge,qACCn72]kYOVtVGh&6D7.N
+2/&G8d%k`>\(^'H9+Q@iL:EZ5_L;!ZW[0;B1$'UE%Jtoc5(o7icOhR2s0cllHo`5TXY]PTIO[koU
+Q\4s+J\PTRX^l6$fa5p0tdQls<in0&bp80N+!Tcq])q][C3<?d#=Y9MdI$6qMTAg<Nb_B\Oq+!aQ
++HmGa<g*I%O3$i5aQR0ZupEh77=!i\L[jL;d(ahm&H7,a@gaEU[5:CM"U+"M?"t;M\CFPf'cmf)H
+2(E8hRju`7!\6/ZBe,`)d4>GP3@o&!U+FnJ$nXasFtKaHi@Ylu9J1oL[k@)%,VN=SOY=a.r\-2`C
+bVY=gG'<q8hkoP\hWb2.PbKhRkiJL%5UI0Il"SjnMDaQAMfu8fJO="9f7\`_DV9M2`>\7Xu>N',W
+B*iS2]%Z'KAoKN&\m="Z\n0IlY/%q)UDpF?6]gmlN*_CHJOXkWC4TANZbNj#nSL@6L;Ii'&8I?p:
+5Ii'/AL@6^JNi]n_RA3d"Wk<UO_C-epemQrToE^I0#pHpu/I7(e<"%5XIMF>`Y&k,ehRRQ(&,"?3
+7X%)SK2+N!`^dnW"91Y19f1?uS@nEXkn4GW3I7hFN$qjMlRS2X6.SOkV\kN6#8kkLDgeK.jDGIZ:
+!)H0^P>C"2-W"eZ]28c0:f3]Zk#*p3HrA!`'2r7:W`/Uj6<'"FgJoY%F]H:Z%ouq9WE/ap6s#OQi
+)hX7I9=Zq)HgcW\69,@<a)A(oijjhQ!<?T2-bl@em0Y/G[8Et)I@5d]jD:W@:-?K"^kD>WaPa5:L
+Tu+ojUL%S7:tt6XuHmlXW7kP[s#i4_9dfk@QkhP%Noj4_Kskl"E:pQ>#W!6YW!'nS1U0T5++9:MZ
+kDs(kbQYAFP^?u<Gl&oMK&`,?]8G]1uK.r^5^i,LetQ#Z;696-nN!HVOf\9&F,E-0<H.!:5diH@D
+.Rs+RN<d1lp&U82<b]t[`M0\917XCnX"FFX*_L*MSJUHF)6%,GU!IeL,_LEe[KR`*67t@Oh$@uuD
+c%7X$P(N=Y=+e);*JArrj+U!WX+h+=Ee`2$4,9Ga"GgcJcA=?6R>Lp#A;\Nf0T26Tr/>-Eb)J-8R
+#V-+Arb/t2NOGk#*<_aer`1ZW0.aUHBR<P9p<#M+I%bJoT`dKad+cLT9fnOFdM$R9UN>X,aja^r0
+h;feXJmpYFHT&M4F=2A=_/?5b>-N*M87^qOhPqfV(g/[\>+CQD4YZG,+2q<i!d432NUO)Q&FirMO
+P2i2BPP`2P\pWN$r<O/i>_FfXc.>cc;S7'3u%/ZteN(9`Y#!3gUMlEOa%f!7rS_Qu5.Y-]L^S@'$
+<MREPoH+*4OBXcp0=h)ki9"DgM41_i30"\$o+hX;X'to[B$GM2-s1`lpotYO^m(m>Nj2,0?gV[.2
+eAP5&cG`GqaMp]h_oG'`^W8RZ]ZE4V\]QnS\'$\Q[`gVQ[EUSR[E^\U[a-nY\Bm7_]$WXf^=#6o_
+:(g$`mdT0bLKA<dFM=Kf[jB[i7MSmkh0e*n_/0?qqHYV"l,!k&D`Z/*8[FI.Gq>e2W2:-7,cAL;r
+ZQlA)ln9F6*8\K]Wa+QKK@QWTZ,$]]hoMd-=j#jm-mOqs9()&ac+V..4J25juqd=RbGBEq02#N:R
+qYVt;h<_Y$auhY(g[qtH!C)>L0+3;LVk=8M+WGPh^DR/JK4])GA%h#D6ks'p1lFoVLB!!!!%z"TS
+l0%fd:D)#t]X,60+l/H@O+2ZPo>5QF4Q8cVWe;ug&$?3"I8BE2lLEWC:`HiS]tL&d,3O8tOGRK/r
+[U]@@oXoPa-[fF&@_#VITb5flheH">(huMj=lN$DSp&Osj!<EE+%07+C)$(f[,loLs1''?84on(Q
+9EA#l=TMn2B)ulNFTHjjK)pl2Oo_!PT`M+nYlVB9_#_XYd/ho$i;r0DncARg!s/l4'ET9V-3>h%3
+!)AI9*/&o>lnX?E<:FfKE@/8Qi`u`X9,g3_#hd]eH4Y1lN6_]!!<T2('>]^/H[s76N^*d=p&@=EW
+^amM?B.HU'%P#\c]tTdf\M1li[%d"p>SB+9X8!3s8(W<<Qe7E<L^nN!,RPW!'O3`!"Nli<8WQrWN
+`7*!Ihr3X&(Y=9W=@G6N^)Q3F,h[0=MQeHP%<p'(^*('Z,j2[2eW=U&UFHNoE5SHc8%^]r0jis,/
+]#6u+O.gJ3B:Bt;5F9dO*R0Teu^B`0ljTkPd$O@g[1'g>T=pT!OJd@YJWX-<EdKo"Aq[!f?,mcU=
+:C1P<GmTN<U^=U=cO&\>q[*oB-ON!D<!m@IJI7bOXpW,Tg^<W\$O\-d3=A[lBa]G!Qj^,+a:$r7q
+$[lE.L\ZQ>RY``NXVfo^^Sm)o*l-<-4N3L=q,Q_NX_rs_[YH3p^RrI/e1G_A.F)!Rguk:dLP[U#n
+J<m5n@94H4Q;PZOb@mljsI7-4iNU@1[l!Rh3+Af+@Te'+lr2:D%FUN"N'%aV!_L#8/?r71s,DKG(
+$m_\1uC!tumm6PErCK+k$o`=q>I"r&F!8JGnRM\N9-c4oa_&f!5<<Y]ioRh`UOi"cD1-5K/gC_i'
+IZ52",qA1.g5o4)KM&3<2dMMWp)]1gWAJg:AY8Ge,qACCn72]kYOVtVGh&6D7.N2/&G8d%k`>\(^
+'H9+Q@iL:EZ5_L;!ZW[0;B1$'UE%Jtoc5(o7icOhR2s0cllHo`5TXY]PTIO[koUQ\4s+J\PTRX^l
+6$fa5p0tdQls<in0&bp80N+!Tcq])q][C3<?d#=Y9MdI$6qMTAg<Nb_B\Oq+!aQ+HmGa<g*I%O3$
+i5aQR0ZupEh77=!i\L[jL;d(ahm&H7,a@gaEU[5:CM"U+"M?"t;M\CFPf'cmf)H2(E8hRju`7!\6
+/ZBe,`)d4>GP3@o&!U+FnJ$nXasFtKaHi@Ylu9J1oL[k@)%,VN=SOY=a.r\-2`CbVY=gG'<q8hko
+P\hWb2.PbKhRkiJL%5UI0Il"SjnMDaQAMfu8fJO="9f7\`_DV9M2`>\7Xu>N',WB*iS2]%Z'KAoK
+N&\m="Z\n0IlY/%q)UDpF?6]gmlN*_CHJOXkWC4TANZbNj#nSL@6L;Ii'&8I?p:5Ii'/AL@6^JNi
+]n_RA3d"Wk<UO_C-epemQrToE^I0#pHpu/I7(e<"%5XIMF>`Y&k,ehRRQ(&,"?37X%)SK2+N!`^d
+nW"91Y19f1?uS@nEXkn4GW3I7hFN$qjMlRS2X6.SOkV\kN6#8kkLDgeK.jDGIZ:!)H0^P>C"2-W"
+eZ]28c0:f3]Zk#*p3HrA!`'2r7:W`/Uj6<'"FgJoY%F]H:Z%ouq9WE/ap6s#OQi)hX7I9=Zq)Hgc
+W\69,@<a)A(oijjhQ!<?T2-bl@em0Y/G[8Et)I@5d]jD:W@:-?K"^kD>WaPa5:LTu+ojUL%S7:tt
+6XuHmlXW7kP[s#i4_9dfk@QkhP%Noj4_Kskl"E:pQ>#W!6YW!'nS1U0T5++9:MZkDs(kbQYAFP^?
+u<Gl&oMK&`,?]8G]1uK.r^5^i,LetQ#Z;696-nN!HVOf\9&F,E-0<H.!:5diH@D.Rs+RN<d1lp&U
+82<b]t[`M0\917XCnX"FFX*_L*MSJUHF)6%,GU!IeL,_LEe[KR`*67t@Oh$@uuDc%7X$P(N=Y=+e
+);*JArrj+U!WX+h+=Ee`2$4,9Ga"GgcJcA=?6R>Lp#A;\Nf0T26Tr/>-Eb)J-8R#V-+Arb/t2NOG
+k#*<_aer`1ZW0.aUHBR<P9p<#M+I%bJoT`dKad+cLT9fnOFdM$R9UN>X,aja^r0h;feXJmpYFHT&
+M4F=2A=_/?5b>-N*M87^qOhPqfV(g/[\>+CQD4YZG,+2q<i!d432NUO)Q&FirMOP2i2BPP`2P\pW
+N$r<O/i>_FfXc.>cc;S7'3u%/ZteN(9`Y#!3gUMlEOa%f!7rS_Qu5.Y-]L^S@'$<MREPoH+*4OBX
+cp0=h)ki9"DgM41_i30"\$o+hX;X'to[B$GM2-s1`lpotYO^m(m>Nj2,0?gV[.2eAP5&cG`GqaMp
+]h_oG'`^W8RZ]ZE4V\]QnS\'$\Q[`gVQ[EUSR[E^\U[a-nY\Bm7_]$WXf^=#6o_:(g$`mdT0bLKA
+<dFM=Kf[jB[i7MSmkh0e*n_/0?qqHYV"l,!k&D`Z/*8[FI.Gq>e2W2:-7,cAL;rZQlA)ln9F6*8\
+K]Wa+QKK@QWTZ,$]]hoMd-=j#jm-mOqs9()&ac+V..4J25juqd=RbGBEq02#N:RqYVt;h<_Y$auh
+Y(g[qtH!C)>L0+3;LVk=8M+WGPh^DR/JK4])GA%h#D6ks'p1lFoVLB!!!!%z"TSl0%fd:D)#t]X,
+60+l/H@O+2ZPo>5QF4Q8cVWe;ug&$?3"I8BE2lLEWC:`HiS]tL&d,3O8tOGRK/r[U]@@oXoPa-[f
+F&@_#VITb5flheH">(huMj=lN$DSp&Osj!<EE+%07+C)$(f[,loLs1''?84on(Q9EA#l=TMn2B)u
+lNFTHjjK)pl2Oo_!PT`M+nYlVB9_#_XYd/ho$i;r0DncARg!s/l4'ET9V-3>h%3!)AI9*/&o>lnX
+?E<:FfKE@/8Qi`u`X9,g3_#hd]eH4Y1lN6_]!!<T2('>]^/H[s76N^*d=p&@=EW^amM?B.HU'%P#
+\c]tTdf\M1li[%d"p>SB+9X8!3s8(W<<Qe7E<L^nN!,RPW!'O3`!"Nli<8WQrWN`7*!Ihr3X&(Y=
+9W=@G6N^)Q3F,h[0=MQeHP%<p'(^*('Z,j2[2eW=U&UFHNoE5SHc8%^]r0jis,/]#6u+O.gJ3B:B
+t;5F9dO*R0Teu^B`0ljTkPd$O@g[1'g>T=pT!OJd@YJWX-<EdKo"Aq[!f?,mcU=:C1P<GmTN<U^=
+U=cO&\>q[*oB-ON!D<!m@IJI7bOXpW,Tg^<W\$O\-d3=A[lBa]G!Qj^,+a:$r7q$[lE.L\ZQ>RY`
+`NXVfo^^Sm)o*l-<-4N3L=q,Q_NX_rs_[YH3p^RrI/e1G_A.F)!Rguk:dLP[U#nJ<m5n@94H4Q;P
+ZOb@mljsI7-4iNU@1[l!Rh3+Af+@Te'+lr2:D%FUN"N'%aV!_L#8/?r71s,DKG($m_\1uC!tumm6
+PErCK+k$o`=q>I"r&F!8JGnRM\N9-c4oa_&f!5<<Y]ioRh`UOi"cD1-5K/gC_i'IZ52",qA1.g5o
+4)KM&3<2dMMWp)]1gWAJg:AY8Ge,qACCn72]kYOVtVGh&6D7.N2/&G8d%k`>\(^'H9+Q@iL:EZ5_
+L;!ZW[0;B1$'UE%Jtoc5(o7icOhR2s0cllHo`5TXY]PTIO[koUQ\4s+J\PTRX^l6$fa5p0tdQls<
+in0&bp80N+!Tcq])q][C3<?d#=Y9MdI$6qMTAg<Nb_B\Oq+!aQ+HmGa<g*I%O3$i5aQR0ZupEh77
+=!i\L[jL;d(ahm&H7,a@gaEU[5:CM"U+"M?"t;M\CFPf'cmf)H2(E8hRju`7!\6/ZBe,`)d4>GP3
+@o&!U+FnJ$nXasFtKaHi@Ylu9J1oL[k@)%,VN=SOY=a.r\-2`CbVY=gG'<q8hkoP\hWb2.PbKhRk
+iJL%5UI0Il"SjnMDaQAMfu8fJO="9f7\`_DV9M2`>\7Xu>N',WB*iS2]%Z'KAoKN&\m="Z\n0IlY
+/%q)UDpF?6]gmlN*_CHJOXkWC4TANZbNj#nSL@6L;Ii'&8I?p:5Ii'/AL@6^JNi]n_RA3d"Wk<UO
+_C-epemQrToE^I0#pHpu/I7(e<"%5XIMF>`Y&k,ehRRQ(&,"?37X%)SK2+N!`^dnW"91Y19f1?uS
+@nEXkn4GW3I7hFN$qjMlRS2X6.SOkV\kN6#8kkLDgeK.jDGIZ:!)H0^P>C"2-W"eZ]28c0:f3]Zk
+#*p3HrA!`'2r7:W`/Uj6<'"FgJoY%F]H:Z%ouq9WE/ap6s#OQi)hX7I9=Zq)HgcW\69,@<a)A(oi
+jjhQ!<?T2-bl@em0Y/G[8Et)I@5d]jD:W@:-?K"^kD>WaPa5:LTu+ojUL%S7:tt6XuHmlXW7kP[s
+#i4_9dfk@QkhP%Noj4_Kskl"E:pQ>#W!6YW!'nS1U0T5++9:MZkDs(kbQYAFP^?u<Gl&oMK&`,?]
+8G]1uK.r^5^i,LetQ#Z;696-nN!HVOf\9&F,E-0<H.!:5diH@D.Rs+RN<d1lp&U82<b]t[`M0\91
+7XCnX"FFX*_L*MSJUHF)6%,GU!IeL,_LEe[KR`*67t@Oh$@uuDc%7X$P(N=Y=+e);*JArrj+U!WX
++h+=Ee`2$4,9Ga"GgcJcA=?6R>Lp#A;\Nf0T26Tr/>-Eb)J-8R#V-+Arb/t2NOGk#*<_aer`1ZW0
+.aUHBR<P9p<#M+I%bJoT`dKad+cLT9fnOFdM$R9UN>X,aja^r0h;feXJmpYFHT&M4F=2A=_/?5b>
+-N*M87^qOhPqfV(g/[\>+CQD4YZG,+2q<i!d432NUO)Q&FirMOP2i2BPP`2P\pWN$r<O/i>_FfXc
+.>cc;S7'3u%/ZteN(9`Y#!3gUMlEOa%f!7rS_Qu5.Y-]L^S@'$<MREPoH+*4OBXcp0=h)ki9"DgM
+41_i30"\$o+hX;X'to[B$GM2-s1`lpotYO^m(m>Nj2,0?gV[.2eAP5&cG`GqaMp]h_oG'`^W8RZ]
+ZE4V\]QnS\'$\Q[`gVQ[EUSR[E^\U[a-nY\Bm7_]$WXf^=#6o_:(g$`mdT0bLKA<dFM=Kf[jB[i7
+MSmkh0e*n_/0?qqHYV"l,!k&D`Z/*8[FI.Gq>e2W2:-7,cAL;rZQlA)ln9F6*8\K]Wa+QKK@QWTZ
+,$]]hoMd-=j#jm-mOqs9()&ac+V..4J25juqd=RbGBEq02#N:RqYVt;h<_Y$auhY(g[qtH!C)>L0
++3;LVk=8M+WGPh^DR/JK4])GA%h#D6ks8V$YK11$!AcMg*9`QXC!!!9)"T])5!WW3#I/j6I8c_!R
+!WW3#"98E%!.pR<!WW3#J,fQL`rRpq!WW3#'EA+67fb=E!WW3#+92BB>6"X'!(M!;B5_ZrEb$^D8
+nDFK/P'etDfTE:7qH^LEb$^D9jr'TF_,T-FCdNV<+ohc;Is9IATBjT<+ohc7VQsjGA1l0Bjkj$9m
+(MgF_s2_BQS?83\N.1GBYZJEccG>/oPcC04AmCGAhM;F"_WKAM%q6@:Wqi/N#LG3<2EbE-ZJ<B4u
+B0Bl7O$Ec#6,Bl@l3@;]TuCh[BjDI[6#FCfK0F!,(5EZfI;BlbD2D..'g+Ceht+C\n)AoDg0A0>f
+.+EV:.+@1$i+B;&WG@b6)Blmo/@<<W*FEDI_0/%NnG:m<EFEM@ODfTJD@<-I6DfTW70/Y^I3<1fg
+0fD'H1-.-I+>P]51,M$K2ulT_AT2a)Bl7^#DJ((`:fKe8=A;U7:i^JaATMp2EWH.,!`i-2Dffo=B
+Q%i41G1?]3'p22":>,/!!!!"!!"uF8PK<qz!#0*gFDs8o06_Va/n&dBF_`UJEb@?u8PK<jz!Xp%M
+!!!'#!ZV8d!.77V@:sLr@<,m0+A-3RDCnCtDJsQ,Hq.ag@<,m0+AH9bB6@d+BlmoJ+B3#c+AucZA
+7]dC+B3#c+@^'eH?X(>Ch[<p+AI!"AT_iO+D>k=E&oX*GB\6`@<-I4CG'OGB.m\6FE_YDCND.NBO
+rc9ART+\E\0..2E;`YH2mpb!bhX-7WMpMDf0!(A1SiqARTI.88iBaEb-dE0fLmD/MT4=2LJ#+Eaa
+!!/0IYqEbBN+EbTW,/0HZ+2DHd<3&<KT+B3#c+AucZA7]d$![n%3<+oue+Dk\3@:Weg@3Bc&F!,%
+2@V'(\ARlotDBO%7AKY](@:s-oDf-[P20<LS7V-%LF^]<9+>PW*2B2cp!!!u?<<*"=!c@u\:hXch
+D]hDfARoLs3ZqC8AKXHVFF&.FCi!foD'2Pq*!10]!#u%D!")\=AKXl^@:Wqi*!/&!#Ve=u0JG480
+cU6u!!!u??N:'G!bD?3*!0aQ!#u%N!!!u?F9$eXDfBuBBkM+$+DG_*DfT]'FD5Z2+CT.u+Dbb%AS
+u!h+EV18D0$h3DfQtBBPDN1Bl.9kAKYJkDBND"+D,P7DIal.DBO%7AKX9ZF<FRV+EqC+F(o`-+CT
+@7BQS?83\N.1GBYZJEccG>/oPcC04AmCGAhM;F"]C12ECg:!%('RART[lA0>?,+A$EYB4XSE@<*n
+A6"=DI;f?8i+@C'fE%_1+!"fJ<XTC3Z!?qLF&HMtG!WUmSKE)Ab#RLb@$OI+G$k!FP&/u5n%hB3q
+(`=#,-mL2j-R0rb/2BFJ/2'+=-71ZE3'9Mq7n?-#2,7+F78lE?7mm@c$k*[W&0MSu+@Ie./M0@Y6
+psF26psF26psF26psF26psF26psF26psF26psF26psF26psF26psF26psHC_uZS4!!*6(!<E3%!<
+<*"z!!*-'"9eu7#RLhG&-)b4!s8T-!sJi2"98E&I/sBO!!El;&g8tq"qsjB#9n.%14bR]#U;[@_%
+fkqn0Bf!Ee4T)()If*)C6^X-n-W&2)[BQ3BBMq77Kd<8P2o\<E<1'=^#<GAS,RgBkh^2F`qtRH$Y
+*rKnbA=M2II[Pa.Q$R$jD;USO``Vl6SpZEppG[^WcW]#)A'`Q#s>ai`&\eCE.%f\,!;ioB+]k3(s
+mlLFH:o_%qPq"aae!!<6&!<E3%!<E3$z!!*-'"9eu7#RLhG&HDk5!X&W.":#)5"98H(G5qXF!tbY
+>+Ya065u@kqE>'NOJHurVOeK%r#pV6(n.fDQd0^X71uTbN(Dn#.-7:2j.Q'+C3&s#e6q'R884cEP
+<)lt#=BSg;A7]@cBPD4&FEMbNG^4UeK7nr5LPUeEP*;,qQC!u,R\HRQV5C/hWN*81['d?O\@K2f_
+o0O6a2lBFdaQ^rf%8R-g>_/RjlYail0@j2o_%qPq"addg&MN`!<<05!tbMt!9!:/ba(u=T9hZ`24
+Ad2XXiOIba9>B@l`pZ\DnF"C^`&61o-9j98k9p4XmKl!I$4aTSst-?G-OJVJ3_5C!%lA\-n5t;3l
+%kku2f)(ue.b5Rbk.b@[#MHt+Ll8EVgf_5lZ/V;$4N1k_%*BOO1'ZtKG'mQ4<ug$4&J6.1>8O&-=
+7BFICW444.n:>17UEjEal4&9<FV\!fn<$R#o+)9*Di.`67RR0b/1piXJ?jojm;2S]0^e-V^ROR.(
+_Lb?AoqICC!9TN/8E?AZP)=XuKn/j8/p_kB;YHqp%%96*;9^3cS5Fp--jGUb!9_djBkXDgYRNUf#
+L]/5H<7<W7S#W];+3Br*1Tl`;::XbBZ;EK[$7r)r59luk*CsI7nlH!(o<sl^d'>^`>"L9"J4bBT2
+S<S5QNJ%Il^<Kl@1iu-u9"i]&`&?5qI>Gq9dWVMqeNpd=Y2gKEH553=@GF,S<L*V$]cRdXWZ[\X5
+!SP.YEb)4Em4>gk)X!2\?@@naj'n=p]!!cDM.Ik!H$A<VRq:<!_i.D+48a#)hH@ZXN=U@n^<@H<[
+rB<go"#8F(e9d^%F-%;Lho&]lIIWTjUrr@I33fD:5Dp",$rP'h*5[2aD-?Uo37m=G_4:8Wu*8NeA
+H)dG).#rg.E[d`Lp]Uo92#;_4Pi^1T$>B(004*0f"A+KPis]\FnnPgi&fPcB(rOdPH1[p$7s^uL.
+s7M5g)Hk9C+K@uBmLas%^`-gWYg.4!9!`O8bc1aY_RD$QgSIY*@baKb%X"i%E8o8]M[SN8P8[n)C
+V@;,QU.e;Ghf)!qi:O1j,Yr91_e1Ud9ke.;7p!U5lTY5R*OD92,C`5ba<9$;+J`&OO!\U5E:LGp!
+N:74ff94,cj1hNttk&VGtA!19V%'P<Ws!b.IQ:@rJ7$UuP=MZ?V34&@@+@[FJ:;dFoI;+jL3Q(-;
+(:ak^'.GIZ@"D1fa#Ord30_q1X01qDPif<RVR';B*bZCr1WJnt%Wq7m_I4@;C3t]k1H7J97)5X.'
+NIXqr)5F;?=b)a0qpJBiHg1T,'V/rX5iRr7/f3)t0<H(d'WutuH9B=%PL"QLIdn/%l%<;5hRu+<8
+bm6-1qEZs-jRF4121`^+'Luk1tJTl&]Ha9bpGVA9"dY0)C5KEe.W@_eDTkSL2J(iU,!D5PJ&sJVN
+/'-<k0EH\hcl+^h%5XML,>Mdu?0k;p@i@hl*@5OEI5hVRIDM,[JAW32`If;f"g^#F[()gi]CV;s4
+6N,np?SXV@#,pD<p(JOu:Z/+ildME:8tH8GVrMHk4$l2jlCK1B[WJ7=Vgif;MqYR*ro98]#9lUMY
+4UD+g`PYjmu\-3c0MCItD:@t@CF%Je9ci^rq;;.H=mmRq#MH9ePN)?$:bQ=,g8hicM=pQ@*723O0
+.&@Vm!`IF'.:"&:&M"tKq,I*I?2$&k,Hq6;BcG/Tq/I8Xk5]%A2(e1/DU[]:J9OH%CH$-H%b_Wtk
+Lte&'qg5SMC<cNU[Y#m\FlM:Vf%#4H81UY`@a0I\AZFq"DuG1dY]#r1I?D<@![\a4[g`chNW;Fku
+2!#@c=XJ39-i#gi698T/g0IC*u\R:JhO<JrkEKBuFFK2"GA9"6iFbSV8QdVSJ9mF8b&qY?Y%N+*8
+SsQ)bc1F%l$u@Dt`od#pXX>%&E"Q_l2@5.UaNo^U;W.Dr*\H[oMa55:p:Bm]>h7r!5bGN+j,br;5
+YUP]1FHI>V"723*GHdS9H*77,s!GJ3Z.9lq@XWXGF'UfC6.&/Ut]mpP+G+tnU"18heU6ktUK1-;9
+$7T[;l(A23+ek&+hN%5OUE%a+!2QHcNK=S`;USLn!fC=6Js0R_B]>>@RfFdm.&;ABHVo_u3Miq`'
+G3bqFo]Ps;;-t<NhA%OEWB?aT5;q(jEoGCb<]e7B5$*(W#4q_lfh7,OO4E[4%:A+]#Xcbgf9:253
+ftI4/?Q\18(8jX"j2-!1`)Zn*a>#M:-!qQ<'+7_8nVYSS%PX6ab.TG@s%tRXM2(!3%s(3!,Q-6i=
+TSfk;lEa#'Gd8h$tO#;j,-"!#`b:_s3jFJT%j.0*:K@!/AWMFTKbC]cFU.*2%Vj3Z2oTqaml2_0_
+DA=ou(F1@E3g_+KEE&jr[\aN>8!P[bSbgVs?HW(71RWh"LE5'i&aend0+Qejh;::pfrSJ=ZdYUK^
+bthQKQ&dFm0I,#D;3AqujK2_0&SO;s8>;?-RW^qPTuB*eU_J!HrIAnRdZTjnd7HpcN$ncTM?'D`+
+oMQYMs>"i!2*1X#\&Zr;J(m9BEdO]N6t8Kg]EhE'N+r/kbQP<-kok#+'L+57OZ`a$&UH1MFr*B!f
+AD#qH*j5'Olq<!HZ7/UTGB0?l"ia.Fa*37Q7^h;H7).Kql$i;R^TP44-=Z6dPqK'N%C'1np0jBA/
+BT!GJ;3R[.XI6rKlP7j*hVS<@8KhN"sPMKdN8Os>Le.PpBdR'I:/,6Nr./h.E''dFA;M7Y&#mW6W
+?>3Z1oF33J<<N1l!(i5:5%_:bpH@p9!"L_&Z"]'Gc'J:L_##5Y"hi@X,qGbQFKEVgoS@<ftN#Yia
+8K`mLP<Z`dao:^JRYWA"8EpD!m8TI/qc&Zqo1BSp,l4$/.[E%kc!#f:g/WD4^\]1ZqU9JhetlG8)
+f9D?#;h&Iq#E"WEWPQ)MJH'"m6r-Sj%f>P!/IBo,9o4h[37Z\)GCBbld>_41&_l9ld>_41&_m2qb
+`u#3J-@p6$?R*Wd%InWuU;k\Yt+ho:o]%c>'Muf`#t_@6MVn#jI4bC3`]kR)`'"5R_X.?:UhJ']h
+Fa2?H`NA^"['7-RJeMN4G]8,&'JCQFj8:JaEK;#DEI=sh?7>a+JGh.\o)V/Et\TGT`]dZfVDae_*
+,XdI'IWMZ8op&!C;@=qM@KJ[eGlTh9K-PY2f60=Ljd7R+L!:*&f'An[+ggQXVdS`rC!SQJ!1u-Fe
+.feLAHAZAm\Ydom>$f_6cjquQJDj*L\Y+"=c%,/%MFJT5hLWoo',1dYF%_B3p&Qm:.&)I30h[NU.
+;<$rJ]/iD.7Y(28pc+2C+,jb2knYb72/Y`!C3D:]rBmc&;i27Ii;(h2kU@'mn;ApSZ,lq,XhfHL2
+ku!XPI-gqg?`r5S\J9!i^fQ+X1PiUu2e`++D5'Y,l.;F-=3d4HWDbY#cH'%4hh"F<9GFTG''tV%G
+0nQbOF$cjF3CLK;GZ^6GAM$"RtA(W\-<4OXXk_.NpIVg=T>J?cQ)'t^I0NjV!,`nh`p!$m3(%H!4
+rcC#>T;WWJ1'DZ2A/B[=*NJ%o=RYa0sLi+PRjc.c-+[Q0U?sls"Wel5I)c#@Q;7+kNh2c'j4!ko:
+Yi$VI;sBr[C-0:"A#QGO7>uF(H%d"^_[sNP^]C(JoW$bH/l:W."K<CN8BtVJBJ]6Rb0TDZ62@&M<
+16]MLo-7rXPF[T%\sGj[lb!mofT\>?+N[mo+QXC?BNT&4342@j49D.A(ms(6,&(kBedjUVR-AJ;7
+_pJ@l3jH!r@:P%HM"_ogF\bf#O,W>t,oT'!T]aB4TS5fj#TWS8h"oZ(sAfgDQg52-*$`EK$#N3':
+)NP;kBLYU37_75Y_,qbji1)%be+;Fm;+NjQX@a53U;j#u[ni[MI(Hl<p"\]G2uU,?,f&.J#&m7fF
+Ellek'SE$-g3Z=*@O;_Fj1US@`d@)IhJ19Z4:&HD(E)GZtB/HF5B^\`)\>,6[E]T'kmr:X&%4h,[
+M4>JGddQiK:^Wh03e3WkRW1XHKcs>B[>"\0k*qME]d@G=,#%-c2'1aj#)cSo\Y)oIV9c7jJ<N)ne
+7#>mWEZS:m6r-SiQX!*!gIi'V%h&fOS#Bg%FU92,KTqH=ut(Q[']0C4&J;<KE79*#+%/s%2;^hl_
+k&'%pCB\!@d'*2n_1mVmsS('"2<m2tr)WX[pTCO6$Hr3g7i<OeS0;O1e>1+J"b`NA(>5#!Y/nq#O
+D/@g^XFS_3uHa%U]U8AO]i<U7`ShW./$OG[0:OobQi;Kb<]ehBWp(nt,9,DN2!;p;jBDn=-n5?ce
+2:7Sb.C<H(NEVpp0\_QR&(8H"nRW8oCUY`fHEPUh-P&LEG2C.lQ*&57Tat'4b87\trXV6;abR.,'
+g`NKfWl4Yt<\,.4HPi**f^*X*"3,g!k+eLQJnBk[b_HCcd=CF$&V8T9J(j%\SnE;bZ#;9U<B7kk<
+"UJA!+U^&Z1b*AF!T%6q9AsFYT3`;Ut25[2?8\r.C=4\.-k&>#YHn(e(TC5lUfANVUu4M;>="@7L
+^+@)VuUGQIAm+)'a8C[k?Y6LLXJHO%S0s>k1[mbd'.c$PYo*d?8MFP??**qhgcS#0(iP7jR,I8p^
+L;>"j"RWnUAOi6m1t1h-Wi.LJ3FGc._hR^DpN:_Br1n)7.SSZu&8_ZNX9EoO-BEA<[Td=!LK)66F
+GEk0FpkX_Tj+UDa$d!AML<I'O,HLcc>)J))r+5"rg=pU+B%2A%2%6$*jfEDNJif<XP"W#Ho;@uQj
+9[g\jH=JddK^*7)a!=QrOG#H51gn_ZOB<n6K@J=Hf+c#Dj$r"l:&\+%RX26"^cgp?dr@iJUk!V:'
+S,dI3mb8G[%a!;#6p)0NWu:c777SUNS:8c!=u(/g7(\D-`G'`*gBKI;0r<UlUscpd6\DO@YuVDAc
+[c;lTh/r!)h6CnbCP:"Vc-U'O5+rKf5:*/tb-`4_dt?`nYWq%7ALkJ``G'66qP7\5%RE'BgoMM1s
+4@P4j(ZfQ84.W!ebC\=,\82&74UOj<L"bQ*'*e'0*cguO%-c>'_'\j;e8e_*0nXS/`(aqD[)/5Oc
+.MU$BC?=e#5C#$8<4W#B*c;18n!"Md]\b*"(M%G'T3N3p0A.%LE;2*iO#GA$%7VK(.bf#H[O$Q?p
+5\Y;Y:^9?ZN[]>'p7MVPRUHpXBnhu`r$_Ilh##LF]hY:ZFj.:tE*F\CSCVZs25@5]l>uM[=U=#c5
+<Yu5iBqsSB*NqfV)ZLf6gI^)0C[DMP_\[q<'1L.R)r<8;mFBF2/1^ADTi;Y5$B3.\YYcZ=Zr^APT
+KKhkU&(g*;;[o=-.9\MQnN62%9KbIm0U-@1aPL+R>J>.5=kX2ulE^73JK..0q1@.*l(U<3OP88#Q
+bD%4rUbGmn)RF%]*sVmm43[$uk!"Oa2O69h"[!280"rY05TW2A"iJ7"WJW282Sl8Y[8UD0$R'W!-
+)V;0l_`B@*9SLHYLp[uV&jYU3H;YR$'m7&fte3TNP.<EHD<Yu0@a#&FQUXG.S&u0'7*@_ok?oY-7
+6PbdUV8WY9iZgU"T_5%ZliN?9Nq><g@'BZ)88.B_kQRb=;*nFd$<faHQS^nA'YUH?[3Pi1bq1(Yd
+a^#P91b"EQFd-qG-F/qV0OoGl'B%k+W#0r8a2cA@^?52jtfK,bf*YV-\:od-$D-32!7'PLTNYG+n
+l]=!We`E5bQRk(o>7ePdGN4'XW)WU6#R6lV4;LVOl:!0bS>1C,W9'-5Y&/!8gaaI1Q;L<FM6%F8l
+4R$*ZGHH4$R##(IQ#WfV?0Ri'=\W[`t"d^+g36[Op0?7?+(hOc1ri)9WU,X]^Qj699#$@H+<M/4q
+T32`bio_"nJC9niVK!T@6,ZhQG(AJo05o;[K*-'*$QYZJN`DVWaV[%I1/]T\8pn"P3#1,e@A"MAP
+>S@]5L93@*"XP`DlW8$A[4(n"%[?CuRo]T)@I$fM6-a4'lU14D.8;*@32:X!8>PH`a75rMhMjd@n
+C35q3I7-.jNt@:5[CpsfK[&@O-EHh]@\_g_qPBZBcX0dan7K*"*$ak-A.?:;1!0_7QZ5nHLXbiP6
+83SVD0Mji)1QWPk5ZUU(\6JH;J9k/fbB*Nmntc@?6JG:-)>deDdg#J1Vq@1kpRDT=mOe4_Z=k5t)
+JsO&-UYVb03g72l5ok)=;K;+;sM!u(c)!-(H1^^!J80guo."s1.]TT3`"eUWl^if%8Ao`2r\N[YK
+4e!Hm`J0"HYou.VBUDTAp4_UKb^bJ82V'3sYA,m&kBdn@s>6m=_Ua(sMHVtJBl=bMH,htNfj[S4m
+5:UR07c?e'bmdf7?b%%!4F>UJ3#Sh-:i3n0G!>XAij79FkFh3>(@3uj%&B3OQoHFgQaSs)Gi7-9-
+b,t"VmT)%jA]cg9a=P?-MrBGU2ha-6_#5jN]mVKJO;5+d^eG^NoW-WqiWXK3\];jWok,%F!'iKJ,
+NB2);-/QrY;7]@SHO+b_G%pB`RE-4k/oF.A=<EXh=ui*jhY#A&=k\[^8[8H/s1[AlL,cZuUS7>LM
+/+`=O_9H0e!ribL!p;.brCHCSEOSPsStiI,mu2OnkHg9&-DiBDA?=t^cY9icU?L'#c>K:E5eX&`*
+9/V`L0Y_H1`XDC/qW2)mML/Pc`>qq3(-JF$@J^26[.^#JAh6\,ih7s8IHIf@%bY*YK!S3gX'Wi<'
+_#tZB>mn1f:XY+u.0U+'6^*s+f+bLZHI<kA!5HB!'W:AV'QHi$6&IBdBH2n&?k]3/bpfO]RP!0#7
+08dB#sfP.9A5%B[&9`7G+jEn?M&lP*U,D2Ouf+4#u_>!11M=r727<4,<]`&P_qgp&5bkKC$5Uq91
+9d";N,gqU6=jEoqSnsesEd/:_OPM:h_M3C$S?OC0pPBUWEKGZqrg2g6KH&<g&\hWa9'b-`o"7UbO
+r.N[`WVBV@"G-7JO$Zr+9i+J<hQV!6Tm2Z\8()]k7A;c!(\rP3m%oj?"(NU"9L8Vk-mrrAT,Mu0^
+Rd^U*9,0tTYgOQGOWq'Sn%@X\KJTW(\@r]Id!:I\fSgd0F%IR;]T_5/_;d=b9Lj,kZ^`sAUVLthG
+S*neQNgZ]q,4'GebRNr>,!8lK5JH#IkG[*(LmHs!Mi;fXL9UB&0s02]nh4HVqGnTOXi^FidFAmc6
+9uTKNT1.RSkTQGO.c0JN6?NbiYEs<O:jhI>Ll]oCE`9m=-:1AXF1R+>H]l3hLPIS6Zic4BBFkD8]
+(OJc#?^!R`@i[M-.mn[#WudF#0\:L!Dl6XMNl:OEoQeUm(BeOh,s3W-$4>X<mH^^^Qo.,FZ;%1rR
+LVlkPP#S6%b77^fi2`3G!d/?R;E+5Gf*>g^_,rVD$T9T7N&ZN+g\Jb;.VI+$)<NS2>S#;o@qYr%8
+T/T#AJ0BK(ifUfiMjY[Ec"Q(k"?&VSd,<OKueUap?[Op<Se^[-+3uLdV9Jap>.H&WsY5>O;aE^!B
+:ALRg1`A%&6]^%;JsZ7$-?u6J!fjqBa?)XaP'nfBRT4A63?X?8;.5Fu;UJ'[!@Z2E'^Plt0t4>MP
+S$L@Ks6q@ES?H&*gH=_!e]'g$;U5."4OAI[0fmNV.T?:Zr'7D5[t:<%4cRqRK5-98WILuH@WA3ME
+=\._Mh>\$pdP?JiKUI'U?I+4&Y+-0uX,OYL\cr72_`uFeY+C'Y*n7QjMW6;H&+AeWt_3*N7!mG,!
+RgcP4-R-Y`XUi%5WM0i$O)-mFNt+:cnnQ71\]8DI-/5B-7iE:g$flUF(F`bJk`l\=/c)!<aYS;rt
+#T(QReEm!Z.DX6ak7X&`5lQih=]Ys7$XYUq8Q@?Kr6bQCM5f;]_@H]0gqm@t<"XZ'2LQF"IONXlJ
+7Ok2Yjf<PlkAR2<<-DF`,4lI;--T!AjWs#un=&NY34R;5#.cm;Ml?SpJ!$fA6#b56e=`^.l7%gqB
+<=]Z\.?W^7Y`4WOus$O4Y*C#aQdRn6J=mo^^:CM>BfX<7*CsOB8M6)d1Agl.pgfd)6AFT%@+c5.]
+[oeE7g'-qT_(/Wq2g&1-Z,h2ps\%,uZo;$PQ*WBT"*O@TPZ#oW($$\!^l^jgTC$MOPlN(8XqC4,"
+%&*^O4lRbpo,6:rk$lf]j>/LX>.P!lAkI&ELbW9ldh@M<Y1n!^2eP9nlE-\Ob"1$&#/%9mVc/l*E
+^nu]T+<_J(TANSq9>h6)>$[-),Dtujl.r&E'&mB$kpnPUPQaItOl)dh,3BGS,<9m)$e%LD`qkB,#
+*eJoU=oo$["YC*ZKcEt7(o(IKoMO>+'EE<O[0DZNKHVd?8k`X@Ss1g[,m17iksnoe+!4+FFJpGK;
+_Lbg8ISd+44-[Y0_M6<C.`fF$;j8@a##l:>Z0REPR:W4!K(-'7Qi/m6&JhpHVru.;N\ouF%U+l4+
+S"'P8*0F8W"&ZV<pf&B\W_)iD&NMlUR$C731VSRPhS_NbAM"dY^uSL&t5D.<EP;,o-M1F%P9CME1
+`8)K?I^`d^S\QRV-J.PdTNntb,j(6.M)B[D&DHABgcq>TpM<D.4,aNr;3e@nT/F8S^+<`/GUmocQ
+cK<YQpK7\159EaArZVjPB@"V=-`DJ:-EUqV`oG&<ng6+(qhQ"IH6h`(lLaGUf<@BjBI`(V539%J\
+BcYAoS[U>FgV9G`>tK'uOo="f`[6c&^S.`urbZ(PkUBEWKXN\Z](-:2rHL0^DL!+qK5?^"nDF=QQ
+Y%Yt[(J.t/5/Va<c,%!7g6+I4=ig!8:_hZSE'_YJ\fAi/!<b(R\sYg[0q%2PKL@@H<4ONC$9E!Fp
+qijmfqJbXm`K2:,7*tnef;B-lcaiY%J2<\[3T9g+.E,C8"]hkIkD@;@qmkJVr**2\J&X]4\N\lPi
+e9F6[FPEI-nj>-eI$OFJbA[H7A*9KI&928-"`"-U4K%lg^arp?VFW'@m!+BM#R3o$1+,ZUX'.7GD
+_o9<8@8:&XrBm\<UJ@oBo)gU]X2Mu^g>^"Rc&#D4o'P.'e"+WDr8^/31mmc@%8V!%;Pd'R)18]tQ
+!:<%Eif$a5#^XqmT[DJTK^V1!p8..VCOl3V<5YB-UZk\ePn*/Rmn67/QDFT4lUa_)Ba"jZ!)h6WJ
+8*m#*Ca_=*GA5G"Xr\%'V^Zm!gF0Cm6a,UUD-VuUL']>I^GO&Q+luLIM=pJ+Jn9M'YS1p:`E.DLT
+Muj7B?J"c-hcGN#HOSJ1W4IdZ1[tJ6G_?\>'`gTG!@7j49Id8aZY..6CBr0ibr?*KfW#aRqB;T)S
+eU+"+hb;kT&[PhE]g7t,lG=':l-%WV-;eGfO/qGkj2a6?TX,o'js8L":]l'cH9.7["2=?tbeUl(p
+c]2+?]-8OX&.n7Hf*-tY-#E$s6l@,#A;-=f*Yec9\O7p>^XR"E^T,GZg6*2mu1(J<8WSFB<.P["B
+W2B5Qb[\Hog6t(`%OoU])((IA)XZd!'#MB"\8742Fed1<+:<F`Ji.akW#;"`!iX3uk["kjHJ5CUC
+(]m(rRg_'TDa(m=__-PB)_j`XA,:G&9QXm2n-52IEp@J-`'*7g&M54D<.C"4,uM4aP!PHYNi"8a]
+?[tHKM$n7CC'MP?]MDGng8Y&PckW\]N/ii3)G7D3!kSFAd?/EDE#=9cG(E.Pu;Fpnkp_adem0%:U
+BcVNSRU_i\'<;K?.o%3=XTqGl?o,R<2$NcJhM+OGT-Vm'u!!<3$1UtU5c2Mt^pG15\A;EGe1-b6,
+[@F3E_0fd2e]?f&[q9K+m)bJnWOF'ma9b0Lng2Nk,/N`\,4U!"n8pX<*a')":4X`HJ8+=rMTEuk-
+;i[+E*X,;"<'(Lc60Um3.4lAG4_Y?U;Gj(n75#@65W$j.;M#';c@2"/q50IE(!Ajo.DSq`P93Dg2
+["9&CT@M/.=4qGQ`.hCBV88Oo)]djoVABLhP@"k'YPqEC%%u*5tX2d;M!(%p&OPP1#AJV;Gu-L!u
+(c$Vc*U$>!(1)'N+rd8W6TXUa%8#0H+t+#<f'@Gc#R>!<3%_hN*lWPE/m,oqc%Ce\C/m59IpGH1+
+eA+r^Gm#D1`2@Q<UJaD=+eVZTJj8d,82^?ms*ED9l\3[)`q@@&+=3s5*GkuhtJXXc4&EEq$',$iO
+`@m.;YK5!4uY!7Z<5C#?g_OD1([u"*V,\"#S99aM(NZ!-X26Wj$H<j0=o+FBRPO^8W#Y3LOY+itS
+(6RBtPO*QNS@@<=9^uC4f_K<7N>WhV!9s8tCSB:iZqStl1OM9W=m63UXBY*Nm:Tq!*r,B1R5R08V
+?lTQ.kqp9J)2r8,8&!-%IAKP4rN2mgce[78d0:EgXOUq6l[itlVt8DjTYlmNPe.(*04uW9V"+oH4
+NVd?&"D$eg$H_>8[[EXP8ZT,XWTpmV\F;W:W9]gM0cOH%_FfhRT1La>4j0"%k2b4]0=9<m)93,?u
+a<7pHt+PD\50\'/DcELrbVYiJ95p9<\kl,bc'2.eZH=96N#LTM7kU)H!Jlm_4>8`#S`/VH,NLBN^
+S*hK`mH0rj'.5CLm"1FXYcU1:K)*YDZ!l9LZ3TcP\oq8duV?18YMK[t6;3gdIBY\IH[0I_`d6dq1
+,+<gV]2MEM[X]e'[+]_$:%(Yg+mI^Y*@_fk;m/efPUN8`.9cTWCJif?UY_;tE<o9.EX$8Ga<q2oT
+kr9!i$Lp=k)=1?&bMh,<.HqJdLhA=KIGlg.\&H,V#do]oc8JF%h7o)\/J1J9epTS/>QfQn48u&Uf
+/l<-F\pX$CUQXk$1LbqGp<_j_.#=%5:P9GW<r1&:,730I(S^2\c#P9q`^6(nuRW5RMJr8W$OFe@#
+BP2lWb^k*$Kd6&5[mU7;F$gJAhY.<3TH2?He)GGCu@kQ!jLR7_d'$@2dfO$Q8WJtI\[7Lu=;0b;#
+s[k6&3k,[S;Wu#f%NnG[gjS`fp32&J>.,`M=8u%7l]+>Rn$.bHPiBZWs__"1!B\FG:$He%[o3-<M
+YL9uH/^&uu*`N$r>@&,N=].8WN4Ou7>lE^KoG*8qB9G)?/F;9p3h#JYlUS@gK&%7D(CYAEa6Vtpp
+.IkV;d'LT'DJac#EB'4;_A//BC*t+S7F65rY2UJ/MPM\e2K.\P^3/>\f\ek]`a.[>Bs]K0+^Dl38
+Oj=R]bDIR:D[N@jh","38cWbIYFt.7kM<*i*oX!:*Xse<VU>F_6$N#PZUe<QA\QZfZ(ur"g^6IkA
+JDgl[ZI<S8?I*-CkT)geEI&@jkfh\LPKj7'/i8P?t.OE&Wo;GP+Q]MQL0^$D<?'F$[$7sVuB%<K#
+,%GVk&[`,!OmbGDe#M-4#8pdq;C4E6hq=LhD#41?<R"3JXI'UesL%Xh:e#;7oiI+HF91bne'=*)R
+Z!@1VF4.Pd)^s:c/<$N!&V89WrrB6)nQO1VbcntP=-=:i_"Y"qag?,r=#>)nMCW$g$3`%2!N/nIR
+rd;MAM.\1(sTRdgJUm=5U4opg3kGU;2S)!(,86M=!F#A,GD-OJ0c?QD/@UP9?]XM^9lgrg5Ul14+
+QGX.WNn3$94r7:rY.l;kDK>f7l+`e[6)\;rfCOLSs*.-C1F7aqd$Dm\%C5D5<Er!4'7dFg-6&X<_
+$3MAX/M)Gusq`0Lirc#'Oj7+a0pN.jLIZed+`r7e2kER*Udrr<DhFdatK*&J]?]U>!YI:j2c3%W!
+s!*;I#nDct\IB-5VP"iJq*n:M[ODA",4Z;*%,(`;bSo[c$'?$[??k6WoH[!t"$sdAY)KhpHFZk`6
+jd%L@Z8f`&aW3G3/'aS=(kN#;]k1UbXO&^^aC%<VnVZq_G26'`jGeUhjBut2;6&C#:,YQjie,K9a
+)TOr#'!pa]/(#kU6X-X"H3H0qU/3U44Da&Ob6?iQa]RDfO^n-l4#eS`7TOO<NP7^G-D,eV<pd!2Z
+T[\)N]*<*GI>l%Q&:(UntR*.H#2>*GRlj.5t_#>6Y'-3QW!Rl/&2&\t%rE;,MV"S7\9kd5S=?n\l
+Yf%.='D%lK3`H(_De#8L9JEW0_5Y%^:\lV.olTU*X+*_>%Ka/q2H(8SZWqa-?"rLls_5JQMSg&:p
+N>'^CK\#MmXJ;b&lW.2gg?XV\\F30O:W"2LiN)B=pUB;3RU5&Pq:^8h#oUo%8YS&<ed]mUh@[pHa
+6:f(*;0=<.-A*-oNA`TS/m&#3_#Caq=pHdU/'cP.`^eIfcN[Q1d`bGhBY^ktP&\:?Zs"<n/7@ljL
+67*!VmUQQG%mV0UM>qcP[NIV=gs>U"e-_ODJ,(q7L5b0#6M2RAhh93!Xg!23QS*EI/q48jUE_K8A
+XWX>2Be>;EL9tmTbS&k)H^,Vpdha\]_HnC_BlTV*@\<bIL\`3T>^n:!Uo]!)AR%j@*=IIH,881$U
+5--JG!(5rfE)p5O<uXW>D&2tc6[.YZAZ@_S-V^>Wn.2`u6KhPNoa-d]=b\W7AGoc4K^qNq?Fj,DR
+=P;B-LO9_P$56G%)QAm>;+_'.\IW<]\;S$Ee@hrkMD`.\+&3i@5SU#6#O*#rWk6c4Lk?/Hb^e"#H
+&`sKMl:65N'u+ah>M[<'=sL>(\KOqn`];+):855Y>EYh('3)K).)\b$MH;m.6?sfQ5Q+Tk@<6-)L
+55JJ;fFE2!W0nWYm7K4!+)Xc%:,>Bk3bba(seNl4-U>t,Pb@Dh7WIVNb7#`qlG*mFg=YL'6/50V0
+l8!b#96POt%OFq30!`Y2J/i;\tTPEUR0@@jV8J8^Pq?)f,OJRS$H.ON$NUH3Y-\e[>M7W2-/GN*7
+tjGijl4+:N6Z"V_;ifEBsJ/e0=EaGfI#<3m6g!6HROFqGPr2'T"H\*Z:(E7"u1Y+`/Ir3Kd;61k>
+XibN#Oa$J2$1>5<JE4m<9q(r$.j7B@C</OOb(6@Fdm7dc(e[Mp32\R/YiSBRC]6ueEBbgaX,q;->
+i^&1Z\b>k,baR\bmIMP<isH8MUY'Yjg8\E$*"#m/6HhZK\Kt1D@mq=U='F"kb=+GU]+pSVP;jn9N
+""d!CS/8jXsA%R^rF'tk-LnUnVQiXcf7_tPNk6*FY.`K)8VCI4ZUbMDf#d+R%SfX(<)-R'28!:Og
+sH;=7pA%(HL4XRoot/WV+*+V+Z/kR<#A>l!/URb.s1WY$,/!jW?DadW?I7dgg_b^=&j7Mak=?Sh\
+s!_dP($jU-TZP?elHB^.V"W>c>&MJBeeZPP*&H#2K,9,?>d#$:+mK%3aq*-'iE("ilu4B4O6/[K_
+Tm_:VuRmaVq95B7(XpnBB,9ZZ]2^`K)<==BL'8l%4\fmd[eu_>a.&suGe3"j2;F!fD>!Ep31Jl(=
+H>r1A9"etU"1Z;a[$3_h1PER(2!)RB9Q#T<i">9QdA1'q"NT^!1rKAR4gRqSiUKe.26,<R]h:+KK
+uX9)d/2<FJPJ;VS$tY27l2V-/plcp:"nCN8MCFC!K%5C&2X.3LUa5AMH@=sP@=0[@J6UJo@NZ1pR
+].%<hLc&/TE#u+MMlBe0h(q]j+je^5Pcf4XhsZKBl,.'VhKIl=dq5!M1_;..'Vf;gSME.n`TnU`i
+T.0fT.C8Z_PhnQioIr@t.ZqfII,&F^Nqr9)Pn=AA!=SOSBF1sJ1#G5hF22p&Z`l1>^lYfe:XJ6:,
+m:k)ZY5q4cN#!G#s:>o,b-',f5bs`C\?>iq1H*H>=;-\7ooQO@M,31MN)5$A@i)\0^/rdLf.*7K`
+O!S$*HfhlK/_WVg7S"X&lVR<mN&$*1I/3)sLd.4[,mtc]35MZ$VWGt]%_X=s>TDZU36,scPO^'?m
+[%r0eJ:IU7Ro<2VFaNAkF@L&on/)9'F$#tA*KEjPC]qRP<@cE;XF-,)U_.]h)gGb'a`Au6iN1G1$
+aeK),-#&XIGH(GQ.ZE.N!9\/snQC-6M\dXX'"r3pu$(RD=CjOg4X[EV\*f26t2N4GGH9`Xn4:$G#
+?r<jf&g83r+cK9A7mCF7`r3ecD./l7kRI7L,L:"W*ZIi.GZg6Ted+HT4UWQ"u5i-r)XCKM?eN,Zr
+n"$,bnDqn\gErs?f:fDr`6O`j<=#[7ukqFE4?8dj1>nHdd3G;tBD)h,XHIkc*^cPJGigM;tK8M2^
+WC8*I0HJku7X1Z$p(6/$F%1DoBf_\d*eP)i;+3'e>"W,N&Pl8YCU3H;S9B3kgKG_;V9+`behlX3\
+ZRm!G:LCB:_h%U2>VD0Ki_rQ*Q;L^&oq_d8E(W>G[CcsI^LeQbB%!;gXt1q1A:AaKoU+,f"&*7?X
++?lm3]#PP&>u(36,cd8Le+T>k;1KO">0AGBPQ,A;\#Jc`K\hY])q3:XZF+/:]AUWV<=-A<aBUSQ$
+,d+2pm@a&9![G8?.=5o:>A7\K;Q`HCo9H`SNh:/,dg[eh=Z4_o:A^5Rgd'Npg+0n:_s_f@5DSFTB
+2J.;k0F<W83CH3"Uc9O7t"M%CSF3oqn<e\3`E!\M*.`ULBd(!C;%9L)Jp,r"8R[?.W^P,[Li[G(X
+e3OP/796sTj!,RZckM.GW31gL82C;[5fHr-_?&n!2urTJOd``IW2qqe8ior1N,_)d.eTU6?F;E0#
+L[gm`@a0H^eA:fZ&/]6UW@">Oo*PuW.O+&X,\rg?t2Bb_$J.+YWe=E=pi2e[LV1uH:Cq/Y>4)GkZ
+=;R,*Yd`4emlVEoSF2Ul=!&-\Fr"jADPO-oa&p'&CLDqDB+>7]CT#rR47"^Ue(na'U52PO`aq7jk
+E(H>utC!Y+e`5RPcb*BC._V?s,kJ1W^piCZ0$5oi20O"lG>atbE@37#9Cdqn0[SRI(.1O>Pk4\=u
+h3E]T!GJfkJC>-$QHaX4eb@<V!)(*%,9=)+UXMq3=&>oWn$E``E9kF*?`m76*@u`R7V*)u]/GY(M
+4`EFhd?\QkPAG&hO$C?j?ctQ5/=kXOUfa*dY_>J\0?cY73N+:>@;>NG#`]W;/Lt=l_Pl<sGn&k."
+?@\L([L^p/R)6P9t@Q_0LR%pp<V4c.62-)'ec^nqYfh!OJdZ$^f@F<&ht-APZf9A?[fqUg9E;B.i
+Q>:-g#0$587@+`g5U1o&E!9J.<*n4m>9c9N#KXEf"_4[o9eh]f="tlW(,3g;KSR\?'CeJLmF.'C:
+tci9eE:aiWS%o?DA3bndL\rO1J1$"NC_o^k">K3Fs<=3uiXa9)DT%Rt3N3K\K$0s@BQ=s:0@=pUb
+4a3DrE.m(@J@fdj)fTIccX-E\^P&pJ!p:#$7.`S_)M>UoTI\NSc!:2267`uY'#<g*3K^Lo<[;AKg
+7L2:U0O]k3!j_/k&^'kh8+N]M,0d[D8c:,E4qR^@GiT$Hk<`lt1PsZ=><A3)'-K?+NlR`V#-"T@F
+IA%0\,_+EmhNO:7)MO+?S?lD<+KV]or^']kqsc..;6[`.AiZiRVS`_#Q[Hc;@6@NMZETN9iI0H.;
+FB:?M'Y]UNSB/QT:pURW`qP?l#&s%5)?RYZtG]MG-p.-ihM7g+C+Qd"GQGOF3j6S9D&)V7*mseod
+9*.`:p#Q(4##YU4L38[)UOjI>6US5gC`.snK-OW9q>O#cnsl:-shN7SK;o"@cIZnqAobeGc$a#-L
+a\6,W_-?+<4V:cnecTd+o4C\MJ3U<-tVlY/H06=YMXd88&R&A3Y"8o389T%M*W/Q"PB,Kd9Hn2-a
+-Cc88Cm@:(moJJ?%45[h92BOMb;%p'rhd6%RV)(k7BKND7`9d0]lH($.1Pk>Rd@284ckf%ge-Xh4
+4cE3Jjj'%ett$Ul>p-_SCW^$<%F)nq.KM'!5*>n>oimU9+`J.&3.b46QXh>=)97*#-9NnNdD\+n_
+THSd[JGbBTS)1PbID8dViSEYUnr;EU-OIm1gV@ije$sP(Q8>VdL^4XYudoktS%.-7J(+1j5ac?kb
+7t"XrXa!_dsgNbM2hM[mN,%2?=KWD;A@H@@]ic`K?c"T-YC:F:b163@8q`dOj=V0FjH5G^*N?k6U
+ZV##]g>_>so:Bs!]9q51.+Rr6U7<6]&k^P'?T0rER*c(V@4P06_q*O2f5tkIa`)o5SA+?L%U$Z&*
+/;-IO$d9>pd[&&LcYopq[n<%"Ts+Wf6hdQM(ngim2I[4H,/"rS^6np#fot47*+Cp1D%FIE&,h_+p
+mU.5b=94q+LP8)k/\3[TKQ*4?En,_;-P:h+3OX.D$-&0KB_6sXXsm;l99K^e_+;,>BCkt@oiN4cf
+\!8\5+9kX%pdY?%t:%i#W>2?R'Pj[U+;Ao&!4"etQf&GI&bIN+3"aoJMWQ%WbS!Xfng&5Ruj7@3Y
+7:rrD_m*)+rOdk[-XmH`8Fk,`<p-Ih1He853HW8g$tr+e5f\Ro1l8q@oK+LX*+!8"$AFtJO+r7MI
+LXj(?]TAQ85dtPu+Qser=>0X\`VE"7OMFu1494AH&6cEhc=&An@f-Bknng4)W)<1sqr!d0lSFi^.
+-#a>2F>^[&`#b8El,F%QTZ90s2E)'^X[JFs?OkcH0.cWGn2c:+#PhD97!FpsBBe!WV%Zk.*0**%C
+9"bgb"b]Q<`quo1BehQL!S[,XGRci!R>rMMM/SMQ"8qCOnBG[hp6):9%N>5huVk$.bC#YE!@gFiG
+j8nbXXK5QB837rb@a%3+,6[icT#]Vs72b'9K+AI8ojAeeR)$Z2Eo4`jXQ)CVV[@M>k1Yor[H"WE>
+!-S@3E.GnfO=e_ZRM`qQ=,RWiSr&1PR^U[M(hieE1*j1]3O'N,!:CM>Dto&9YX1'V`eI+GXY52"n
+>chg&)domKMk$kW/jW_+l^Uo8>R)q0-i5IJ>8+d,#B.7!9Fu-8&dX=9J"*-+:4[i0eFm:KR[Bb.H
+j;(R.8Xpb9!FtiYHW@R<$M-elI9Oo/:3NVl8*U7ERd(>%M>GY%TuZZVgLr0eEoY[bE,.cN$"t5n4
+74\(F4mGoO3ibIU:=?t=uoR@\%GiQW0/$8/`VD2A9C1hOEa!Pa5L,XBr6Tg$F^K2Z&CCi4jQ?`<:
+<JK*,i>*#5oQ5.cW_gWm<XBfM>+p1ggucR)UOu-aC=If&:4-5ok7:?0-g9Bf3O)k]okE*I%5_hRr
+If\t\?L,Z#b.6%S5L.T95kQPm<(eto=c3f%2&#8u_[=fu^_#NJ[+EmekWMlV"5On,dMX_Fl%;!f?
+aED@L6bgf>J;3*!mf!;Kdq#G,mPp[M9k.3d_ZShe24TH43g;I5kWjla&a<Y9XDm-!:AS*9lE'Ioq
+S.NL5MK#kM:R&m?Gcs]&7#CGu?9.7H8#Acb6[W$ArTmTR.btuMA'W43i/CP7Nn)_UK25V:*QeEIJ
+]Our_'%g6@];GIQ*Gl08P2GU,uV)%/2Bh/4jIc+d3<%P`>"`?hd@.U<U)T?V&sq[CUb$f]iC6VX-
+MC`20B+;Z:1$8>\p2/U49lPdIr-Pir&&(`5ou<^s?7a!Nh\=,d8mjg^n/r6@'QR`d.tI5Q,]7;[\
+eGPLTS2U3%:=ca?g3:apF\_W9#e[mEU7;b9l9q>@4^HQ#QdigkUhb>7ru8!]e=d\QmC4Xg=14Xu!
+7nO25XM(_Ct\XAHac8hu'j+18hWT9[U\t33%8K>'HeC>bnMFtsf\:U'\+??+niD#,sejbBoOW/'Z
+a<RsnAFS)m1MJO90KZ+j=GPrI2un*`]Rrn:9mm.=pKg9epmUq:(MjG9_%Ba^a&?)>8JJNM?rSaY"
+-_7c&&_O@%><%EgEa:)E.)M><oAP=OF)lG]O<GdM%2;ZPE0IpQB#l4C]r&:?:+^BV.JF;aW[1oYF
+PNmorGZr&Luu+/'V]Ub&)%9Wh.fVLYF7"3@CDNg8Wm:beg_3(e"\XMbPg.l/e*m>S6JoN:Z6r9kt
+QI`7BZS]r^sKD1N'Klf^LRY)butUpcRNV@cNaA4Hr2Xuim9e#1d)XL.;/)^^2W6qf`27l`^;f!R?
+UR?aZ/4lZW/_P=$ncfIc!Dk[kq4EAdAHqe>hO@PVkLHa6k%dh7K*-YHAMRRR[;#<QS=)]5Am8<fH
+41L5B!CBjq$b8dj=R'$\jH27[PL!*dC:*NP,P)m'k;b(KC?4ItAlJ7oVrgc^EE1\W"q4&UkYM3Y>
+,C\00bo78^"0JBn@,t$:hoj3+Q.h*(om<gD/d=tJd+85TJ;c'%/$L`0oMS<jtY?r0Raa;#:T@-#-
+S4@LH-K9+/Ml_Lu:$;3$P31KqPu>-L-OY6n?\i>ej)t"T[`4;Gi#T=%`r.5.'D888)0,I2#OMlG*
+W/[4S3G'ak\rkF0SpQ4:YOLEa('Xu,f.)Fo#f4i[lOWTZc6B)U!d"WlGu"i<m7LBMW`TG:$#isOS
+&C;ImAZ_c$]6M>U"AtE\i5IeO&/!!.Af"+Kb($W;sq`W:oB)-N&or](]l$SYs(ENJ>(QT45#Ed05
+m9.+h`W#oM=r>6/]+E2AEfo.""F_*.MX'A:OWtL/^<Na-X-Jf0\XkV-8JS?VF=(4KNbN1$[<`H"i
+$eh&$>8N!"Y!'bW5Zm3'A;*I`5mHKZN(/QG.K)R'cB(u^rXK9IMOC2]aC@(&hD@@f^T6e3?V?XSq
+aS'Mm.f\8o-`n"!'TuV_sn1,Tq9bRbP1N:S4t7;\WNUj+6USYaTb=XE3C@Fr3co6+XZLIfMN1Kr'
+se_A!%DXUV&6%3YhQr2LHJ\B=A3":``=@gD="B=B>pcn^#!m"]\64alTej&#'gF';"<'./#)!0$=
+I80S-`E6Vle+CadV_QFn5HQL^Q`U\jC`_^[ioW7h`o,:S<S46<9MRT;26$p(P)-D_4j!mbmAB"ZJ
+l:9nI<SVI/moKsA.]a:'`gb\<eX6no;J*:>S25eR;>$ZHWn&sAJ_#e,^NtD^,tJ1o0uZ[E<__8+X
+a(ss_"F^>&Y9q+KkO4:0i_M)q.iDG-AXdZSoOR)]WO<pPp[RCq9TV$qUJXT+s@/:Ik!eq4+[0+jS
+$n6LOhrO$P7SgocKG'&d[`#*;64.gi,j0(U.#PrL5J7^Ig_sAcDGg:\(@^!2#>88!Pb*r-pbO&Iu
+3-SZGO=Q=JdimAd(\8U`SSPE)P*5uA,+=X5r9*9Yb@9uf@pLJ^Q95g[keC%\Md:]es(!M?K@>]-J
+HG571f4fcXd)74XcaKaY`r^OS,R1j7&BCuApO0>[,<-jlC/giYq)*d%2Jb`@bYIU-(.LpVM*HU[T
+Hd:Q"&8aRsMVp@k8kF(_.a7!>o]Q-&*V:o&e8C3#YYn)m^oGR.".i;r7c]j^Sr;I:'Psj<CpOMjp
+f(-_kWN^k[F<\@[^(&a*$dZ.7oqgFaF?h*n:mC1Vc:3,g8Aa:h$NN,Kkjpu0$3i$b2An85N"b0b$
+&I8fbEr_9rq"qX0^SSNoQe7=@#3jVL*/%LEE,8<8_TX9d>^b37j+<33>HB(b!43i;H.nol&9PC,-
+01^O!!>&C/RBg`XE29c$D+h"8l&ic4nd<t&SQ"#sE13;5EiYsTPMVC+SRU!Rl9&AkU+&<;*?M_?'
+M\2#HXG6E&gL-[A=[s.]Ff0asq/i:W&5%rh5*C)jIfre(q=pFRbk9#+BlhQ$6Q_PI0q$e\h)&YR"
+RWBLMT0lGq1.X@%9_?=6>ENtC+,qosR5^3Db_S8XL*#3Z'G:s3SinRP\V\8"OnThq/!X3aq$8JJX
+VT8Q5DcL7goSX.*H4b((C)hO0k(q&\a"Nj<LJ?7I@tIKdQ%<gW5?$nG-7ifCm&=$4\fthV!h2U'?
+)+r"<*<3OdNgN+R;Y,S`j6p"6jM"ig,@m_Q;C;e*S"5A*[-onAo((>R]Z#934Ao3ppC7Ue!0GWGG
+u>9\rG*@\(Gu8u!H'!o]lqcO:=A\)I,dj"oVE&H'ZCY'JkPdPbp@Flpd-3%^[G*"o2qV1jRX!Pgd
+9<0-42kUn/\E_B$"*C)TcCSt<.&;!d:#F`Xg\\+RgR2aoYUBOFWrq28N7T/`bB,Rgu!j&]&OVf>(
+#Eig29&%UugpeY"7Qi5om-J.+@a]mt5VacR3Nep3dMs&J-]5,<ebX57(-JOnDTJoUX#m;s7,RK__
+lYA,Id$q9]adE;#1,jF+-h-O!.tRVdl_9#mi-FOS8L;bT!ad9``4mYV/4m06,mjncKkrLJuFX.jQ
+AMB.S/[ED9$!^=LY5ch1=hrj&$\5^F7>>j`.m8*WX4p"=u;o"!()pWk/7^2r5e>N,r#W&Kf\14;#
+qtAZqD14':Eb".HEs8`\O1L?LA!T!bX.hWL$e&i4=4"dkGZlVUgi1.p6?mZ7"9\0g66\<@d]eS)l
+Q/IO9SA>90PW;!2:P<B7Gh'k;JC'NVH[m2OhLU"fs;8)SU[5bU/12Bn6`D8f+2-r^#-a>d7J;cbp
+Q+FL$8%5Tt;Ig3VVeSf8gs0k5=c>L"8WcRnb3^5EWgh[;Vf&ok'm+CoO"8ShOc!-`4_h8tb"!TQ)
+Qh&)R);<&j[4r1)5^P&nqrQT"BBW[[oEA-;Am//I^DU)FY/-X_mO&ge9<!R5`Fd`Wd0O$iR3nOiE
+I]kG;WW5oG+03D96Ua14dr(FLb_r<H=klg66Fi>c98Xj495FeuRepY<3kTSS@ZZW*Gj&f/++3`d+
+T]:\b^daDap"dZoFGh=CE'cAhDkO3XEEqa9tM5OB!,M[[A[(o*!k\6)L9<l3eX*"G1?c3#*Prj=E
+5[7Td#Q3G"m>\'H$m8S$rWD+WKE!DgrL6Yj):C9XgjH(=p#dX>GLa#ao4Kr0?g]%9*?CMD3U:/'b
+SUgNjmK*=fG.cSFgII)D=)b1^^uXN<=.roU&i=MaOjrbfn*?%Pf"%euBbAt2<N'gbSN^<F4GFp6o
+tkIpGI,'nG-`lc6Jlb6=aR,n/H/,lDFQm'j8q&uSqHO6RH?FGe0^VLirP!!./s9k\)CHuj<`6X,)
+N+]0.\O,6QU7>XY1.I:T>2!<bQ=p3,&B7-i9t0J!F<D[?FeDT&)JN5g498\\RV1X.d<!CioG(Xaq
+'N]23]8V#$;@>BB\QMSsO,)^8M'!lGZ<!-B=Gf!E1K8I#BTmR[N67O_Jn2D!PBeVtd+V7=qR-#jm
+<8$?+@V]hE!mD%@1Z[LBA+.s?s_l^S$0@)!_pGm0X<2##cWI1bsr3QRlrrD>d=iZr0=s,sUOg45[
+5cR]F%?ngBAj#S3W5m;$0)BVmOh"DC%-Zm<7R*_b`8EaO#pl`Yna$/hR5@-CZG*fg,lu&rAti<m6
+f-a*hDE-;V-bqV!4pr-aRf2Y26GOp[\@s*Co;AcoI&,X+0AnX\i1NYEWn#fj'rLI%ms.`j4/7&C`
+%)GKg#B#ra1p;YG`\5[f+.!1Ro&sI6Z$mVQL=MBA97\\r&uD"K9s]n,EC>l7)GP?#iD!V'iFB$mT
+lc7G:b_c`L/[)WJ]-ie6Hq?QUb2j;kot[4ReKoa)g,G#=CsdM"%1M@aZAHNB=12(9M3]2$YIF5!1
+.L<AX\Lb-@3moat%e?2h45T/g;g9lT4AA*ke&k+:4+?aro[:eE1MQo5T`d.3VrTgm?a9Mp)*7/Ba
+^IkPWT^bW19iK"lQ*(2^U5BCC`YGo?S)pudOW<:M36C2<N&oG.+4@Kc<06,+mWH!?2t@S]0Y$9mZ
+DL27?/AW%mQp/4ZIPQK.7YC;<gIpu7<1sZkg#c;@]VL]CFi<+TW'p^Ss7>S(`(dkP$8&$O+7/B4&
+WNYUKJD5nb&tmV^,[$PgimIKUmm&_Xkta2'eC]<L^$2ZS(X`Ok5Oma+peE/<$Yo@X'aGU7t+cMQV
+/M"F%D2HQPjWb'VQEUQo9:K1HKm_<F<j=R8gNU%!`p4]r87OcRMq.Vj4^"i*5DjEc^RrB>_;?UZS
+d!t>,Yg2u!k]@5/ib6"9C16.)(GIXdH7S)9mB0!q1&u_EaO5\=sl(KCT)OCPsUstK4[#a:D8J<al
+k*iWd-ZST24@<jVOE85'psa!Ka?hA,%s$@(8Slj8BkAYQO'9.0E2%k:!<"=)*0o2/Uc&DIUDR<c5
+d!o'\+/5,ZAAebl^I#pNF(L<[Us.UJB/V3+7U\bqOQZ.!(,MBTkgA.VVTC<QO+\d];]?hjoF>jL&
+0ruD'af8O34_(JDcI-[k(\oJp2B^lDrPU<>R9cFZ7[JI_]FKH/$s:hOAA#qn]mu+*dVhED<_TAd#
+S"4G4,Re6boZ\U(P#qi<d9'QK]LoV)7T<\Q:UeZD&)^==ho>/F'Ua+-AmlteciOT@?#N5^&bFK<j
+3*:p2)h9S(7`VLVb7<NGm?bBqn=SK!me9&<96Tf.93U'egZNFH#aB*7L*-\H;9hm.OA!1*ZVbDI0
+W(>Y'&99`eofUi0eAN?g`EnCBDh5ns:uKI2ij@_f\mM:F2DeJ31nLK6VYO$6:-In(0o+#8#N\UHN
+l=nUSj:ODN;A"22up?2F%8*>_uphAB]qP-Z;bG,_STq5]cbY'41-IS33(V3(Zt@bk4GIDVVl7Tqp
+JgoaN"9Ol@6N<3VVo>ph*.seC7JDD31qRF34%U[/<Xq7f)f-Bt[Xd&k34^,I$Qm[@h6<g*r:>I)<
+oYOLQEad#VAnPk6f@VT_)$Q(!tOP5t)qJPt<L.qD8HH"?=+1&h7>W`%"lbWp2N!3b$l4GKZ'Ga?V
+\AGLhh0u;h06!7O;;:q4%cu!VPT2h00<.Z<!!.!u997M9aKMEX@Of0b-4H+cL<>//QK_]F`&!_0%
+YA@bBlV4sRGV-.S-"4eVX!p[;ZID>_4.%R!?i[DWM\DZfl&PT=Ptpo7dn"_S<EY\<a&2hU:^pK&(
+C:G]8cdrsMS<U&e`FDFA9Z$OE[n0D01/[T(@dk"aXjCYb9I,H\*<hU4`3O:9,_nZHAf[B0\cQ'e1
+TBa,#R63*$;ud::h]%9MHt[/92R;[;WA`=',@>]#Tgtjg45fDV?Cl<muY2TSS+)kVh$Wi^_4Q6O!
+ta!VXNKFr:haY+O0r,Q@`aV;rS^@N]ou3;/E#L?[:irrA$=-dJokPrVu2d@[RU0L+MI[Z`idoD\f
+<eL2`^>$U6d=&U:='%HA_T^6Pl+@rS*38HUXl^EFEL\A^2/WP%Yl4<PFT<6m*=tQiCrr=UQ\bZNi
+QLaE"rr<\R1Rpp,\NYP&+6c^HHa'cAVE)$7Y,n*<1E6G9'jBJQ[%$lqV6G-IcYW)anItkf_uaN6E
+-(:nFd?n7h6LEZQn+bJr@+kU&T_']Eh`)'+#.g\"423U;-@:hQ383+mQY'u[Ie7R\Ugko,BR^[rr
+@:e23iFqQ<0$F]ftXCf@#S!).*,$b>R2OTk?P`]tcb5'\)`E6qi!K+QM51X(fLJBf$'pPC`0n$Tb
+u2SW_r]M/i=B4/cA?UW.8jO^1\[qbEGUpm:g-(8.-B%?;D"4mJ^9=\2m=Z\,pYlVWeh?.<B;5"@u
+b5omV%7jF\L`\QFDmYm?23SLgE%QL:kR&@#3a8geal!(`*LN.0Pk0>,\gOY1^br7.j(:hb52!X=C
+]JU\IZn_oZ\D<FMrrDPJ3$1<U$@Mu>;Q:kG0^,Zof0H["<GS(f3f^/6BKqP]cdqa=ZFSk2\a>lO-
+_70^d&JGZ(,P2D1fJt@X0Q,)'*XI5j`Abr]'G%+_;ee$!J!4k3b.DZ^6`SQ0;F;qA'+GI`c1FaJT
+8$s#35nq:ENBuhRRDidKXfDq0=qsfH1%m:[:qFEWrt3`?#<)8F,rKncJAnUrgClEd6X@;uErKD9a
+s)d^f1aF@A',coOLs&d##P+ajluC(S#=jE3V"p?H0b:3joF>-VoMOW3F##.74iP:'G9F96Sk1!Tr
+61?ErM\Cr4:o%Y3p(!:8lDeV9]>c)NN3(j#d6<[NVOcT:hBAfs,I@n]eS.2.M)a,^0aj219KQ^E*
+3f;T5QFiaV0-YYHV!^A[<=MRS</=/%F,icm\PEHTOT^RWbCJMZ8Zpe,E+1)&-_;h+7f"n]R:AnC/
+W)=H/3^J4Y0SDJS<J]_'Qg=]\]S,9,]H>oAb`:q*l_<C;PtL];UMTN[:c)r]!]PO1GbSpnUXh;(r
+]1E&WH@Z4V?'5'NML_,8BHjQFE3$EXtum)AiS-RMBmI-B,?-kh^Yop?='8^uHY`:X6=05N/Z&9''
+4FOX\C4lVI#pPNnT_5q2mRoPs,aoQps*/T"NJZ7n"8U_PEEA2_HQ)^n`(PQ7JKe#oQM:p4,aojpu
+gA/=7eE&puj@Y?r@)s+m9'@s&4H5pN#hL9*K,S+YPn"`D]:K-Xd*Vm48ZrYP[`d\$beg8V0.o!7R
+]7KQ]r2K?HC-9(Y_J9^i=/;*2+-D[cA*@^8eb&LGLWF&\l8HY/N-DEg8=g,+3E2st&4L_?WHD]2-
+A^^Dc7;J4$I4HVn9XN)%,g-8oO*C!'\kM*J\W8Rk*R$Q4$gkH`FbCX6W]"!XEK\FRVMEhViiL`\.
+M9J]rEm7[7MPBEk%upC6jZCF2]W!2KCe>OGk59BE42b3f:'4&FI5)2Z5*":O4^doYu2PX*Xq`Y0P
+F^fU^9K(o\RJh.n-+p+,,=0*J37E-NVn<-;ftf#`1LQ3sI3mE$nK5,PBsI+HF$R0T$R,9*\8c'kD
+R>KCA&<6i?=Q8ueR!-^X"&hHZuQ&j5JG!'=7,ILL2qoqDjdWU#"VlB?fmOs%/,[MDIS7g32chLIC
+m+jXrEO@"mKp=up?k6&MZgW$&.DYl+Ak+S=#?b"gY!EI+0i4,iag^^sGik'!qNK3r_sSd^R<JPgF
+&ns%hD:J;#(IPpCMb<AgV3Z-%q9l`aSQC=A2eLgot4:iN#TAdr&&m2?6cq5L>qL6Nnler<P,4U9d
+;u-2FtcdK7^$!.tt7#m+Uj>`:=j-("$C6T4sH_kA`LY3`O@,kQn/;QFB[VaH5"AXs1N`@Q7U'd]k
+/=Q*:SY_QGcBR;WM+`/LAgFd"6;N^gWqh23ob%;%$GUJ-U?ik'@USnd=b#1W##kQ>=eE,)e2/i=L
+9_U#`aXXPhS$'4U"13cH:j7gNJk\;1NYa<Fqo!;MNqIZ@IhLC1Orr@4?Vt-i(/8dR3Vb<Q>4bk*9
+ri02d1&`If\[8]R:6Il<%mbbt<T0$EkeP9m.Ir/p(_plph"X(M5^mCr`d\1MQY%+PmZTV0_#q6o9
+"TnW"ln7j-,b2<7q@8&CT4s;F^%hVJ\$A%Z*$*SV<lD1jZe+V>+-e4FSUS8mY/a%7R.3\:pq*0M:
+ikW(uUHB<:/2hC<iaF^W`V,[e7g.-=\CN@r^7nH5aen]ShNakXZhVihG!AG0SSWaW`b!a!.PK0Is
+euO8%8`e5Pd)"B,e#!7UCmOX$;Q%CGi%CI=66P;%XE**3#lJjX#a,e6S^l47XKf9=CF":&J00WS6
+#_+S=!6ufV"-\J&.\mp5%B._-1.rT^Igo)@dVib%j\58j=JW?_oo_,<R/2o/oEM$`m.\&Fpbf*=W
+J`E2F[AbJJY,*[EIk%Df].r*\X@4-"Y3=eV?gf)$IV,,lRk0Qjb7m=rQDBs7;Y(hj9hq$#`++m?(
+gr6J>7EV>*at4Dok)#;!2lrYM[]QL;uQoL`eQOVK<`ZbSn+(fY^$Ft_!12[53kYJ['VX1:k/QhB-
+Opo2Xm?p+;c+p21ab(9?^gXLQB+C5G_=o8l!GZ@K%=-@>iIQhT#`Qr:=._^AD%XIL^B^LS]%F,cn
+gk>lFR&mVAg!4/_OH#5'%F'pZq=lt3gLkLfO.+p?g4Yrsg>b80=LJ9Nq<gsqXt(>pS[Xri0Y]3OR
+3fVFY:<nkI9juiL4nnAk8ZJ>^K][cC@<[j`O:0&(irrA[;X*4PZ76&C6#..]IZKt>hKV@032.'0N
+V1>Y=Ss>RPIb*tBkRKCHhHqgdjloa>B5o8/9buChN^399RNR`Vgsq6'Eu$_M;L=*L[8-k4Jp4O+-
+MJ9'.4VWn&99;M1gNOm.j`)`i*jGb4'.cMT.i:.LVm2SCTU%1ZQ+W&#LLuN9p\U;ae"6d,^BY5_=
+jfb)g.Gno3lT4DabOC"c"+t0B$7\O>FqZAR[<liju7fQF`TKT]8$6X#HKBkD\E3NuH^t="/2%!F#
+P_pTAg&hESSId]#F.FZiT$-u\(bj$RZe\7^Zu!7jDoI7?O$.6Q?ugN$Js@FK92:+lF4=PrUCVQeh
+]?TV%(/(1Q_;?>s3q,`J<V/jc[+F41k$JM`S?.G`F'9L"i9eFX_Pj[t#9"NP]Mri5dS,bRkoW$t/
+bQNeuH.\mieCGq?aH<?tE5;C%`1V+9n*e53h.mR*YXCi)^et!6r'+@c8AY!Nb8+ObjtM&#5Ur[q)
+FdajJVW&C:=+E/hsmQq[Jlg]fpBn..N%1fPr.`L0_6=%B@A3([bddaOX>aulca.C_?9bcR^K-LBi
+hlb[%8Rd!s%Ke+&I:40'r%W-)CkG"9/APXLD>LfX.8in\%[_qY([OE&cZ`8NKnP+l$BZG=KW_W6\
+YsnLD&]JR"ChgJ>9nQ?q.OmZElinP)c(3;R8%2d2Lab6#krO'3j0)HS$`BtuRe!&r/b9lL2HS9Z0
+_ea*>qgujkt'9gC!63',WUE6eniYN[i=r2sj,EA#=5;cd2$$&1BaRuKP4oYL31-PX;.TU#`VlARe
+h:p`?9HI8OYlblDIqXdb5F".cIT8AnS=5+^c:('Q;!rHi)JJQu4.gMLeJ'+a;K@8P=4H6eW8'?mq
+8jA>Tj>@/U&kp`7`1gQe+Ki&aO<cJV/Q`KHWG#(Z7.ksfeI1H++.HEXW)+7dUMqm+E*[)lmk.gD!
+K+"G9dOZ08jaE0XJjq?j?[\'f&f#+tN1%`j[\%:d.7<V]A"(F8(kWp4Km:F.@R=\t)UGN@SXh"t.
+dL*I0-T.;'N+0opWW>(bIfnUbKfPW]"(dE<\I(FQ67-B-AXL-9T`-LKe?kO*nR=&j*VM5b6n1hu5
+5@;s,t,bW+h+@!a/J9u?2dc<.&^i]e0fDbh6X18?h15b1UI1805h)2ah7L#ZpEgi!I0`XBJ24B\]
+=P.d@[,EJlQ8o$t`=H5S-,SkiET\K_62V"g(+a"cW!!$$9Ln(@9krIVCKpH7@$GOi*c!.@qouPAW
+@A^'A"KS\EVWMt12R/qRMFAR&Vr&q"5/EE3Pn2eK.(GE4$p.?W:fncg'X(:;id!r#i0dpa>K6+^0
+St$?ur\rlVtNM5`!#e^csb]CW>m(6?&@8T1Zk4DQOme\dit^h&r.Va<S4@C)[A:b8HLDdfN,8dt@
+>\=LU#11:!%bJu@C&[*,>O\B-`?JDXPFW^7b62D_l`D?LFt@n'"#CL)rca*Noq_R=:00](\:JQ9J
+c\e0nnU=FdZGCL&@TbOm_4SVU"`gJ@U7<?Ih#oj<;[3/L[+R0o<`joqe5:Z#bqi/bqHWNoHd#!gl
+Ga`!,OE&)A*7JH*ROb43PIQQ0.[Y$rXfXeR:Dd+T3fJK&H!WOnCRIh3L*^Ol!2(a:]MiG]S&=h^.
+1"sp;d+K(klnNSAF6#LMrk99kumb=-.UIL:E6=RKjQBmU[)0El<-XE%3t;nbYOtk&#Dl>G8q_*Hd
+p.?AVTAe!UJj9^C3"kIsH#fcTFTa!+g^1qpJjo5u]Ko8LBRrKJ^X<5l9GoX`[7i68hE+^C13?D-#
+@+?R!^%F=_^8bgr^&)U2g!\AP:#L<Et5Qgh/</Oi:]@uZ+nd/)6u+IXg]O`hp:RuQ/gq7aN7WqOj
+Eg2[e?]FA,<0J,1D93Dl?,b4",aRi>(P56$VgkiT=1#j"3RoJNab7@EhqGrlaSs#Tn1obfcH2K0E
+#$8<GT&&Nn/k6';W#g("BonoRFRRYdjGQd=68#\sFV1h$rkfbk)Q!D1V[Ie,<(M06<=9>)A#=Zgl
+CNOZ`SB8M\7^tGMPtEi,9-ERAi!''7TkadGjS-4m*FWrBdAZ*hSjOeN\JD680`:?.HfEl;U'.gI&
+#%,FH!01:h(R>/u%QF)D[V[U+MmFFpGI$Y+*;:_6ob'H!m][3:s@u'>,E5lhh%tP3XG`^f;ACMN,
+4mU+oK&4ZV/^YR(&NRYLB#p/8gK&_<aZAjuo38>tQ!EG/E6m9)?mA'b'c*pkn*c8SfCXd/-WMrJ#
+*Y-$R9&2o,0"aS`j7PU/NK8LnYf0T$?S9LY=jD6<0R[l%[%F[KGT^Ph!*oY$L-q&-/mQJf2Z+/7t
+[e=$SEmAj%p%:OEeOE"Y.^jR:g=^^Oj&V9\<]9Z-TjuF*@J&qYX`u00/_T'Qp`*q8EUtoM7'nK.S
+g'1f#^"lgp+.J7&n?k2iG\7hMUk=7B=Y].`(G4k$>oj-m9XQZ;F&t^?MMcZBrueEMd'8+&g*Q,i?
+u'J9?;rg;HHAf>MOruU?up;3$9Y79[pBP<T6B<d^dPhm]ETgXt@jM:a'?mK)4$P!F^*N&-ZMJ4Ij
+n]-)$)C4OV@Q`67r,D>[^W]B!mZ^gdW>m8Ia<-*6WWAI#Xh29arlPNg$-D*3I]TUJJ?Z&u4-Iao-
+Q7d)$o'X7Nd0UgM@[0F4Ko&_LO"pITjXKJtY$eW_)0aPjr!Ja$8:Q8HX6BXKc2qUZV"eM6oc3_H#
+nso87[02Fh6\F*l,fK=#O[8G5!D0r^B>#L0CIK0BpH2AFa3pK(B<<?<if/Inqk)#iqk)#iHdRn#>
+(r@ra=<ko3%(/IV-:B*XAG%5a;%j54;*),/O3u2A./r&a>LQ<6@0]<!_EA%F4VGu"fc?0bYAnh.A
++bPMJ*UKkYUG=68R!Hf']8!l>^?_eK9c^phE@_eQ%iB<H&2>D;?]A!,=WWJ>f+OX`Le129Ql=Lgc
+:\JQrDdMRU.PS<'%`)X=_);#+r3])__Ic8m*?*rbiOc:QiUSpL./"Ri"N\pEhV*l+6.,@GBJ3Tm5
+JB`g:(`:R6bKh>RK5.jgmp!dbe92BJl:4(N\nckSqe^p7hV]<k;NX]4B"uOPM81U9(m'X)"3B"Dg
+J0MI>g3H(\(^41LGB,4*M6h$9^+3\g\]1*X%\R9pZ4XBZQ",s\@b]m)H4eDCRSiX`a$MO,;ig*Fg
+/am@)N8FI<,std%:\+F#,n_c<O'Tr'V2B`?FD'8==`)oANsLqZ0tfjbVR@]:\(V.>aVD[UX"*m`X
+(s7G8Yb/JXtTEo,4O'LMLOC#hsk;%!,+RMeVuVF4WQj>08g!R\Q0[;:sf>]hu>&A[j63'EQ6_MAV
+J=bZ48aGHJP:FIpk5aOiY4XI3.*S93(6YXi2e0K`s&TZ#@<0\cj[N:U#dm@9X%^I>\`829_=&$bf
+1D2IkA2Zt*=EGiX*L#R$nkEeG(e5nH-`LCsW##q,E9.L0MFs$.@a4+N8Q8T_'"`$]_l7$Oj36aGk
+`kdau7ncfj#7%@kH/K[oIIFFtf6D(2ArY>PBV-A-Ka2Vl#D629l8J`;O#@]%&L`;$ijannR;JbW&
+LcHA'eS7kOt_1CH!f*^EUE-umZt=291,Y5;AV-78T_N2dS$i01Y;+2UmaI,6>+r3NeRTWoc2Qa'!
+/u(-pd+S[5@WkZ,*ZYOtM4K8_!]"<6C7i2(n%@kqSEhGlo]&S7I(k:@7DBEmgq"+2h_9eG$PfrRH
+OsmCZ4=!K3&O>R^LKCB:6?Gs6=&a1:>d(MuXq/L8p!;h5k,Va#IZo3+uT_],a9)ebEtr8;)V23F9
+Cr/sI#k]//cXUa>aJlC8_CADeQ2`d<2LM`h.I\Gr=H7:p?'8iD_ea>"@6.>66/b/S/gO\\s,lVDc
+L6*(38)m@%A<2f^HM+&clYtu61>ba8N6DADSpJjndk5O7!C(g)pMsrS10r_V$58bB=/kDP-+9FXZ
+0hMU%E6"qS)k:4o>s*T4e,tSM%KqJNhfW/Whq]8T3CSD@#l`,+[XCC!"PlsiK"8LFL]*NVh?'@(H
+0QrC,&e%5+CMZ:Jq5%GqkmX5C^PWB)$d88%@B0Dte%^"q,*fk?oCSZd,adc='4C?uae^:u-]PP<A
+4,:>f@o]]<=>gcF%[i;Gh2aW9O^4-'Km[;*l)EljEYq@Q@?Ah/I(4)rLtCC/+j@oD=Z@C9\f`FX:
+(='M)'J=_^>moc+9Uu"JZ&LF]4U87:MT-@L@c2_q3]k>ZoU9W.gDf=d(G3&LgiI"RtgY1LAg6_A5
+\_57YYIKI8=HI]gg9^4LAtB3`cK.3he*IX0Mn/#W:Bp/O$A6\]I)`co#l&+%97;*mAmD@F@9D+;)
+eep."0)/XI%S<Fn)q2b=@2]`N)SB_V-BuEa`sOd),pY$=W3"\(CK[]a(&44hS4F7`JW)aUSA+?5<
+@k6nHJP$N@^TOGu?\'Ejg%XHH)Qs;k<6=-bX;?>qN/b0n?FE)<@6e4nYtWAfIN*4_gOhP/A[[P2<
+].rG#\Jo/g(>[;1TP`^.*MY$T!@o_hK0NK2"<@!sLtm7DsX11L^@!V/Zg9rKDq$Kj7V0<clNH@V8
+nJ.QrMN)j8Y#^G-7,LWT:F&ZA5<K3V%3;k@&Fik\3eoFf;QasnI2MND[S-)o"X0:,,9>K>(g:7F1
+S0"E9C!,_\EZ$qR9S89BC0f(%A.Clm"V^J>W,qjR>GS'rbjT!-1GK,nPDW"e`1M`<Gpko2WNM$#5
+*YH5DF)oRPJ&en!2mhO\cNo(kt@%N5c+H0KJD50bo;)U:$)804MPl$%(XEIk;aO?j/lA&#,[s#[Q
+qXS'co?1])^V_#$=d`RW.Rd%YMWW'&e]6K`8B+=Oc%tQ\n"mH_45oaNu;:AW`AL&Ehra(NV#P7r/
+qdrG)]mG\C[<hHdI)iL&QS=ijT@>YX?h=+suD]g,0*X^c?U\"t`5T3s0]<S;:%p8lLR1)q@t[4[p
+u\/^'%<;<OmfUBeL4(b['\,8nhN;V4oB&C?cF;:Ku6*Xd<=\3ccCfZ)cm$c;KA.</q[Q[b:Z`R$k
+burF2H++A!`^-<NAbu]DhhM-rB0Oh:,#9F[G0U)O+HLtcMj9GmduGp(M+="&\B&pBl<Ch:m:,1""
+\G&F,D2#+)X#9EFW)l*A"6T-LflRjT^jimMQ:6%-e9uq,=Nd3ahUmroqPg2DqukIdUS5D1k63"<`
+Ce+$cpu$3mOE6m(qX,UB:mdMQ[NS(lf,J9e1b;Uf%EEKcCNobu#R1U#NLmKg]'(4P!6VAL&f2.Vp
+n29(VI,Cn"5'o=u*+XP+&!:T,b`"fco`h?fKZ-hFBbX9.\C?TF4-_s?PY4"rDMOM![GE#`83EE.-
+;qqufVk+u,'Rq2-Q<'#R>'JK5^d*SA>0lWV"*.-hC"GR%uHI\!@G24-^'jM0-L:cI5N*.u*]7<[`
+[51JW,AOI'ELMb,PmKTJ+WQqf!@gYI`ooZ*k@5*!Oc`CJG6%>OJ23.CPO<-&M`2oMRqnr<>>_mb(
+n&Pr(r<6/H`8;d2\()1>Td9kc71H>;mPTf\W;%@H^ZnuK8O%R5/43Jr&RbG76VuBA.ch8fsh&Q-A
+M=]f^OItnJ/8N&\g3hc9HJqJXg`[!7n>1d<(H9i3uY,[W0Hf@!rK-<dM^5gP:#.gMo>b\>n);H5\
+3;HWt`R`o_C_Pjf,bI7cRT`S>=V*;?OKDomAC!.$&l][iXY$nUfEjuk5_eO\/R9j_):\W)p/#@-n
+5i)Ug9DP_>3Qu3kuVJna<hJ5R$CRL-7SlH:CSN]^**.Cio&I1`>*nB.6W1kdg]SDQU)-\3=c9E5P
+29b/$c+6p8SYN+CcrE(Y?Z4/.Sr13U9,&R0`7Me7p`LRJmnqCSntHZ$/!29?a?T7D6?/&p`bVN)=
+D`0TU^0*"K)fE1oW1;h\W\<1f8b_<gB+VnP!BsVX[ATC3sdgC4h]';M#db=7)6V[e['.1m\*c.c4
+;l>O^+1Cm[Mm"C=9DZ>@`SA+RL',MUn=fQ'jCec,hOLJ7R@RncA&R:NmKZM;d^UR2tgb%kV`c_=\
+Maj,uriO:j_BY3'm5oh-_NVoj8JH<)*%iN5<B9\,nGOQ;Kbd0s(LfBaeKlJ-O$D]l9E#'IrgTfEh
+T)]j!-Vp-$IDU#SajElj:DP_DoCGs!ZNd>>u[F*<K)gI1'a-K:qJ_IC,@r>_cNV8XnSt`(s5C$iO
+i@ur<-(4>ET4-<Dgub./msH1nYGI+9/%C>S(#%B"Z85,3U[#1"f1PqGRH.tn+&BUT\/!'S%-Oa</
+;ReuOglOn\pk$%0+>_OB),6Y5*aGt*6X`d$$9fgWEP(.Z!8?JCi/T9#7O=Q0'/NAj;cc%i]@et(Q
+;mWSibL;ji\l?/IkrmR%*>?aSF025G_ME@2ol>.]Fd[Km09r/73fihPkC=KC!>43Hb779:ge+U$l
+CQ5W_rE^o4jPOa%t%2m=JkE[aN8Ug=3c0tKV0kLQBK$X6-')b7#'jJVa+*_Lp,;n-)/3c*gZ@$-)
+n2&C#6W$"a":ij%#Wn>QAoGE#k%_8D<MD:!%7'KEoE^7\j(sXQWS`Y@FO$Gc6N:isoQ+Do8dN;(f
+o[Yu9cl-(2q:h@h],4EA<^q_cXt*]K^/aK(o6+[sL>!&0:T1B'_7NKLh"+\Bi/)D7MU8or^]Jg':
++Ib-MY;Fs'\tNBR^8sQEmiY19gKGK[?Nkc'UIZo9#*M.i+!LBlhC6US+YSQe+eFhWf2X'-+X,I<N
+AX]Hp8!OmRY7grrDB7gJ%lPdNh"La++Y?C7WSG3SAFlprFK@HX'!f+r2X`H<#Al$S&X8I^C\/=O=
+SZ,DQYW@g(;I9or<_K2q=bh]97;o,'nh"K<)<cWV(![dH+\_qqHNgZ<MA.(1WN(LRNLP3nYt*Or"
+o!J;9-'Kln@=PCl@#3V7\MBS./Ys1k(\4r/*RQJBB5WB6-C&lN.,Otu;3Yi,fL8rH[gCS_2c>,pM
+?.NIM6-%,fr9B!8he_O]7Hnf70Qe,l>,gSSorG%/R#VDHCEshbVUU`l>*`XOciO&I1sCmurY4#,*
+U.)Z4FM!?>sogT.:ZZ.RUG4+nI-jVfMQJcD9HM%kDG2mBjBbu5B;FZW!ID-7O^FYXk;9#HRMG:"1
+pJl$<!$[:g/uc>K_(9N[-0orWDIlArie/B&Oq$29?iI@J'1,CIHOl+;"[;kN7n^03`p;P24BrX;a
+DaBc@.%l?h-R>7fra'6qF*<G\@fq3Ots*-8K/VjZV1D2ej.fG,ZtN>0>a!G<L$k0AGpZ4o_;:Wg?
+N!k=Al;/N'2]Zs)3<)hjHgZ?AC5j1695!UluO&JRp:ijf$e6:U_H<J?>jd9SMJuDHZYhl`R1<o_>
+GHDUO76FuhlVUH"6gc+U@g0PZ^%N<D=DV'bR=pcaK<grJ"'f2=DC:D6f\f^9-.Hi?WPX_/:I$FJh
+@tPQWPHRM2#\1@`r[BB+qFVQSOkO['cdVAeQ.dETFRCQg8;H/P2$cS'cfn%Y'tXA!-Z>'>($%1E$
+1dt12R@c@6sa>p$8%VVX<utrr<W(X0LHUEVVnU,6uk$hk7G9Y&/o\ioMF=&^GD]R.[Kmhnq(<AO6
+C;>gt]1)>#UfAE+(o>iN:I10''"P"/C6RbAF`KK,;G\r92N2@hZ7D,skk(+cJWom6Hk?O^1"YKU)
+1,IsoQ(t\XK#r/sQ"<R52H3YkS(<=bOdm#Ucc?&h[q"EA=Q"@ck@?Xo!";/TZQ$?q%pV8luB8u:M
+ciXlGFpFVpCH,;,6kWhjk4W')pf<jF!--OMqhiV(D6o3".qMZ[%qEGZ7]Y->.%*,h#4HLN0[=Dp=
+(pbt;he54C<!(f<F#P($-1OqBKt&TdQ57dLUl4(R`Ct8b5'hc!^0>PWUAg<>AL3`3ZP=KpV8!R%X
+I6c\W%NraLXptrp?41#GsaGc"gJ>Lf5n4mMu+NA$p=%*3V_Sqo1h!@k91Ujm[>^[>r-Arr@5S3Gt
+t^;@YBNX^YZ%-,4_BL]7?b<n-D=7SN'\L/l"G*n:(Z]"_E>A!/j.FCcS='^Lgi5./)OQU83uWE5O
+E<58QM[0/L0RT/7cB`R:[@t+_@5%?-T4XeI!;Z+7\O-e3jE$DeCmRsfscR1`t7Odn[VZc1r1f4em
+ECMp`bpYTKcibPOArcL`D5[cfdn_g\9fTqbF9[JQEALY/f`\Hn)b+X9rr>[B\St1>/"1c>QG]Bq!
+0<^9]2u01Z5N>8:k-O+iE,J52C%^mjf9gF/Gbg7G^R1o2YX7QB/3qqlJF2/D"jj(_<c!EDGWJt'l
+-KZBOO.G\Ka8Pc7;(-5BRoXYcCr$J[G04T9;YY01V\VDA^9<]lH%377!rSb7Zl0DLW6sl6#TAL-7
+"H6(:VW3e.b&;m,J'EIT_L\pULnR*<U$H<"`@Mu8N\Aur6>T3?(e;*5JsK`GUGEEdU+4%$NOClU7
+(Za>W8F.!kqMEo;D51R,_dT]qb+]PGn'ND+b#'3lAqb(J\'9Q;B9+5s`2([#70l56P#afV(C)cFm
+VDaa_i+)Nmk?2s[qmW_pb>j8CK8'Vm/!tj4E_RE7.]M`U-_V!imp_AdI%]QP4cX<$;mt7H+2eUsF
+.2KmZ':"RPdniWVLiO;O]uoM:cm1&m=uaj)QCLhVp%Edcr%<o%k!6`Is6cXl^Du\6gI4W/2<Qj8=
+,W_!3]8I]Jj\GVag9'N%smUN$%Sm6bn".e9-J1LWKkKj'JE4Q@YW&@XnGFSu8e6k.LUkh>'pM1f:
+iLCa2KD5ke#0&n?V;hDElYq_Uql`.5s]G7g0^HBIGqG+*]%*p2OW\:1-3'h;j5.P$K>jjS:AjCEc
+O9&es]6u@$X4Q0EN.]W5Bl3FJ,#FN/<\.#=UGrbdPH$%6YeeSCKjAV78\-$`,O&oi?n>3<r.5E[f
+ZXA.0O@7@mWA0IoC:7rA5%\hL7d4n*0%E((;#J<g4(pfr0oUas(>93fHBo4H8JS=h/]bb+Un>N+?
+'q:mCN[Neq!HM9dQb(X#TkjF-E?dh6S.2Vh*_islHFRZorA]`#6V032Ut:ZAcin9;+feC;9]W`)B
+W`1DNZr$7<ScW;EkM2i@,-7ftm.4<,'RW+l!EF%Q`*`NJNFeL1HIa=!7''!38"<hPJ4Wk<>cAR5#
+pFIY6ri(<:J=?Ce,dXGBA6bNWmEj*)6]8=6rQH4&t2&Z#WH^a%3UqWjBYD3o>6g8/_-Qh;a8IN5d
+pgAm;:A_Q90$!;.D])HiQWf\?dDA_dmb"k/[c74O,@cp%F<--Q9<NFa]N=#o;=@lDh_^2S''do#N
+.AJ$PX?!8m20RT_Hq;:m`\olV`dOgKA3o_D*90-_F+>ZrZNb\:_rY7:A#"$IOV?i<hOIL$>:H+T*
+D5ql8Lp*,N<`dtgF;_>A<i%`Wp[;)k]'QR\WbUOocUKlZE_MhT3BBg[`Aq>n8!>Fn^*,1>KG&`'Z
+COg,u$XNcj^UT]o2E7OF3+M`h+3n&I(67MU,4OEQ0Hs?*b!A5WHoM^cp;<K>*(tBX^*e9#&"`*hZ
+P^jCJuf5s9!Mh;b&T>R'i!02ouO`kX@=.X_a?gJ5s<Y-)=GU9&bm&3b%p<2-rF`X"='3Bm5W1E=l
+.iIqe.RQD:EMb1S]!-hARrr@:C%mm(FT"NN.:6=Q"[4la#gT['CP<behdAd1'Pc'X863.NM\.nLZ
+VRPBY`*:YSf!T8J[j0J0ZuPuoamE81+.O>5Z)R73/W1CB1OJ,gmm#jQnZ7NgCo$n;CL5reYl(Pn<
+Z3C?N(eY7[^_^YhXr]q&r]\hJ8N[1oqo2&8T+FlOSUP#U<AIqR#aR$!EHN#c'S]udJU+W%,a0ULT
+@a!Vg,hIIQlcopf(:Q$F18["BBsTP-Pa_l9RW,:>:q$iWpd*B7>IhiQ;hdN[k"3'=+e!.[A0o/u:
+f;2k!r`Q(JX;,k_sk;@^9$;V+UONnP3]bPXVI#Q/<UrBa_IR/oW6g3Zd[G*Vb\NTQm#D&HIMA<ZK
+H=nd,PBh?<"HW44S<u5IJYrS^cIJi]/C.38!J[Z`];F"5WBTpdV/]J/f?[sqm[Ee&VRsWaLF-4F`
+0RuVJE'6p,l`k`OMN=.%8(:MSg/]2ZLH0>2kc?jH;0]Fc:&)Ku$IG486GqN_cW]ubZ&FJ,ceV#el
+.1gl.>*LTc"VSt-BF<=,WR3A]PS_?)fjIm?jJd;5B#u71nHB^;rUi$#WqN(HOTP=L=U-WTfq-1?-
++45oG,"VXu4k5<HlIho-WLLrNkhrr@0BK("5!1@b^Ii(aSse@JSIP$"/T;D<:1grr@FBXu_"Rj'G
+-McSj(%XGp97Z/N\m^Nta)+89ML&pWHE6S.?@`u(c74.gLtN8QY.9W)Nr=LJ;^J6`]8@+9CSUPuo
+VhXreb_+Oc(X^u8dS5:_'ONl.4_OG6^7W,%Y!3QgmA'I$:U:%H5!n(R'4fSc42`FAN`r>I6fVdMM
+%5u0T6q?D_E*LbpBf9)7UA9348MW$A*eK\h-3DB4cP7eTb,eiqgo(=_=D1)<U3hjc4T^S+mtt>*U
+5Hf149#:A"9HP'c"KHECL_>qo-)gi0^)#HlpmltDuh9d>drPF`=4XZQ5pO9CnU0QY;@B;m(egFor
+fs:DV>p$S^THg'[YX\aSAC=j3%FCHdSj'3GYSH/e2mg<qQ2)gqjBUS5u3CP.,8n(?k/j9#fN,J+`
++S(@l'n^/QA1G9&h^AF>9,SWb)F+[A.CV/r*-Td.mE-_7>&]don1-f-Gu`nS4=%'0uh*+4ZHe5>-
+Z,E9>IbL@Gg1c%)/EX;#>:^?j&fcO#h]edRhDP&,:`FRgtm]n@T0ZZ])c3A&^b#)rNJep!<!6VH:
+d1Y6cn?cdhqik,)54GQLBd`gN=tZ:7:=RSu9TmLSMhEGclhXP-@j^MC;qtkH[$KaWaWu=_Oi27*>
+Rt=DAWOoQluqbU3UKucDAQ-X+EtdXLocDq?^KlA&jE%uN3+Tc)URWS/!4s6o(#Y&*p0,T%cO$`6*
+q\-9b5Hm*")=>\u^iDG!3FbkDF%tV9]i5V8ao@=I^JMXAr:`eOI?ri+D&&hq"U5Od[gW'@.OR't<
+!`>*;>3)%2DQ95qMJ=EP?-aQ'^CWsaM70Ifb?X)(=?VZE(bN)Phso27@<P'ob?8bEf?5MpD)Ndne
+#SNiLao5T^!U7"c@Q6RUgSLScd#\Y5m%2l0LDB[PK:TtYLDI&T:+*;]a9UlOB[Y3Bdk'[-l!;qO`
+-ITEHoB?q/pK^mJnPppBSH]rr&99:ICRC=e.to@I<0b@[T`f](VD;Rj<74aAX:JQ9q)Mh4[@&B*o
+]aV&R"41j>MQ'[4hie8m97sIl0%7>@_foVQ,\7<DGG<%IB,B^_a\dY)u<F4jOt,S6pGpEC"f#.BR
+$47i)R#]!0;RX-U(i&1':+G^*:@ge-Q-mFU"DMiL>*BWl(bm<O!#!Y>rk5`D708JPTO%<V71!h'F
+;Gi-e%*D*XkrJ&g:UhjS_VF7smtLEg_U>-/r\-(*b^AoMNiBM1:&okA?QW#JQT:hghVgi>kY;mq(
+67l>]d)!?d2X>7r<(*!;\4mB6@H0[_FP^MX8P_"@6QkZ%X1<`Ka`]0i1BKV*H*<H*e=[Fb-EU-Lt
+9\'WaE^K<@A[<rI[4(s0VN2]!a3q7h>3NBh_20NAQ<gWc(![lNl;H/;kE==Datd\F[3?Y&X_a+EM
+ftuUOdpF?1`f@RSVuoM0H6*5XY1,fICI-1E+:&f"hoVQr2VAslKg\Qf_PBmh4=e]i,P>mJQ^Ni\A
+kphD5piX\@8nP\RXb5H@';qXN`*OGVpqZ9GfM-&^Ztpo\O5:=HUC,KB\"kp+g+AT=],0Y8OfjW9I
+@MPS22'W[GJ7Q.j2t3Td!iG*5ZUkX-8&6tX55m>B3_)7+*9_HO=q*%oZ)/,a7JRV=Bm#2Hi3q-)u
+7DAdP_b@H`oqUS/lm7#='dP?Q;#g_?F!1LC"L_6BU.gi@3[ekhG^/NE\cr1QA.01rXSeR2Z?T+l/
+XWU&,VZ@KP#JE,Lj&jRNdtE]""F>Dm[l/cV7rKEUWOo\D,4ZFjA*K%Hk@W4]0=<#L8l0/N]bCsl<
+K2'+MY^6\\\q.XXt)]\$Fe4`:28XA92g=1\8-GMAGImrY'B-CBL2NbLU**R!BA0%9fc`0$^%$Neu
+kc-M'9M7'!JS=l4f^kNM>e2.('q5*Erj&P?;#]Jjg!\J:^aPa40iJSL1*gPMEega-(XV\b^^X:DE
+g/DmGPRaX,;b`uk;lY&!G@19E2TH[)];AlNdjNk\b8X_Ss$%B*J@J*"%I\%&O,0UV;;;Of;.AG.4
+Y3$8ck/dc(nhs3b4@1VkiV"Zc6dSH:*?]gCH;/;@XOm[?tl4-?%bs;NEBbubNZ6NT3jt_BscV/L>
+<n^X)Y35[JD^ZiI:rEe%T&F1IOc)!dpS?-sRb<fnPmf[n!#it20/Df0a'=g3KnnDma<a2R<-g&%-
+Wf9*,?9lW4b6-2%rZd9nPl"<Cn<Z&oW=)fN0^b039QE]k4Qh7?0elVF-G=aMn?5f^k'YQDLELFCL
+^_"^Ln[,40sQA.bG?*7hrM9S^u0/#<f,'>"Omc3(\A*J+o!+lW1.f!7g8Ck+K7][rSJ7`iM[]'&p
+SpW^f9N)t-T4%JPi.,_1#;4\])p<:r*-KZU@qiVM#]&&Oe?"FlD%m&Hh2BfhBL$TA"b;3!]eSt+:
+VLXq!kG2fJO$KU..V_k0P8qo.n*M]-Ne;,p9X\R2>PPKjfO"bq0GkEn5l=dC2Q*PIi;e]h'N"C>n
+BVI!#?to/K,_ISZHBX4pjAilVb?I%%;kLkRD=2pV[(0e,EHT8l^o]+K@r#Z;YUAQYOj-a?6gXO4)
+Qm2*Ed@bTXSS4"oR4JHbMH_UeCud<oE3O?q3uX<8(*6,RT@VQc1Nq+-e>_`pI*E,V)`7WPFa8Ra7
+k57W9D:rXn8["T:AppIdkq+i]3I:hjlI]d^eQOB0=d2)`C*2FKD?s7XTIk44Mu@rr>D6etX)RC<b
+03Zg#nkqi&S$3#S\Q"jAh5Vr#Br]NiEL>mi]0L$[=M*P>>>@kq1&*DsR=eu@l=?o2NIZsrj&8;Q6
+7WHo"gN&U'"SdeIHHXnUPK8PAuoW8e3,e!*Io3)Dk:ijISV*+]+oFcPGV5,qONJM)5RrXXM$A0TD
+k+l#e`d\>bVkD40&6EXH]8kZg"0GKlg2Z@Xf]*G,r9G-+.5N%1gg&Q/%s>utj-X[C,GD:%rr@7m,
+5*BKST6d)^Y-"TUYq*mIYPH'dcb7"e>9uD;o]9'C@TOsaYhhY1EN33Uh8D'RTAKhgT<8N!g^VON1
+MQKIN7+#?O]YK^h-_BB@J?FrGu:`AIDdL,U8;hPNXOJ/?QmXL*;R(g,>6WmOOJ71o"PQC@&tsDUh
+b/jP20]_5>)'DO]q,IW\D"!o:^\F7th\oW-%,GOCk:%)X='H0o=F\Z$Vq78hC&j\j+FNYCjli[:1
+lXph81><2%hC3>7g"!'WS,kG.';#BuB=gDqb%d]e[TqT>]Ag39TkA7EDn;b8U9#80N_D!A%oWG42
+,h$j+V3$f#7iCK]EE,aXOR(YWXY#ONiHJ\s9QGTrK"*sJ=1cs7).%J@NWK6g!U5/:]L/_^Y03H*N
+b]2e/P.Pc*jr"L@^+M#?r&d(Q+pl:q^P4SLEFGuojqhKq=>#[*;Ao+dfUR617rdgor4>,,.;?T.S
+jDte%$lKl&3"23#dADopZf:Mq8uLrTGnBj),P>H^!<j;J!/$SUT+C42,%%^bj5K=t>-G8EQsW2r/
+''NjWFbM)iE8K3%l+'tchL'QUV"B4uZ*UY"8WWEEuf0XA]/o2dmPLHh>DCVW)b3;sO@SqN06`e9F
+0c#4>=B(n3dAN)NGA'&q479S+"=JA'VA;8lfC%:Fbb'([AkpA3@!0>F'\:ld3Fkg9_LpJfQ)?0[`
+ZZbP13K5@+f9/[M&MNEa_/.8qHQ&ML[kR%Zh2hAK+]\7=MQIaBJ3@sSh;*aEil3:*_r-0h;G$QBf
++kC2_3fEo#.o$^HoVOQ(rcgD??pqtAa:IH_-#dpdYbZJ"#\*NHLu2]HAe1Jptl=c33683A8HD6CL
+ZglBlS:Z3&S(oWKN9+;*lqsa71/!W%`aK;mh=u_DptjeB(RVmuFYS0l'XgpPg#h0F]Y^RWh"d%b$
+k9L,5.5&&tFgIM?ZE4YRDC*6i:'B5O7h(_fK.3qfIFU"]\#S;OA`#,sG1/OmB=7W<hq<E(1cAt7#
+X]Mig*b0oFdTJ"S%!u.Fo+OQ_-j"(EUBdP$2.=]!DnsB6nT="HDZu&"!XVX=8+h:*GIsJXXo47MO
+(Ds3!Yu@SoY_&RQ2NgN0pSs5$RTC=>MN^hVZb#jA,,%.S95<3/qGD%$-+k3@qU?Occ/?fZIEbe,7
+GDjEP`.'@L7/JcoRm.)_`b$l^["<bdXTlXd]^iUon;ZhY`Z@@af^@3]$R'ak?"'+d^f^/ZN+UCW4
+Is'R;hs,SFik-c'cmaQ!)0@NPjnZ$dG/N242TL@uH(KHG;Ed0p,Tg`FgPXk-[SPOFp^uge!`I(r^
+Y(4D0d\A[]dnYY!M4j'+UO$9tp2I9=l$UCJnL$t707<+LrJF8/e$qZaHfaQ,6/Rrm\e9NX,M3<5Z
+1Vm_)AT!X234he;N_c8ik1m!GsSCEF;g8_sOV-$dlbsNn@j;c^K(s<]Oi)N+^qGd0i1P8TS)Cs[8
+[g;$(k-9;6D=^,:5DX/pW3,GZ4hWpt.\62Uo1>'+WpX-ge^K[Z9N"qOm^1nEoVV8W*Ga*Y^eci-C
+'aO0g]>A<jk'UjRq"AS2f:DB*ZLiBoPIHk.sUI1peWS,J7c=)'%d(/f%b`hM@MhXeS9,Z\8k>)2<
+84YgX,/]NaG[G$"<`eK::0!E]$Z_5[h>)24pfq!^Xs(o?COMQ(H\IF4ENo_R"S4RS)>%A:dd,FfE
+9D:eBU<4E4=Pj^L,VN^l>j`C2&2bS>2_^^&GrjXi8U9Xe6\[^s!K!08XB)ufomDQ:I4Iql6hCCP8
+.ZZ%u,d];1_fOBlp37NXY%piB24b(cmPC7ZW("n0):GgY6$Y$@fGtb;/&tkgoc?oCb^LV`s>FL>5
+PHK25e9&5JNJ:IfEc[h[]+g/S4*NB?%c`1ERX>M)NQ&Eg**/SBb>:/>rjC!69bPg#AF(0/LcHOL/
+u8'?NY.'SE,ja/NL?RC80%+0)*XIbIF:D*0YuM4c8SF/IB30[2[k_SV(/DNl42CHGU2#B=m/Rn#h
+<'gI$HiKH</9(EHPhJBeF]Hk.-K+FV'"V\pKc!l11e6'KE6nAj:-2rlD2j/M+tiS_]Y$m;6BiiU_
+YMQ!;1j1cC[/a-QO@loG&sX(^,P!WZ32&bg@*<c<f^9u8Fg%SHsFpGEOaOP@%En;CWZfLMR$TQAG
+#ch4AQq4@ZMRapq&a-5Ug8"Yo1n^E"<MHY:S:)bbFB9&M/m<ag5G-SV1'l^r#)#UXFBMNGMkLA+Y
+pnbiAfE5dp?>h:H$[RCh>1/tr-'b8R$GNpWE-%p**;lT$X<orpHWK4[rm+I!BWWW0YbKEi<DiXZD
+d66aG,neuDm[eRlN9rea'.b^X^a8s&.DIrSOrLPI7,4q'[<J=m9h>,GikmoSR^QA+T(5W,jZ9s.c
+O3CbtX3]WJj")]@[Mo<Oc.tC7]An$BJq0B/K(EclmRkFJ+\_:V@SjciMobN="pL(3Ya)q9cQq&'h
+!KW;NWP`b_H:p#_X]Um,s!C+?$p4m<]HAR<+3cp8n/9Pa`^ai>+HU1L<kZm^R1>([[\RZp1JgNb'
+-44I6#[Or^oHIA7"Br,j<DbC$0O/)?L$+Q'8c-jr7@JX#X^N^[:Ih7^igF)-p)df2h"2H$if/5Sa
+ZgCun=Yne^USr;U(hU+Q\tQ7H:Da^!;o`fkQJCnZLSZM)bVE^J:,BjXD'mpR3h0fe]ui@uio0n;h
+DM'A`5':=ZY'#Nj<*b-d*l2\QT_B`?Gn0l\/:R/Bj&1I?G/=uQV''[2(k?pG9K+>'XpF\cA#O0!'
+II0q,I]rgbtVMK^G#-:r<LB>Sq*q+2Yrq73Su.0$lN:#MPi5%XV1+o.)F8du&E<fPsX";&,gBV\O
+1]79#QsV]ZsYd'5*P8aE>&Bj3\38uDekC/-s2?Blr)`C#]*/5$pXC"++4.ZLK[KHmZ8HJ,a9HDc5
+u[_+RA.t#4&dm9LaTb+ZIRM*:QNdFcRNl&5P;$[smg`YS-#O3fS8BqLej'IEuGaM'*JN;sq[+Id5
+)il.&2-_RN!rb'bV*hRbG9Cd@GSF,D.Km.<r&=`.TfC,S0DPt)\R=c!$0SuunFkBk(Be9KKi1)!G
+pLC$5D=@TT=f9`6t]kdcJ\PVZ"e[B0r$_NoVcY^m'jB*di^GMbZ3241R9*=[/S@'#b7+amgq!B8@
+E/@Gq0sh/qBOqg9PQ9NT*?^=A!c(cWpA!76\mfA@=`/7E5Kj24WKX&r#AINaJbL[Ei4%^>ilHFKN
+0`3suT(#!-4t:*d=p%KY^pSUs7N[NB0&!K()<h_6CNQ*TT0YN_0e@!JfLq-m,uDUpp"J^_;+=@Q'
+d`]<1E%N!_!]h&#G@R)*$A:_g<=!#%LFs1DuAl]%Pl3ZIO7fNH:N/WdIpE/BDOt'#8OrGJnFsGFk
+_L^!X'OO[K945oXJX'uaG0(Xd8C%L@C(Q'//d_?53m>h8jbVU0G[NL<X_u^C(C/2&(sZ+N>a<nW9
+D$2G@@8)cA.X&!>fNM-DGU-^79(DIaO[_G5T?R(<j;l#`0O428Fo3Xe$&<Va<W>A^j3n)n?bIG'&
+LCmUGD^iUqPN;iN>j%eh.6Rd+B(Rf+1$5.3t6V8Nu12AiUAIY'DQmCZo`Dhq>I5a93Ie"G;b-L9@
+m3^#I5T0Y0='F9QH4RD)'1k.8kS99khhkB7;T':oa;>>eO5aG=maIHt_.X>-;uYm1\$[C6_YA]LY
+W>tr9O+bo'?8`O_(9Jp+diQ22#24ra:+M!UI,gS<CjO@<mVf'anCD&jag66"BIT2`1,[ur<_DUeG
+psZZ"kQ%JlPT#eB_%,3b)!6C<OTL+nFJX#Z1^oo6OJ0ojJVl-9`?t6uM09F#B\5PkVt3D9=%(]aS
+Ui<3nFKJFQK8NR'KF8)E-"j>>olB<HKLSa=\a3O:W4N0d`/iX3#'ig)0h57&a>6S4B@`s,!,i2W3
+"o:XD`M]+t%,>brF,mQ#!uN7+u#GIZL2))8?)seo$k)dtU!pBh?OYXQj-QF<[4d!QJ+<Q"n<NO)(
+^>*)dpr^nt?7_iD:f2%:n64cZPjEBG?b3:s57UIB=S!:s0kmL%oK#IS?%>Gt$^2\(SHC<o51\]nl
+4_Dr%)3g*_=Usl+`:d''*98JLD<s,Td<ZqofFcN4W'rlZ(`3j(9oDI5X)>'h05k?lFr7K7LGg*;"
+FPE7jTf<sBDAaL[SqqedQ;+F]*0(J-e<GBdQl[(Hpt"QF;-m#FgI.m)mn1V;'qMF0rL-::B30%4.
+P[!!M!o>i.jZ-e=)Dh6!3CFi<[\6ND('_\mQrdBM+15q#i_KZ@oI4tG%N`7AbsuRFt%Y:[r>)+lZ
+#cJD9L_51K"9/mn.FL&b^K'SGrS2eABL2!6D6+i&*]k7Y`?8V:6_K((2crMm(R(GSi@JUXM>;PpL
+d$o&jAF\3ETJR6$!*mnP<jYQV(K\2hNO/.=HH)g41_9'5enD^+d&5$8*[m9Of[Dfj9<JU&DeCO.5
+e^`m*8!Eh<7q3OBgOM'_`:4/u"pjXbD1_E46RjXDpQN$rVOrjUi'S&"$M5jUeq`:Fm!+rAW)b6j0
+)=MWkKTYC0!N&.-X<J3JJoXUIeEjhc":WarmFloSd5f=gI4@7YX>Xg,eu<DYp-gN*'h6O*p\\ar]
+0(iR+F6p]G8r?)ULUWD)"bdK[[#`3,A5&pV.S1d=qGEX[9.cV8/ku_&)gTtGl_uoM5hB4A\,ea38
+A:_7$kG]IV,_</f[BQ3?2'?ZA+c5orbo%[4`:?).5YlmmUj:YX!.-+j%_`l'cWS7LB1f%WXY[(mK
+*R.dD!#Ye_CQh_QXj3NddJC0:ZVEK>*:`Jsl,W7B2[F7%45=ZiNn`u*.RKY*&DI\]%8c,fUYp<pO
+V)qd7:VN81aZ8*=PXu[0OUQ=MQf%Xl^bNrcn#FW)E_[\p-eUsj(-?^o"6*5AREp_\7&#U/7Whr$F
+]Gbd9fHaFUp+XJjCS9/+6)7f4[#CqPr-:0Eg#?ed:[X11l?*:BG])4ipS9+]icqA"7M4.lKFO?h1
+[/*"(5Eg2jsPgk4ho9WP"#R6-QI3r>94_\*7N&[\[6cVXIPQuBZT^1OBX-UV6C>O`H,*2LJC'g[l
+d*!k3<BfaOnENqUR7W5%k2JB"D^?ZnmgWo"qhErrA*k63]/HX.A8cZYnEOF5!XtQpf95>WDXMA=b
+;i:]M*QCCXYr@I@oG>,!>De$:c,K1h_8p:c3@%?;lY`A9^MURE_9nc_!_1sC#=+K9dDLOq6V"!Wg
+T-PZ1mo3"(ZBNc)YnP0J5`?"M6.N<mf)]9tN`@!n2;:#%QI*>&Ri!E.>Ath..`J`ig5.)KGFX%JS
+;V7Y*r\aGp7G=nXW"$jicjE[V6.ETK2BWk)7:_FU[r3jOn;OUm`[_Nrjiko<i8Z\[-BbX0FCS#gV
+e;OK)!<cS;OJl'8A/BQ[+FK*PPNd0Qi)92c`M"Q^F&!je5U>JBT?_94Yu`/iaN'`r8^fDD,Ne-c2
++Rn2!b:ajsod(O/E_=f(brVr2-#!Lp?:HD&$Af7sk::mn9VGCrR+X0u.`m"'M(XJ=-no6`K^R[ZT
+Jm$ueAq>:X\+2W,\/4ases]NrohSGo'&A156FLBa>)CNq*,Ep#DE<K0K'gJ0@t&X0XhrFsl&q6oS
+QafB8r.i['GgT@EC,QW4m?uQX[]lTWqk']P3,a$U+\m=!H(IlM6qAQXrbA#>9;_WCUi,tia>E<l:
+PI)D((B4C'.BOJp]83f#LE;+VeOEH=[RJnu%9dJ/d9gXPOD9"mAq^)`BJ:Y>M?F0]Il\XDDHZad:
+G9nVE]qZQ9=$ek]ZCue+\2,]b@=u7`38K)`?s"k0df(l9kN=d<R(@#],uKI=FC2lV,<_*9=Z^IrG
+hM0/adMA5\ObZp^\*c3$*56*?pQrEB3t$/u(.>'k]#]E7huer2VU6M))63HLr'"/#U"2c3V)!\@6
+Jm!,E?q']+h;!0<V@[,W;m8f"kL=_W%qaMA!eJ+]hbUFo$a<:Q)PDUi7G-#p;_S.eTF-'mYfb8/p
+R.ET+NJmARI^b5rcX"a](7o<=JdY!]NA2gI+<I8FsUuj?roigKu9XLm(82B-h0'A/o>+/0PR5fe8
+nM>b2B5Z]jB*T0@"n[r8Jq!f&+hN#;@Z[,I2&:&]VXuP,H9Jj7(]dZ'o7D&0[8aMh_#SkB`+4%nS
+O-/Mf&ppK6&-MpO6Kd`Z2KfU1/?8;Ss9r9NACqA!&@oDSu4H2I3FpHL43,^+,+B%qb5J1h((D7,;
+eA+PKe3ud9MFN4VG`3\5K*"[<44Y27X@;[?PXh:>tj=W:ZQPCIhNKTH:#nk-)4mBarCV)$''X5U-
+K>QbMn-ZmCmT$]p.c=%PDR7bYc7du(%eLsZiF@kr\^"pc:1r$g%ZklS527Y!3FNn"TZLoq"DQNto
+491mnK;Ff.[!+ohJN2\rN[:AKnA\G]E-n-9T&:;i"X5$<d%M!QKc+K>&J"=b&qXgIL)pi,3;Kp0!
+C?0VhQk0Eu+Jlri(aBb@>f^E!fXl[UlmkT:2_IV<mMP,I.NLp@);sQqk8[OG>=C-R800l9q/KQH$
+,%B/5#OH=<-)/[@iJ.#bJ'Kjc38;ngkDq?[2^`4UE-iZ;TDQg?DN85=cl"jhDHV/L2C8V?Uc/:SC
+;[%<O<gf$&f5@N\^m1+!_ZuM"RjJ8kF(D"S1Vkn$RJ6d^3pF7%#3AkO+*B+BCDL;O]?t8/,CCY$6
+"'-U#^b>Q__g4E4XabGgb;F]W/=O]ZhK1F)(`A.8H[dnPrM;*jf6CKfBgJ:l:U13ZcQS@H?oX^nS
+k6$jGNZ8-^o=>TsWYAsQhY+"_a[`BN_c/#@'QhNA7*aK)?#jY,TJjh/g,.d3$`MW]3C/dQ!.TT;8
+Bj>,M.TBSl8'aeu;]Uj/.2JX51^*DJXF/KKpW)Maj.J8fG@fE4\.mO3`@1'!dQ^V%V]?Tah>VC`n
++2E2TC#L^rMnM6,4CAX$:#gq2$RgHU?5%b(+`-pP"%IIoW#S.FX$nt9%C2&a(U,HV1s%o4<D&P>(
+][s<%BA>*"&+RlTqQfA@]=1JdWr87;#lI\plDm*i'.kMXhW`3Q?At<%jIRZ7l=OWMb+.MVO+M)''
+5[%jIcH5U4aS9"6C?dHRo-oGJU8AI^e&ZpT4LeW(/"c""gErfKDl,(>cPYGrtLA=$?5l1CmiS]ud
+Y1FP4>=oe0P2VpKG=?G6PbA'RT\j5rU:2DW$JkrdVK$Bft7KG6Z4;1V[:aTWSHNVj*DT*l$",mhE
+mOEH-o!4Y<\brI<0a@U9POp];>:Y*C+<Ts5.Q>_T(N&3@]0l0&$KGh\XI*,D?--e.n=Q%1a(gkX9
+4l9LIJmlk[P"4W\G2@SQ1<XUdYd5lCSWkp(Q7^r;+*>CS>k5uf/5)lMjQE:1+Ipp<^NT'%i&ld'0
+#;r$`Dk-W'&Qg`[Trk!3Va1WV3FWA<o.7'D1To;;FNUL1$lMS[("7i;WcqRoh9t[.I?p6S%1KK@6
+H?)$1G2(h]am;0aFjJ/NFbZt)U_39+ng6#U7%fSm>XQh&(-GAp#GDqX.$+C.pj4:HBIOP<3JDF.`
+'K@c8LWt,!Gl7&-_]Yck,*&@NoN?(K1EU"-)np./gr$jHnVHdJ5apKC(TT47!29B03hcW"9(BJQe
++V67hO0(,oh*@%Y8lU!aJuMXpgfLc1a^]ZC#PT@?+*V\d\]_L1RuA2U-65sa;Sqj'LbR@"=o34<'
+[9@Th@.RQG9M58e8E=3'\,,_7&65Gl>J%@FFHou.Z`amZtlFPFK.SKS;bn;>'*KS@<7!idlaHSV+
+-;EQXcuD2)mGI&MfZ87KB60lUI;E>&%de^d^Q*fJUr82#B\bca7(t4U!fL-u@fC4+W#d3(Db9l?&
+@2D7>m8-7dl+k\B4<(@tbQO8r&"A/t3l\S1BjOhZ2Mn_E9<4U)%se+^[&Y1@+E^[Zb1$H\:0%80f
+pj%4T!#:oBjB;,>*"4FJ4$'<mt8E7sR"DHG8`"%Rnlh%<M0'*Yj\;5=iRt"k,SC]EDXNPm.hF)*L
+c5_f$:t>4OAfdd4,?W<3H#.fV[SYc_'#og#jAYEmB@e8WL@rZ#cZ>!2f1Xj0Oog5/ARgg4+/c5Uj
+Pm7pCU9=Yen^Ko9<F?fiGJaG%8/%2b(-HBrSqH4rhCKLAkSkRm.Y\'KQem>ID'Vr/KV\0D-kB*FD
+'gn7:jfE<]QlF&uEbN!-FO*S'=noSDq+aXXPl>T&C_IQi!q2A*@pKqXq"<m-*e%b&'?upCtuU72&
+AU&9<5abD_5P\01BI&a@^jc(f6!o't;0ho5`&mLD9VN74)DD$Z0RL_^]P&QUn2d#NCK5qH])c&kM
+hbn/&Ec+nqV2CulfWiRCF#1s-;7bu`^MObLB>_A@ol7n#80WbY/1q(YuMlAXC*2I3hJL7C'=Yqib
+_A8Rq8qpmX_&hU!EPIn-D-4*[Ufkq!Fqn^nT'aiG>iN$<QsniC/DQ])IdR*%D&=X<'p#4_Wfnlt5
+lqZlGK3!P>ni.n2=kS>Hh%/GIk#U>oTtn<&/OF/H;[m2eu9oggb?b/4J-ArD.>EC&B!V'4;KmurH
+`>:Ko5EQ1o,#NKARE9X4YN,NPfe!o!UU25s:I@d@^'=)&PG6T?fBMWEfm9GE++F*+4`qq,%:`F=C
+D63M'u!fV'@O%p&!tContm3!3W6@On`Y,\Dt]a;W]d4C^TJa1I6g!>ThIl%,AV;&-H]&I'A0H7@t
+5nE_X+QG><!&T*0ng+gY!Z%T4H;cbuYCu-:1Vbp#"7+T"j_`ZlkE(o3)>l?(BbZ_a9&uVF3>IrB1
+Pg'ctAu:S4I4EDiL$:ph/]#Kd;!-G&&I?ZBWKBI,e+VjKd\suB!jco!+YXF!@6reI9=,1rVNHn0B
+kTC],3.OTO[]LJS<$j670HUZ[_t*+N!_KC!4>;Rp8_C0@hS'=SoW%F5R%EH"[[N6jrZcB4mAVf/&
+(-J1$M6O0Ko:0<6H.hdZSj`6lS;ZMA3//_HA:$a?;GO<4<7BW:m1W)f24Qdt@$d>[W*:J\^Iu8a8
+9s0+:<2dntWH4m>;Sa"!m3dQD([O@]$Y+gqi3I;.&`8HYnR<1/b("W&E8'_Iq8!:fh^Ed$)>QQr%
+@F2=[m8@Z^i<H_/5.TH6(aSY#*@s#*rWuU[]G\iI21-8M%CR]Ad4QXjJ#E#X%Drs@dj,UNNlHX3R
+-K1PkR`e0$`fuUR(Z\u[r_b41Z`tW\me#7:n6"Lho%BA<GVsLG]!mb0]Or43ger,b5e1i9?7Kh]E
+"?>tqG\sZiUH+Ke[fa$doD`H(hDY-LBLNbdZh\3Uk&+ifCPq8Z(0phagRbK'=0'#oG+2ZM^fsM)j
+kfHh:Pod6g!)"OsoHV\J2VgZnX2sf5N]0C:C4QX^_2dW2]rlRi+5e$Z:LmOVp@leBkQ^jb!>;X!W
+6im-:q3_WT*3_Xg[5.)4lR+\eX[1]0)lKj70oZ>OKM:]CDuU-Yia":br9]gXiWGA>*'<%L*]L*hT
+G&TZ;A.X7Bq+^Kabm_*AZpAY,+<Sl[m$uS4!c#_e3OB`%P-N%QVhV9gT[Q]G0\/I="p=E_QXjr"4
+]>re)P?<#ElYSY=>S2pUrk2["=G<O@nl06ZN*8g@Sl-&$Zd5Hn;CiPg]F[8YUFWkFeF9C5U[t<aq
+;?DiURFQS/9jtlWE(PjgsE;I3&NI/*E<#<%Tb)%72Qo?J2_K%PfK*eLD8b]qB)PGRUmY"^%+\P=0
+6?a86._Olbb19pf28;3Zl.92A4gT9=#!FPMP!;X?>Ph0$mB!*Pp!.?/<eb6u[Frfn+ahNE@02!-3
+>/.\e[\7Reeb]7Pmc,a-+s5FJfhi352][:rh>[oT_0O*$T*5D""eqXpgh7Y.Dl,a(.Z-Q2d?Y=#5
+A7\e/8M-+j]F'H6&I19C]Z9t;Te9>m<n$J?1coNoAl(2YOV='[jF)-(EA,cN[VEK@@.Nc!r?b;B9
+TfRK9h@sV2<j@nKqAF=\Bc*RAM'>h.nT4O<C5)Lg1;(uUo-P3;O!JiFC3_)9G[;q*Wj:Q"64!=ei
+MK4X%eg7O%X&]2+-/:LFPVRCCpu4r$+<>TK^B+l-acpBgJPU0mTGQF:MfuFFua2lE!<bl+"TDN['
+)<f!,j9HA]7`Xjk*<U4W]\fJ-;0$J?GqDe"a4&6LaqZlCa=!$"Yf=)DZfE=G'MbKu4bp?]IJ@:k&
+nB,r[HMb)rGNdtnqf.jCPqTbU>fc53mU6Jm34jcbk'E\Zn:K;f.^c"*N_foVij:d*+_QWNG($kL-
+Qoa;X`PaRpR&VX)@oGgbC%PD[r@@#Q\0B\;B_egFLN;"+qTo&RZr83@59g7.bg2\?=aCN->%XRlq
+>1'`d'+:unl!TlJ&<Du[K9'N&UYiIo=bUPr9SONJG85t5VJV?Bnf39Xd'XBBi?L<bOF3rjI=JhVr
+@9b.W#gYr'&<GWfk!hsK?\@:dPR-n\_WddpGLLr_W_/Va<<>+cX0!6eeX+>^!+6)QR&i^eCRB2'm
+<7%62FoL>cYr$#GCal)iKO>0a4-oT/\G`$2"5t)O":8(@!I<aAsP[UiuI5lO,01+39*M#OaUEp\t
+4#Mmo_rZpW^<4*!_]-_0jGkF-4QG?8E9;\`W[.d!V^Aq=m-'qXLVZZdY[l!3o$XaNB*&J.+#mJ,5
+1am+c2S(@(!Cn),$9,pnIg6I1_N.044h2hJLSlE52PUs!#SubMaP/A;oX%GQgkdgA[;b?9!'Psos
+ghh14^huD#=6ib%;i8R^,>#P28NA-)/b7%>%gKJ4;V8fIZK`1&A7r;<LQ$:PD8=D)F$Xl>8o$'aS
+,i5WK:J$Q$8qptJ^U9WK@^+QLB)@0-;hV*f8?@N-Qh2K3<&KsllN(qUL<aZPuYm[,sf%h-re6%Q.
+1)7*.cu]TF=n;QA0)T"-72:M'Q!$ca>6_4fR@saiL9?$rE`t0i2gY3N%NOJ:/ljF%A87PBYM-KiQ
+.pRcpgY`B8d8gGF]MRP/8.+1!U\FsGG#D.?TODLWRg3$;/0cWY4,'p'0g$r^.s?pVanYBjKeFf9/
+NZtWXd-:&$J+8C-$lEfT'_-(e>K8RVKLO.=TeF"MG*B_jm%WFqu8bW@Gb7oBCT;>7%EJ'S#0D>dm
+Ih>iH=`sVm^%:g(rr?6!O&q$jcB9ih1J5kB9/2lLa]43PH2uTu<Z5DY+2+3F#O\SH9iGi>3C#[@6
+7Jd)EQG[fl17ff7OoJt'o"FE`XrHKlh.E(iZGI@cPS`@raAa.[iA7uP#!nESE0Zl>41Z+eO`C;A-
+\g`9`_f&("=#Mml]50#Tsf1eci/'q9hneA/Pkt3QF.Z!IKF#0u./-SNurGduHZ,Ik"3,V&Si,Ro5
+h[`+mO:@!:hmiDd[mi(*SMGCR=k.WA>=k+TrA]3'u+kO)fGDl*cu;i'2-1_`.H4MbJ^KT7LU2U=6
+?<WaJ5G1(`cjpM_7@G7:b\s;I6<.fhhkt_<Okt/=FdKn222^d]_0oY0+58nWh3U+LE(c`t)X[ADN
+Ubj7TOFIUV>k\+Fl?;*'a4?S&n/,g'.UJc%0Dd$T^Ii^8Q-V[c32m!?kLP/Y5.%Gblm!h^%JeI:F
+<"]<]Q+;(\.ic;i10M8pL#j!JE7<mVFKT*1t<ik(!ko9%ED'[li_o+lVA"aEa2QK,\J3q3>W^jnu
+;6_:#ij<peu4.\GW<CKc)7qDk*Tt^Ig,o;iZ<Fd[GD$Gkt>,gcPL7R--ToLE#R_S7@/#.S^$*On_
+fY_fFD&P"-M>TFTbfiVrmM>_'`Tr@0tcFWZ;bR%/QAo;%\&2FnD&k*T%IkZ%)^Iuh9Ke*Z(Nj^kf
+hKTSeRmEB4ikP<U5`:P7N[Z+VRPZB(955]W%jj6aJg;G%;Dn2)6]U[S2'uO51UW<,h5>b]b>+:L0
+BGt6C;!n()IPo3&>e5bkZtFrsi"PQ\8YRIl:j1BsKoHR>LhFbCkTkEFbr!_G1&tF-orRJ;M]EQJr
+Rbgk+1mT:.QctRm2Ll832I2+^ETrqc"cqD-H0X@P'aT5$bNiPT3A_`%<uTq^Y/Ht?T/gb7K*gjp%
+P0aQ6:RFa!2!1%oN!!!#gSD1)R<?DE6dL8Z0fIm_b<rPtPh'@a#^H3@CtErO/$:L+H9e3Ne=X'Qh
+CS5enC#X-OpBMH&qT>/7?H%dbD5(oCQRQYrZjaBj`/!jpU=FK!iR3Y>Kk7std0@m!j_#7Q)3EnZ3
+h0B6)nF,e2%:Wo:-Q!DT%,nsAdf)m@aU?@YrPctBQW*WL6lU')>Yda]1;g/3O#Tna)9OfTt0h<j1
+OsF>fPFPPXq0MTnH;hp^1#A\c(`hkA>YIpIqpFOJH;8t$Il]Uhl29jO#g;/2jADM`d\@4AqU5'0Y
+,;tCM$%`m;isq[2Ud5mXI?C\kFO+iF3PgMRW.DQfELUO9fJ9f2#dQmO2?R*@CQG<JA0NWVi5,^.t
+H*=n-A,O#MP.:!1_Mh*gJZ$h?_FOUlCU_U_q'5@!AGd(O$R_<0#J@HN(:aHC@M1<=1Jlj\>n&miT
+]&C!2Q`:WT40pAHIO+9@2:iDFI6qpb:>!uX(oo`Rr6+Ek^KP2LlCTEG/Q:JcPSf!AonWl(lLUqe4
+QH9aQ&d]WnSa3p;OTE($KcBUsBL6[ARPPJ-4=/0^tl!<X2DuoSfm=>3:#cQd,m@7,L0`qR.]8V3h
+?IWCR5Ui_ZlbTF@+7FYXY1DVZ;?n=DM!MEfqGhCN*+\*o:056QcdNRbQkHW$EYk00X8UbRpI_63#
+sV%E-BO;#;eFB]PcF``Eg(8$Pp>dnEBjDC5[msd;IE+sKsA#a'J_=LIhPA`#6XSB.6-=WL,[:LEa
+"\sUi9Q0VdkatV$)[FgH`!u!&;"3"[h(6=*=QT1X6FQPE3E72-P]eo"aEJr$f^+IdfRU,92^Ma*M
+O*8BK]9Vf3s=ERpVB:G#GH>6S,j7VT\@*:=l4p"=la0nC=Dr$kCFlp!ObLHRs"dYSd;iC0lQM-#D
+I+,4i10qdl--uYH)q2.MX\e'>u(_-rc?slp!BBKeXl30SrSlgG@h8Grb[4Y[gPGS8OJYQACFCC6$
+3W1G?(?RE=5;;:k31q6L#!MaZmN?&&q,L[)UgI]AN^FqJ["RMP*0PcY+]U[Hpsa.-F-8cVRSC_NG
+7ViejXig;J>heQ/ls$1r98n(7j"!c85[lc<,1%u(BAq#I^L%=Sh^P]VXMh6ifM:_l7(IR"s6'W)F
+bl8--\j0+;9C"CfG7j)l`cc\S`30/Y5=NoV?ZO`^(=?P8M(WiD/4T;3.P4&/ISKd\,E_!u0p-:N!
+PY@CYJ@GiGho&BC"DIdJ86@m)iO2Zb_!Utbt2r\On?UZWV,lVY6$n``rXJW>u2.YF6$.\=FEjZiK
+CO"()/]%$`[[NAF<gCL9`ZOo\#(67>@a'<-a\bF.X5QE[gCR2"LBj$JU99\\WXB)f4p]n9Sl&;dQ
+1>%@'k)=B2j6K%O$["=8D,d%n2,,[@7'#M\3%4M9AfFJ#,U;fX<l>ZqL[qB^\S.iV\8"CIqq8(^Y
+p_q+St;1t[8?aE+3LEC7qPWr749DkX',mGS$qDMTrd8Z*:lP%Osm7lnOnM+eUQq)o:>%L+*s/T7L
+o[-e#c?r6EJ<00KfS%1$c5^_13[g-]_GH-m5*Be)*tFk;g="N@5\:V.(37]0W>-(NpL4;p$VH&V(
+a,573NPJXsUT.B)!^+B7>8DRo#cPDI[4^s=V:56)Z=)>>u]JO1$j>]cp70&5h3'g/8%-tU[+-@W>
+"bK`b4I0E"N5QhL>V_i.^Gg>9:>_>oq*+oZ"j$L>IK(pOTgdM]>.JhI<`JIm##L\qemO<)C*.AU$
+O72.X.2A0V8nTLkRZtu.-K,%*FBOSXZ+eL%63098-3<?cr2HsE*39-j-u<N)C2'G6\57JFWDTm)@
+4VES`uPI#)'+H)V'=1Uj)0=CONki$#Fok[:Ep?W=*ttgpbb1J=.%M:2%*'Li=q6kOiAj@lZ&m:Jd
+Ef6nc%''IR\@Q+73'98]`?V1qC^J:nago`Ig4N_0$hpC/h^!oQ#D=<'l1^V^cO&_<>QOkSGk.a`F
+j]cZ@?(oBlFt5.jlQQ'>pb#*`A(2f'?qoa[G)J]pe8#_)bK[V:3>`s^5*<!fe;9ORV\9!!u^o$h`
+<I&#gL1HQ`_Wr(e96sk2JDCA5kIc.$^+*:CX@<+(IF-Y(V-B7p%;A9XfQ]1S(9g%T$d9sI-AR2=Y
+I/p.V9O(udHW#.A"I1A)VSssG^t8j9c:o'@\Fpl])-KJ\UKBi@i*3$PJ/b@Nm7.!oTlEdW"inFIY
+\lHY+^sRa/-9mDq+q>Ia?5u8WTE=MP-]$2ji0H_S&"2;MG9T\*"&Z!_tE/\O)T+kZXb)L'D8#['P
+EK';+G\k^DhK=9%Pg!K7iq+C)R/9@>Q7\bpMG[jPl7cR=Z/DCgroOe^NY'pZY<$cn5gRUiHh&V+/
+m,hq\D#<oLBEL,)1K[d&J_cf%GeCbh#V7LhWiC#2U.rfq>n9tBDKTiGD*X'=j>PaXAf$jcdqU'tO
+tj/3*g>1a#7]_sQ^Gp&(,ou.72!i#rsP,IlI?@__F$Ff(K)uZCDM9>04DDCBMDBZP^"pd;@qGRu-
+*+TXX2!'oD@ik:o1D_%2kLUGLBL@ZUmQL/<0\b(Pe<8m&-T)g%rm]B]-H6hB3EE"qN4'*/qMJDd-
+Z@-tVb2cM""+?CXV[BMp+Q@:+-dc]rd'XJT=$np.,(<L'S=C*f`~>
+endstream
+endobj
+6 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 44
+>>
+stream
+Gap9`0JtXc0E=Eq$WAaMS?&=OR;8JRP-5E&!+7ekRK~>
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000031 00000 n 
+0000000051 00000 n 
+0000000110 00000 n 
+0000000159 00000 n 
+0000000295 00000 n 
+0000076073 00000 n 
+trailer
+<<
+/Size 7
+/Root 3 0 R
+>>
+startxref
+76207
+%%EOF
+\end{filecontents*}
+% END STANDALONE DEPENDENCIES
+
+\documentclass[12pt]{iopart}
+\usepackage[OT1]{fontenc}
+\renewcommand{\rmdefault}{cmr}
+\renewcommand{\sfdefault}{cmss}
+\renewcommand{\ttdefault}{cmtt}
+\usepackage{graphicx,array,booktabs,placeins,needspace,xcolor,eso-pic,hyperref}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\Urlmuskip=0mu plus 2mu
+\hypersetup{hidelinks,pdftitle={Women and Freedom},pdfauthor={Sohel Georgiadis},pdfsubject={Philosophy}}
+\begin{document}
+\AddToShipoutPictureFG*{\AtPageLowerLeft{\put(17,110){\rotatebox{90}{\parbox{510pt}{\color[gray]{0.50}\fontsize{13}{15}\selectfont ``Hawwa, I think, knew who she was. The story just did not ask her.''\quad Sohel Georgiadis\quad 18 Aug 2025}}}}}
+\title[Women and Freedom]{Women and Freedom}
+\author{Sohel Georgiadis}
+\address{Student, The Reality Public School\\Kokrajhar, Assam, India}
+\ead{\href{mailto:sohelgeorgiadis@gmail.com}{sohelgeorgiadis@gmail.com}}
+\vspace{10pt}
+\begin{indented}\item[]18 August 2025\end{indented}
+\begin{abstract}
+This essay examines the place of women's desire and consent in inherited religious narratives. Taking the story of Adam and Hawwa as its starting point, it asks how narrative structure can assign a role before allowing a person an interior life. The discussion considers the relation between spiritual authority, gender, and the right to exist on one's own terms. Its central concern is the difference between recognising a person as a moral agent and describing that person primarily through another's needs.
+\end{abstract}
+\vspace{-6pt}
+\begin{indented}
+\item[]\centering\includegraphics[height=133pt,width=.90\linewidth,keepaspectratio]{Women_and_Freedom-cover.pdf}\par
+\vspace{4pt}
+{\footnotesize Marguerite G\'{e}rard and Jean-Honor\'{e} Fragonard, The Reader. Fitzwilliam Museum, M.8. Public-domain reproduction via Wikimedia Commons.}
+\end{indented}
+\clearpage
+\section{The grammar of the story}
+
+If Allah Created Hawwa for Adam, Why Isn't Hawwa's Own Desire or Consent Part of the Story?
+
+The thing that strikes me first, when I sit with this question, is not the theology. The theology can wait. What strikes me first is the grammar of it. Adam was lonely. Allah looked at this loneliness and decided to do something about it. And Hawwa appeared. This is the whole story as it is told. And in this grammar, Hawwa is not a subject. She is an object. She is the thing that was done. She is the solution of the problem god created. Adam had a problem and Hawwa was its resolution, and whether Hawwa herself had anything she was longing for, anything she was curious about, anything she brought with her from wherever she came from, none of this is part of the sentence.
+
+Now I want to stay with this for a little while before moving anywhere else, because the grammar is really the whole point. In language, as in life, the person who initiates the action is the subject. The person who receives it is the object. God is the subject, Adam is the secondary subject, and Hawwa is the object. She does not look at anything. She does not long for anything. She does not arrive in the story with her own hunger or her own curiosity or her own sense of something missing. She arrives because something was missing in the story of someone else. This is a remarkable way to introduce a human being into the world. And it has shaped, in ways that are very difficult to fully trace, the relationship between men and women inside the three traditions that inherited this story.
+
+This pattern becomes clearer if the story is read as a structure rather than as something to accept immediately. In many traditions, the woman appears after the man and in relation to him. She is not introduced as an independent starting point. Her meaning is tied to his presence from the beginning. So the issue is not only that Hawwa's consent is missing. The deeper issue is that the story assumes she comes second.
+
+Before Abraham, before the God of the desert, before the single male deity who looks at a single male human being and decides he needs a companion, there were traditions across the ancient world in which the first principle was feminine. The Sumerians had Ninhursag, the mother goddess who created human beings from clay. The Egyptians had Nut, the sky goddess, who gave birth to the sun every morning. The people of \c{C}atalh\"{o}y\"{u}k in ancient Anatolia, one of the oldest known cities in the world, had figurines of a seated goddess that they placed in their granaries and their shrines, and this goddess was clearly the primary sacred principle for them. She was not the solution to a man's loneliness. She was the source of everything.
+
+Then the desert traditions arrived, with their single male god and their creation stories that placed the man at the center, and these traditions were militarily successful, and military success in the ancient world was very good for spreading theology. The goddess did not disappear immediately. She appeared as Asherah in the Hebrew Bible, as a consort of Yahweh, and for a long time ordinary Israelites kept her figurines in their homes while the priestly class tried to eliminate her. Scholars have found enormous numbers of these Asherah figurines in archaeological sites from the Iron Age Levant. The people wanted the goddess even when the priests told them she did not exist. Eventually the priests won, as they usually do, and she was written out of the story, and what remained was the story of a single male god and his single male creation and the woman who appeared when the man was lonely.
+
+So when we ask why Hawwa's consent is not part of the story, one answer is simply: because the people who told this story had spent several centuries trying to erase the tradition in which the woman's desire was primary, and they were not going to reintroduce it even into a supporting role. Hawwa appears in the story without desire because desire in a woman was, for the tradition that produced this story, a problem to be managed rather than a sacred principle to be honored.
+
+\section{Whose life the story makes visible}
+
+And then there is Lilith. I want to spend a little time on Lilith because she is important and because she is the thing the tradition does not want you to know about, and nothing makes something more interesting than the tradition not wanting you to know about it. Lilith does not appear in the Quran. She appears in the older Jewish tradition, in the Midrash and the Talmud and in texts like the Alphabet of Ben Sira, which is a medieval document but draws on older material. The story goes that Lilith was the first woman. Created at the same time as Adam, from the same earth, in the same moment. Not from his rib. Not from his side. From the same material in the same instant. And when Adam wanted her to lie beneath him, she refused. She said they were equals and she would not take a subordinate position. There was an argument. She spoke the true name of God, which gave her power, and she flew away. Adam complained to God and God sent three angels to bring her back. She refused to return. She became the demon. She became the thing that kills babies in the night and visits men in their sleep with dark desires. She became the enemy.
+
+Now, whether this story is historically accurate as mythology I cannot say. Myths are not accurate in the historical sense. They are accurate in a different and more disturbing sense. They tell you what a culture thinks. And what this story tells you is that the culture that produced it had thought about the possibility of a woman created equal to the man, and had decided that this woman was the demon. Not the saint. Not the goddess. The demon. The woman who insisted on equality became the threat, became the danger, became the thing that must be expelled from the story so that the second woman, the compliant one, the one who appeared not from her own desire but from the man's, could take her place. And the second woman was called good because she did not insist on anything. She arrived as the solution and she remained the solution and she did not ask to be anything else.
+
+This is very old. This did not begin with Islam. It began much earlier and it was already well established by the time the Quran was revealed in the seventh century. The Quran inherited a story that had already been told for several thousand years, and it did not fundamentally revise the grammar of it. Adam's loneliness remained central. Hawwa remained the resolution. In the Quran's version, she is not even given much narrative space. She appears, they are together in the garden, the serpent approaches, and the fall happens. In some Islamic interpretations the blame is distributed more equally between Adam and Hawwa than in the Christian version, and this is sometimes presented as the Quran being more just to women. Perhaps. But the distribution of blame in the fall story is not the same question as whether Hawwa's own desire was ever part of the garden. The two questions are related but they are not the same. You can remove the blame and still not have added the desire. And the desire is not there.
+
+I think about this in a particular way. The previous question we were sitting with was about sexual desire and whether it is sinful, and we arrived at something like this: if God created desire, then desire is part of the design. It is not a mistake. It is not something to be ashamed of. The desire belongs to the creation and the creation belongs to God. This seems correct to me. But then look at what happens when we apply the same logic to Hawwa. If God created Hawwa, and if desire is part of what God creates, then Hawwa came into existence with her own desire. Not Adam's desire for her. Her own desire. Her own curiosity. Her own sense of what she wanted the world to be. And this desire is either invisible in the story because the storytellers chose not to see it, or it is invisible because the tradition that produced the story had a very specific investment in it not being seen. In either case, it was there. God made it. The story just decided it was not important enough to mention.
+
+If we slow down and imagine Hawwa's first moment, something important appears. She would have opened her eyes into a world already in motion: light, air, sound, the garden. Before any role is assigned to her, she is simply a being encountering existence. She would have had her own first perception and her own first response. The story does not stay with that moment. It moves quickly from her creation to her purpose.
+
+But the story skips this entirely. The story does not give her a single moment of simply existing before she is placed in relation to the man. She has no interior life in the narrative. She has no first response to existence. She simply appears and is, by her nature, his companion. The role is prior to the person. She is the companion before she is a being, and this is the deepest problem with the story.
+
+\section{Tradition and the feminine}
+
+Rabia al-Adawiyya, the Sufi saint of the eighth century, is one of the most remarkable figures in Islamic history and also one of the most uncomfortable for the tradition to account for. She was a woman. She was a freed slave. She never married. She said to those who asked about marriage, the contract of marriage requires a self, and I have no self left, because my self has dissolved into God. Whether this is beautiful or disturbing depends on how you read it, and perhaps it is both. But what is remarkable is that Rabia's spiritual life was entirely oriented toward God and not toward any man. Her desire, which was immense and consuming and the engine of everything she wrote, was her own desire, directed at the divine in whatever form she experienced it. She did not arrive as someone's companion. She arrived as a seeker. And the tradition could not quite contain her, so it made her into a saint and put her slightly to the side, honored and safely singular, an exception that proved the rule.
+
+I want to think for a moment about what it does to a woman to grow up inside a tradition where her origin story is this one. Not what the theologians say it does. What it actually does, in the interior of a person, to absorb a story where the first woman of your kind arrived not because she wanted to arrive but because someone else was lonely. Most of us absorb our origin stories very early and very deeply. We do not absorb them intellectually. We absorb them the way we absorb language, through the air, through the stories told around us, through the way people behave as if the story were simply the nature of things. And if the story says, at its very beginning, that your existence is the resolution of someone else's need, then a woman growing up inside this story has to work very hard, and often without knowing she is working at all, to develop a sense of herself that is not organized entirely around need-resolution.
+
+This has consequences beyond the story itself. When someone grows up inside this kind of narrative, it can shape how they understand themselves. Desire can start to feel secondary, as if it needs to be justified by someone else's need. Over time, this can make it harder to recognize one's own wants as valid on their own terms.
+
+The Christianity of the Middle Ages found its own way around this problem, and it is an interesting detour worth looking at briefly. It elevated Mary to a position of extraordinary importance, and what happened to Mary in the popular devotion of medieval Europe is very revealing. The theologians kept her subordinate. She is not divine, the theologians said. She is the vessel. She is the instrument. She is the highly favored one who said yes to the angel, and her saying yes was her virtue, her compliance with the plan. But the people of medieval Europe, and especially the women of medieval Europe, did something with Mary that the theologians had not entirely authorized. They made her the intercessor. The one you go to when God seems too distant or too male or too abstract. The one who understands suffering in a way that a male deity cannot, because she lost a child. They lit candles at her feet. They built the most beautiful buildings in European civilization in her name. Notre Dame means Our Lady. The Black Madonna appearances across Europe in the medieval period suggest that something very old, something that predated Christianity, was trying to return through the crack that Mary represented.
+
+What the people were doing, without being able to articulate it in theological terms that the Church would accept, was insisting on the feminine principle at the center of the sacred. They were insisting that a story in which the divine is entirely male is not complete. They were insisting, in the way ordinary people insist on things, not through argument but through what they light candles in front of, that Hawwa did not simply appear to serve a function. That she brought something with her. That what she brought is sacred. And the institution managed this insistence by partially accommodating it, making Mary semi-divine without being divine, the queen of heaven without being God, honored without being equal. This is what institutions do. They absorb the thing that is trying to return and they give it just enough space to stop it breaking the walls, and then they put walls around it again.
+
+Islam, it should be said, did not make this accommodation. Islam was theologically much stricter about the unity and the maleness of God, and it had no room for a feminine intercessor figure of the kind Mary became in popular Catholicism. The Sufi tradition tried, in its way. The Sufi understanding of the divine feminine appeared mostly in the poetry, in the figure of the beloved who is always in some sense feminine even when the poet is also addressing God, in the understanding that the receptive, the nurturing, the merciful aspects of the divine are feminine aspects. Rahman and Rahim, the two names of God that begin every chapter of the Quran, both come from the root rahim, which means womb. This is remarkable. The most frequently invoked names of God in the Quran derive from the word for womb. And yet this etymological reality has produced almost no theological reflection on the feminine nature of divine mercy within the mainstream tradition. The Sufis knew. The mainstream did not want to look.
+
+\section{Desire, consent and personhood}
+
+Now I want to return to the question of consent, because I think it is even more paradoxical than it first appears. In the previous question we were sitting with the idea that desire is created by God. If this is true, if desire is part of the design, then Hawwa arrived in the garden with desire. Not Adam's desire for her. Her own desire. For something. For existence, for exploration, for understanding, for connection on her own terms. God made her a being with interiority. God made her capable of love, which requires genuine wanting. And if God made all of this, then on what basis is it not part of the story?
+
+There are really only two possible answers. One is that God made Hawwa without desire, as a kind of very sophisticated tool, a companion-machine for Adam. But this is very difficult to maintain theologically, because if Hawwa has no genuine desire then she has no genuine soul, and if she has no genuine soul then what exactly does she answer for on the day of judgment? The Quran clearly says she answers for something. She is a moral agent. She makes choices. She can pray. She can be righteous or unrighteous. All of this requires genuine interiority, genuine desire, a genuine self that is making genuine choices. So she has desire. The theology requires it.
+
+The second possible answer is that she has desire, God made it, it is there in the garden, it is part of her from the beginning, and the story simply chose not to include it. And this answer, which is the honest one, puts the question back where it belongs, which is not with God but with the story. With the men who told the story. With what they decided was important to mention and what they decided was not.
+
+I find this the more interesting answer by far. Because it means the origin story is not a divine account of what happened. It is a human account of what was considered worth telling. And humans, specifically men in a patriarchal society, considered Adam's experience worth telling and Hawwa's experience not worth telling. Her first moment of consciousness, her first desire, her first astonishment at existence, her first question about what this all was and what she was for, all of this happened and none of it was considered part of the story. And this choice, this editorial decision made in the deep past by people who had specific interests in telling the story this way, has been treated for three thousand years as if it were the word of God.
+
+Hawwa, I think, knew who she was. The story just did not ask her. Not falsely. Not romantically. But honestly, in a way that included what the actual story must have included if you think carefully about it. If God made Hawwa, then God made a being with her own interiority. A being with her own responses to existence. And her desire was not simply desire for Adam. It could not have been. You cannot create a being capable of genuine love, which requires a genuine self, and have that being's only desire be the fulfillment of another being's loneliness. This is not love. This is function. And the tradition has confused these two things for a very long time.
+
+There is a Sufi story I have encountered in several forms, and I am not certain of its origin, but the essence of it goes like this. A student asked a teacher, why did God create woman? The teacher said, the same reason he created everything else: because he wanted to. The student said, but the texts say he created her because Adam was lonely. The teacher said, the texts were written by men who were lonely, and they wrote what they understood, which was their own loneliness. The student said, then what was God's actual reason? The teacher sat for some time and then said, if you want to know why something was created, look at what it does when it is left to itself. When woman is left to herself, without the definitions placed on her by someone else's loneliness, what does she do? She creates. She tends. She seeks meaning. She builds relationships of extraordinary complexity. She has an entire interior life that has nothing to do with the man's needs. This is what God created. Not the solution to Adam's problem. A whole world in herself.
+
+I want to say something about the rib. The Quran does not actually say that Hawwa was made from Adam's rib. This is important and often not mentioned. The Quran says, in Surah Al-Nisa, that God created human beings from a single soul and created from it its mate. The word used is nafs, which means soul or self, and it is grammatically feminine in Arabic, which has produced some very interesting theological discussions that the mainstream tradition has mostly tried to suppress. The rib story comes from the hadith tradition and from the earlier Hebrew and Christian traditions that Islamic scholarship absorbed. So the rib, which has been the basis for an enormous amount of theological argument about the secondary status of women, is not technically Quranic. It is an interpretation that was imported and then treated as foundational.
+
+But even without the rib, the grammar remains. Even if Hawwa was made from the same soul rather than from Adam's rib, she was made in response to Adam's situation. The soul was split, or doubled, because of Adam's loneliness, and Hawwa emerged from this process as the resolution of something Adam was experiencing. Her existence is still secondary in this framing. She still did not initiate her own existence. She still arrived as a response to a need she did not herself express.
+
+And this is not a small theological point. This is the foundation on which the entire structure of gender within the tradition has been built. If the woman arrived to resolve the man's loneliness, then her purpose is defined in relation to him. Her value is measured by how well she fulfills this function. Her desire, her curiosity, her own longing for meaning and connection and beauty and God, all of this becomes secondary to the central project, which is the resolution of his loneliness. And the institution built on this foundation has spent fourteen centuries elaborating this principle in law, in social organization, in the architecture of houses where women were kept separate, in the legal structures where a woman's testimony was worth half of a man's, in the inheritance laws, in the marriage laws, in all the daily arrangements of life that flow naturally from a story in which a woman is the answer to a question she was never asked.
+
+Now the defenders of the tradition will say many things here. They will say that Islam gave women rights that the pre-Islamic Arabian world did not give them, and this is true. They will say that the Quran addresses women directly, as moral agents, as people who will face God on the day of judgment for their own choices, and this is also true. They will say that the Prophet's relationship with Khadijah, which we touched on before, suggests that the tradition has the resources within it to support a more equal understanding. These are not wrong observations. But they do not address the question of the origin story. Because the origin story is not a detail. The origin story is the grammar in which everything else is written. If the grammar says that woman is a solution to man's problem, then all the later improvements in her legal status are, in some sense, improvements to a solution. They make the solution more comfortable. They make it more humane. But they do not change what she is inside the story, which is an answer to a question that she herself never asked.
+
+\section{An honest telling}
+
+What would an honest telling of the story look like? I am not asking for a revision that is politically convenient. I am asking something more fundamental. If we believe that God created two beings, not one being and his solution, then the story would have to include Hawwa's first moment of consciousness. It would have to include what she noticed, what she reached toward, what she longed for in that first instant before she had been told anything about what she was for. It would have to include her consent, not as a formality, but as a genuine expression of what she wanted. Because consent that is not based on genuine desire is not consent. It is compliance. And a being created by God with a soul and an interiority would have more to offer than compliance.
+
+And if the story included all of this, it would be a different story. Not a story in which a lonely man is given a companion. A story in which two beings, each with their own astonishment and their own desire and their own sense of what existence is for, encounter each other. And in that encounter, something happens that is not the resolution of one person's loneliness. Something happens that is new. Something that neither of them was before they were together, that neither of them could have been alone. This is what love between equals actually produces. Not the filling of a deficit. Something that could not have been predicted from either party separately. And this story, the true story perhaps, the one underneath the one that was told, has been waiting in the silence behind the text since the beginning.
+
+The Shakti tradition in India understood this. Shiva without Shakti is a corpse, the tradition says. The male principle without the feminine principle has no energy, no movement, no life. Shakti is not the solution to Shiva's loneliness. Shakti is the energy that makes Shiva possible. Without her he does not move. He does not create. He sits in the cremation ground in his absolute stillness, which is also another way of saying he is dead. She is not secondary. She is the life in the thing. And this is not a tradition I am asking anyone to convert to. I am pointing at what it understood about the feminine principle that the desert traditions chose not to understand, or chose to forget, which is that the creative energy of existence is not male. It is not female either, in any simple sense. But of the two principles, it is the feminine one that moves, that generates, that brings the world into being. The male principle in Shaivite understanding is the witness, the consciousness. The female principle is the activity. And without the activity there is only consciousness sitting in stillness looking at nothing.
+
+If we look beyond the dominant versions of these stories, we find that they were not the only ones that existed. There are archaeological and mythological traces of traditions where the feminine was not secondary. These traces are incomplete, and they should not be romanticized as proof of a perfect past. But they show that different ways of imagining origin were possible. The version that survived was not the only possible version.
+
+And what was buried is not gone. It is in the silence of the story. It is in the space between the lines where Hawwa has no first thought, no first desire, no first longing of her own. The tradition silenced her at the beginning and has been struggling to manage the consequences of that silence ever since. Because a woman who was silenced at the origin of her story does not simply accept the silence. She finds other ways to speak. She speaks in the kitchen and in the market and in the raising of children and in the making of music and in the particular stubbornness with which she holds onto what she knows to be true about her own experience even when the story being told about her says something quite different.
+
+Hawwa, I think, knew who she was. The story just did not ask her.
+
+\section{Language and what remains unsaid}
+
+Let me say something about language here, because the Quran is in Arabic and Arabic carries a great deal of its meaning in root structures, in ways that translation almost always loses. The word for mercy in Arabic, rahma, and the two divine names Al-Rahman and Al-Rahim that open every chapter of the Quran, all trace their root to rahim, which means womb. The most frequently repeated names of God in the entire Quran derive from the word for the place where a woman carries a child. This is not a small thing. In the ancient Semitic understanding, the womb was the seat of compassion, the place from which care emerges, the organ of mercy. When the Quran calls God Al-Rahman, it is reaching for exactly this quality, this womb-mercy, this carrying of the other inside yourself that is what the womb literally does.
+
+If the people who shaped this tradition had sat with this etymology, had let its implications move through them the way a river moves through a landscape, the story of Hawwa might have been told differently. If the most central quality of God is a quality that derives from the female body, then the female body is not secondary to the divine project. It is in some sense the closest analogy for what God most essentially is. And a tradition that genuinely meditated on this could not have left Hawwa's desire out of the story. Her desire would be sacred in a particular and irreplaceable way, because the mercy quality of God, the quality the divine names most insistently invoke, is carried in her body.
+
+But the tradition did not sit with this. Or if it did, it did not arrive at these conclusions in the theology that shaped ordinary people's lives. The Sufis moved in this direction sometimes. Ibn Arabi in the thirteenth century wrote extraordinary things about the feminine face of God, about the creative principle being feminine, about the highest mystical station being the contemplation of God in the form of woman. He was considered controversial in his own time and remains controversial. The mainstream tradition does not know what to do with Ibn Arabi. He is too precise to dismiss, too learned, too deeply inside the tradition to be called an outsider. But what he is saying is so far from what the ordinary mosque teaches that the tradition manages him mostly by celebrating him as a saint and quietly ignoring the specific content of what he actually said.
+
+What Ibn Arabi was saying, in the technical language of a tradition he had mastered completely, is something very close to what the Shakti tradition in India says directly and without apology: the feminine is not secondary. The feminine is the creative energy. The masculine principle without the feminine principle is, as the Shaivites say, a corpse. Shiva without Shakti does not move. He sits in stillness in the cremation ground and that stillness is also a kind of death. She is the energy that makes creation possible. She is not made for him. He is activated by her. And in this understanding, the story of Adam and Hawwa would have to be told very differently. Adam without Hawwa is not merely lonely. Adam without Hawwa is incomplete in a more fundamental way, not emotionally but cosmologically. And Hawwa does not arrive as the resolution of his emotional problem. She arrives as the energy that makes him fully himself, which means she precedes him in some essential sense. She is what he was waiting for, but not in the way a solution waits to be called upon. In the way the wind is what the sail was made for.
+
+Something got lost when the goddess traditions were buried and the desert traditions took over. Not just the feminine. Something more subtle. The understanding that the sacred is not a single principle sitting above everything issuing instructions. The understanding that the sacred is the relationship between things. The sacred is what happens when two genuine subjects encounter each other. A genuine subject is not a solution. A solution is an object. And when one person in a relationship is an object, what happens between them is not sacred. It is utility. And a tradition that begins its origin story with the woman as utility has been managing the consequences of that beginning ever since, in ways that are not always visible as consequences, because the consequences are so old they have come to look like nature.
+
+I want to say one more thing before I stop, because stopping is always a little arbitrary when the question itself has no clean conclusion. When a woman inside the Islamic tradition prays, she is praying to a God whose most frequently used names derive etymologically from the word for womb. She is praying to something that, in the root of the language, carries something of her body. And yet the story she has been given as her origin says that she arrived because a man was lonely. These two things sit inside the same tradition. They are in the same book. The tradition has not reconciled them. The mainstream has not even noticed that they need reconciling, because noticing would require sitting with Hawwa's silence for long enough to hear what the silence is saying. And what the silence says, when you are patient enough with it, is not comfortable for any institution that has organized itself around the story of Adam's loneliness rather than the story of two beings equally astonished by existence, each bringing something the other could not have arrived at alone.
+
+So the issue is not that no one ever imagined the feminine as primary. The issue is that those versions did not remain central in the traditions that became dominant. In the Adam and Hawwa story, what stands out is not only what is said, but what is left out. Hawwa's first response to existence is not described. Her desire is not given narrative space. That absence shapes how the story is understood.
+
+\par\medskip\begingroup\footnotesize\raggedright
+\noindent\textbf{Image credit.} Marguerite G\'{e}rard and Jean-Honor\'{e} Fragonard, The Reader. Fitzwilliam Museum, M.8. Public-domain reproduction via Wikimedia Commons.
+
+Collection record:\par\noindent\url{https://data.fitzmuseum.cam.ac.uk/id/object/2679}.
+
+Image source: \url{https://commons.wikimedia.org/?curid=91869830}.
+\par\endgroup
+
+\end{document}
